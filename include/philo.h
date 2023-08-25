@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/25 12:48:42 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/25 16:43:51 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # ifndef DEBUG_PHI
 #  define DEBUG_PHI 0
 # endif
+
+void	print_intro(void);
 
 // /* cmd_fuctions.c*/
 // void	cmd_exe(t_pipex *d);
