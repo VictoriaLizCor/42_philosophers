@@ -22,6 +22,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	@echo $(GREEN)
 	@printf "$(LF)🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀\n\n"
+	@printf "\n"
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n\n"
 ifeq ($(D), 1)
 	@gcc -g $(D_FLAGS) $(D_SAN) $(INCLUDES) $(OBJS) -o $(NAME)
@@ -41,7 +42,7 @@ ifeq ($(D), 1)
 else
 	@$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@
 endif
-	@printf "\n"
+
 clean:
 	@echo $(RED)
 	@rm -rf $(OBJS)
