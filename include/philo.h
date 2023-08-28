@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/25 16:43:51 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/28 14:23:19 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,42 +27,17 @@
 #  define DEBUG_PHI 0
 # endif
 
+typedef struct s_philo
+{
+	pthread_t	id;
+	int			t_die;
+	int			t_eat;
+	int			t_sleep;
+	int			n_to_eat;
+}	t_philo;
+
 void	print_intro(void);
 
-// /* cmd_fuctions.c*/
-// void	cmd_exe(t_pipex *d);
-// void	cmd(t_pipex *data);
-// void	fill_cmd(t_pipex *p_cmd, char **tmp_cmd);
-// /* pipex.c */
-// int		one_command_pipex_builtin_integration(t_pipex *node);
-// void	head_execution(t_pipex *node);
-// void	create_child(t_pipex *node);
-// void	run_fork(t_pipex **d);
-// /* pipex_utils.c*/
-// t_pipex	*last_node(t_pipex *data);
-// void	pipex_status(t_pipex *d);
-// /* fork.c */
-// void	execute_last_node(t_pipex *node);
-// void	wait_for_child(t_pipex *node);
-// void	execute_node_with_child(t_pipex *node);
-// /* redirection_files.c */
-// void	redirect(t_pipex *parent, t_pipex *current, int idx, int to_fd);
-// void	redirect_file(t_pipex *node, t_pipex *node_file);
-// void	openfile(t_pipex *node);
-// void	handling_files(void (*fun)(t_pipex *), t_pipex *ptr);
-// /* redirection_files_helper.c */
-// void	fill_t_file(t_pipex *list, int (*in_out)[3], t_file (*file)[2]);
-// t_pipex	*ispipe_command(t_pipex *node);
-// /* Close_fds.c*/
-// void	ft_close_msg(int fd);
-// void	close_files(t_pipex *ptr);
-// void	close_fds(t_pipex *node, t_pipex *file_node);
-// void	status_close(t_pipex *node);
-// void	ft_close(t_pipex *node);
-// /*  added Maíra*/
-// int		pipex_builtin_integration(t_pipex *node);
-// /* fork_utils.c*/
-// void	depurate_list(t_pipex *node);
 // // /* testing utils pipe_list.c */
 // void	check_fd(int num, t_pipex *node);
 // void	printf_stderr(char *str1, char *str2, int exit_error);
