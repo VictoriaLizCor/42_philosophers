@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/28 16:53:59 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/29 16:23:47 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,29 @@
 
 int	main(int argc, char *argv[], char *env[])
 {
+	int		error;
+	char	*input;
+
 	if (argc == 5 || argc == 6)
 	{
 		print_intro();
-		check_integers(++argv);
-		printf("(%d + 1) %% %d = %d\n", argc, argc, (argc + 1) % argc);
+		check_integers(argv, &error);
+		if (error)
+			return (printf("%d\n", error));
+	}
+	else
+	{
+		printf("%sError: Invalid input %s\n", CRED, CNRM);
+		printf("Valid:\n" \
+		"./philo number_of_philosophers t_to_die(ms) " \
+		"t_to_eat(ms) t_to_sleep(ms) " \
+		"[number_of_times_each_philosopher_must_eat]\n");
+		printf("%si.e.: 1: ./philo 7 98 23 54%s\n", CGRN, CNRM);
+		printf("%si.e.: 2: ./philo 7 98 23 54 3%s\n", CGRN, CNRM);
 	}
 	return (0);
 }
+
 /*
 The functions used:
 
@@ -29,7 +44,8 @@ The functions used:
 	pthread_mutex_lock (&mutex) – attempt to lock a mutex
 	pthread_mutex_unlock (&mutex) – unlock a mutex
 	pthread_create (ptr to thread, NULL, (void*) func, (void*) )
-	pthread_join (ptr to thread, &msg)-This function will make the main program wait until the called thread is finished executing it’s task.
+	pthread_join (ptr to thread, &msg)-This function will make the main 
+	program wait until the called thread is finished executing it’s task.
 	pthread_mutex_destroy (ptr to thread)-
 	pthread_exit(NULL)
 
@@ -57,11 +73,13 @@ Algorithm for thread (philosopher i) function:
 	Philosopher i Finished eating.
 	Stop.
 
-number_of_philosophers = forks
-time_to_die (in milliseconds):
-time_to_eat (in milliseconds):
-time_to_sleep (in milliseconds):
-number_of_times_each_philosopher_must_eat
+should be <= 10000 and >= 60 ms.
+
+[1] number_of_philosophers = forks
+[2] time_to_die (in milliseconds)>  time_to_eat + time_to_sleep.
+[3] time_to_eat (in milliseconds):
+[4] time_to_sleep (in milliseconds):
+[5] number_of_times_each_philosopher_must_eat
 ** the simulation stops when a philosopher dies.
 
 ◦ timestamp_in_ms X has taken a fork 

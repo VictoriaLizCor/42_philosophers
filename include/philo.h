@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/28 16:54:51 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/29 15:40:30 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,16 @@ typedef struct s_philo
 }	t_philo;
 
 /* philo.c */
-void	print_intro(void);
-void	check_integers(char **argv);
-void	ft_error(void);
+void		print_intro(void);
+void		check_integers(char **argv, int *error);
 /* libft.c */
-int		ft_isdigit(int ch);
-char	*ft_strchr(const char *s, int c);
-size_t	ft_strlen(const char *str);
+int			ft_isdigit(int ch);
+char		*ft_strchr(const char *s, int c);
+size_t		ft_strlen(const char *str);
 long int	ft_atoi(const char *s);
+/* check_error.c*/
+void		ft_error(char *str1, char *str2, int exit_error);
+void		*ft_free(char **str);
 // // /* testing utils pipe_list.c */
 // void	check_fd(int num, t_pipex *node);
 // void	printf_stderr(char *str1, char *str2, int exit_error);

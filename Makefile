@@ -63,8 +63,20 @@ reval:
 resan:
 	@make re -C . D=1
 	@make -C . exe
-exe:
-	./philo
+exe:$(NAME)
+# NUM=$(($NUM+0))
+# NUM=`echo $NUM | sed -e 's/ //g'`
+# $(($NUM + $NUM1))
+	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_EAT=$(shell seq -10 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_SLEEP=$(shell seq -10 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP) - 20)) | tr '\n' ' '))
+	$(eval T_ES2=$(shell echo $$(($(T_ES1) * 2)) | tr '\n' ' '))
+	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
+	./philo $(NUM)
+ex1:
+	./philo 8 77 17 61 
 t1:
 	cc test/threads.c -o test/t1
 	./test/t1

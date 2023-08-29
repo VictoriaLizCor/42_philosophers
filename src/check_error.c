@@ -6,39 +6,82 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/28 16:55:37 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/29 16:09:58 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	ft_error(void)
+void	ft_error(char *str1, char *str2, int exit_error)
 {
-	printf("Error\n");
-	exit(EXIT_FAILURE);
+	if (exit_error > 0)
+		printf("%sError!: ", CRED);
+	if (str1)
+		printf("%s", str1);
+	if (str2)
+	{
+		printf(" : ");
+		printf("%s", str2);
+	}
+	printf("%s\n", CNRM);
 }
 
-void	check_integers(char **argv)
+/*
+should be <= 10000 and >= 60 ms.
+[1] number_of_philosophers = forks
+[2] time_to_die (in milliseconds)>  time_to_eat + time_to_sleep.
+[3] time_to_eat (in milliseconds):
+[4] time_to_sleep (in milliseconds):
+[5] number_of_times_each_philosopher_must_eat
+*/
+void	check_arguments(int size, char **argv, int *error)
+{
+	int	ac;
+
+	ac = 1;
+	while (ac < size)
+	{
+		if (ft_atoi(argv[ac]) <= 0 || ft_atoi(argv[ac]) > INT_MAX)
+		{
+			printf("%sValid values (0, INT_MAX]%s\n", CRED, CNRM);
+			*error += 1;
+			break ;
+		}
+		ac++;
+	}
+	if (ft_atoi(argv[2]) < ft_atoi(argv[3]) + ft_atoi(argv[4]))
+	{
+		printf("%sError!: time_to_die > time_to_eat + time_to_sleep %s\n", \
+		CRED, CNRM);
+		*error += 1;
+	}
+}
+
+void	check_integers(char **argv, int *error)
 {
 	char	*copy;
+	int		ac;
 
-	while (*argv)
+	ac = 1;
+	*error = 0;
+	while (argv[ac])
 	{
-		if (!ft_strlen(*argv))
-			ft_error();
-		if (ft_atoi(*argv) <= 0 || ft_atoi(*argv) > INT_MAX)
-			ft_error();
-		copy = *(argv);
+		if (!ft_strlen(argv[ac]))
+		{
+			printf("%sError!: arg[%d] : Invalid input value%s\n", \
+			CRED, ac, CNRM);
+		}
+		copy = argv[ac];
 		if (ft_strchr("+", *copy) || ft_isdigit(*copy))
 			copy++;
 		while (*copy && ft_isdigit(*copy))
 			copy++;
-		if (!ft_isdigit(*copy))
+		if (!ft_isdigit(*copy) && *copy != 0 && *error == 0)
 		{
-			if (!*copy && !ft_strchr("+", *(copy - 1)))
-				argv++;
-			else
-				ft_error();
+			printf("%sError!: Invalid input value%s\n", CRED, CNRM);
+			*error += 1;
 		}
+		ac++;
 	}
+	check_arguments(ac, argv, &*error);
 }
