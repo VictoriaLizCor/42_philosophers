@@ -6,23 +6,39 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/29 16:23:47 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/29 16:55:11 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
+/*
+struct timeval {
+time_t       tv_sec;   // seconds since Jan. 1, 1970 
+suseconds_t  tv_usec;  // and microseconds 
+}
+*/
+void	start_hunger_games(void)
+{
+	struct timeval	t_sys;
+	time_t			tmp;
+
+	printf("time: %d\n", gettimeofday(&t_sys, NULL));
+	printf(" %ld | %d \n", t_sys.tv_sec, t_sys.tv_usec);
+	printf(" ms: %f \n", t_sys.tv_sec * 1000 + t_sys.tv_usec * 0.001);
+}
+
 int	main(int argc, char *argv[], char *env[])
 {
-	int		error;
-	char	*input;
+	int				error;
+	char			*input;
 
 	if (argc == 5 || argc == 6)
 	{
-		print_intro();
 		check_integers(argv, &error);
 		if (error)
 			return (printf("%d\n", error));
+		start_hunger_games();
 	}
 	else
 	{

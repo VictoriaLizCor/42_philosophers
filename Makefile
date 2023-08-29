@@ -76,7 +76,7 @@ exe:$(NAME)
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
 	./philo $(NUM)
 ex1:
-	./philo 8 77 17 61 
+	@./philo 8 77 17 61 
 t1:
 	cc test/threads.c -o test/t1
 	./test/t1

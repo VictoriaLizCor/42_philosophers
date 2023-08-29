@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/29 15:40:30 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/29 16:37:43 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,6 @@ long int	ft_atoi(const char *s);
 /* check_error.c*/
 void		ft_error(char *str1, char *str2, int exit_error);
 void		*ft_free(char **str);
-// // /* testing utils pipe_list.c */
-// void	check_fd(int num, t_pipex *node);
-// void	printf_stderr(char *str1, char *str2, int exit_error);
-// void	print_variable(char **variable, char *msg);
-// void	print_list(t_pipex *print, int opt);
-// void	print_node_info(t_pipex *node, int opt);
 
 # define CNRM  "\x1B[0m"
 # define CRED  "\x1B[31m"
