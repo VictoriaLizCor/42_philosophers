@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 16:18:40 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 16:46:35 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,12 @@ typedef struct s_rules
 	int				n_to_eat;
 }	t_rules;
 
-typedef struct s_time_end
-{
-	long long		(*get_time)(t_rules *rules);
-}	t_time_end;
-
 typedef struct s_philo
 {
-	pthread_t	id;
-	t_rules		*d_rules;
-	int			n_to_eat;
-	long long	(*get_time)(t_rules *rules);
-	t_time_end	current;
+	pthread_t		id;
+	const t_rules	*d_rules;
+	int				n_to_eat;
+	long long		(*get_time)(t_rules *rules);
 }	t_philo;
 
 /* main_philo.c */
@@ -64,7 +58,7 @@ char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
 long int	ft_atol(const char *s);
 /*ft_utils.c*/
-t_time_end	timestamp(void);
+
 /* check_error.c*/
 void		ft_error(char *str1, char *str2, int exit_error);
 void		*ft_free(char **str);

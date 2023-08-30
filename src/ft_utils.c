@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 16:14:05 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 16:43:22 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,6 @@ long long	current_timestamp(t_rules *rules)
 	return (miliseconds);
 }
 
-t_time_end	timestamp(void)
-{
-	t_time_end	tmp;
-
-	tmp.get_time = &current_timestamp;
-	return (tmp);
-}
 // int	foo(void)
 // {
 // 	return (0);

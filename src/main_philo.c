@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 16:28:41 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 16:46:56 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	init_data(t_rules *rules, t_philo **philos, char **argv)
 	int	i;
 
 	i = 0;
+	gettimeofday(&rules->t_start, NULL);
 	rules->n_philos = ft_atol(argv[1]);
 	rules->t_die = ft_atol(argv[2]);
 	rules->t_eat = ft_atol(argv[3]);
@@ -31,7 +32,6 @@ void	init_data(t_rules *rules, t_philo **philos, char **argv)
 	{
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
-		(*philos + i)->current = timestamp();
 		(*philos + i)->get_time = &current_timestamp;
 		i++;
 	}
@@ -47,11 +47,9 @@ void	start_hunger_games(t_rules *rules, char **argv)
 	printf("philo chances to eat: %d\n", philos[0].n_to_eat);
 	i = 1;
 	sleep(i);
-	printf("%lld miliseconds\n", philos[0].current.get_time(&*rules));
-	sleep(i);
-	printf("%lld miliseconds\n", philos[0].current.get_time(&*rules));
-	printf("%lld miliseconds\n", current_timestamp(&*rules));
 	printf("%lld miliseconds\n", philos[0].get_time(&*rules));
+	sleep(i);
+	printf("%lld miliseconds\n", philos[1].get_time(&*rules));
 }
 
 int	main(int argc, char **argv, char **env)
@@ -65,7 +63,6 @@ int	main(int argc, char **argv, char **env)
 		check_arguments(argv, &error);
 		if (error)
 			return (printf("%d\n", error));
-		gettimeofday(&rules.t_start, NULL);
 		start_hunger_games(&rules, argv);
 	}
 	else
