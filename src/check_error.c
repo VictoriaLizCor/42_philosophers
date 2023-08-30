@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 13:17:47 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 15:28:15 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,15 +26,7 @@ void	ft_error(char *str1, char *str2, int exit_error)
 	printf("%s\n", CNRM);
 }
 
-/*
-should be <= 10000 and >= 60 ms.
-[1] number_of_philosophers = forks
-[2] time_to_die (in milliseconds)>  time_to_eat + time_to_sleep.
-[3] time_to_eat (in milliseconds):
-[4] time_to_sleep (in milliseconds):
-[5] number_of_times_each_philosopher_must_eat
-*/
-void	check_values(int size, char **argv, int *error)
+static void	check_values(int size, char **argv, int *error)
 {
 	int	ac;
 

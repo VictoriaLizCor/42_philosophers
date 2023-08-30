@@ -6,21 +6,11 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 15:15:22 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 16:28:41 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
-
-long long	current_timestamp(t_rules *rules, struct timeval *t_end)
-{
-	long long	miliseconds;
-
-	gettimeofday(t_end, NULL);
-	miliseconds = ((t_end->tv_sec - rules->t_start.tv_sec) * 1000LL + \
-	(t_end->tv_usec - rules->t_start.tv_usec) * 0.001);
-	return (miliseconds);
-}
 
 void	init_data(t_rules *rules, t_philo **philos, char **argv)
 {
@@ -41,13 +31,14 @@ void	init_data(t_rules *rules, t_philo **philos, char **argv)
 	{
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
+		(*philos + i)->current = timestamp();
+		(*philos + i)->get_time = &current_timestamp;
 		i++;
 	}
 }
 
 void	start_hunger_games(t_rules *rules, char **argv)
 {
-	struct timeval	t_end;
 	t_philo			*philos;
 	int				i;
 
@@ -56,7 +47,11 @@ void	start_hunger_games(t_rules *rules, char **argv)
 	printf("philo chances to eat: %d\n", philos[0].n_to_eat);
 	i = 1;
 	sleep(i);
-	printf("%lld miliseconds\n", current_timestamp(&*rules, &t_end));
+	printf("%lld miliseconds\n", philos[0].current.get_time(&*rules));
+	sleep(i);
+	printf("%lld miliseconds\n", philos[0].current.get_time(&*rules));
+	printf("%lld miliseconds\n", current_timestamp(&*rules));
+	printf("%lld miliseconds\n", philos[0].get_time(&*rules));
 }
 
 int	main(int argc, char **argv, char **env)

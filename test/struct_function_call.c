@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/30 11:55:21 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 13:35:59 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 15:26:46 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ int	main(void)
 	t_hello	a_hello;
 
 	a_hello = hello();
-	// printf("Print hello: %d\n", hello());
 	printf("Print hello: %d\n", a_hello.some_function());
 	return (0);
 }

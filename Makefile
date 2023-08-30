@@ -6,13 +6,13 @@ CC = gcc
 D = 1
 SRCS_DIR = src/
 SRCS =	main_philo.c	\
-		philo.c	\
+		philo.c			\
 		check_error.c	\
-		libft.c	\
-# .c	\
-# .c	\
-# .c	\
-# .c	\
+		libft.c			\
+		ft_utils.c		\
+# .c		\
+# .c		\
+# .c		\
 
 OBJS_DIR = obj/
 OBJS = $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
