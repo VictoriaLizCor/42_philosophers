@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/29 16:37:43 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 13:30:52 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,23 +28,31 @@
 #  define DEBUG_PHI 0
 # endif
 
+typedef struct s_rules
+{
+	struct timeval	t_start;
+	int				n_philos;
+	int				t_die;
+	int				t_eat;
+	int				t_sleep;
+	int				n_to_eat;
+}	t_rules;
+
 typedef struct s_philo
 {
 	pthread_t	id;
-	int			t_die;
-	int			t_eat;
-	int			t_sleep;
+	t_rules		*d_rules;
 	int			n_to_eat;
 }	t_philo;
 
 /* philo.c */
 void		print_intro(void);
-void		check_integers(char **argv, int *error);
+void		check_arguments(char **argv, int *error);
 /* libft.c */
 int			ft_isdigit(int ch);
 char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
-long int	ft_atoi(const char *s);
+long int	ft_atol(const char *s);
 /* check_error.c*/
 void		ft_error(char *str1, char *str2, int exit_error);
 void		*ft_free(char **str);

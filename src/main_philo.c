@@ -6,39 +6,72 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/29 16:55:11 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 15:15:22 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-/*
-struct timeval {
-time_t       tv_sec;   // seconds since Jan. 1, 1970 
-suseconds_t  tv_usec;  // and microseconds 
-}
-*/
-void	start_hunger_games(void)
+long long	current_timestamp(t_rules *rules, struct timeval *t_end)
 {
-	struct timeval	t_sys;
-	time_t			tmp;
+	long long	miliseconds;
 
-	printf("time: %d\n", gettimeofday(&t_sys, NULL));
-	printf(" %ld | %d \n", t_sys.tv_sec, t_sys.tv_usec);
-	printf(" ms: %f \n", t_sys.tv_sec * 1000 + t_sys.tv_usec * 0.001);
+	gettimeofday(t_end, NULL);
+	miliseconds = ((t_end->tv_sec - rules->t_start.tv_sec) * 1000LL + \
+	(t_end->tv_usec - rules->t_start.tv_usec) * 0.001);
+	return (miliseconds);
 }
 
-int	main(int argc, char *argv[], char *env[])
+void	init_data(t_rules *rules, t_philo **philos, char **argv)
 {
-	int				error;
-	char			*input;
+	int	i;
+
+	i = 0;
+	rules->n_philos = ft_atol(argv[1]);
+	rules->t_die = ft_atol(argv[2]);
+	rules->t_eat = ft_atol(argv[3]);
+	rules->t_sleep = ft_atol(argv[4]);
+	rules->n_to_eat = 0;
+	if (argv[5])
+		rules->n_to_eat = ft_atol(argv[5]);
+	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos + 1));
+	if (!philos)
+		philos = NULL;
+	while (i < rules->n_philos)
+	{
+		(*philos + i)->d_rules = rules;
+		(*philos + i)->n_to_eat = rules->n_to_eat;
+		i++;
+	}
+}
+
+void	start_hunger_games(t_rules *rules, char **argv)
+{
+	struct timeval	t_end;
+	t_philo			*philos;
+	int				i;
+
+	init_data(&*rules, &philos, argv);
+	printf("philosophers: %d\n", philos[0].d_rules->n_philos);
+	printf("philo chances to eat: %d\n", philos[0].n_to_eat);
+	i = 1;
+	sleep(i);
+	printf("%lld miliseconds\n", current_timestamp(&*rules, &t_end));
+}
+
+int	main(int argc, char **argv, char **env)
+{
+	t_rules		rules;
+	int			error;
+	char		*input;
 
 	if (argc == 5 || argc == 6)
 	{
-		check_integers(argv, &error);
+		check_arguments(argv, &error);
 		if (error)
 			return (printf("%d\n", error));
-		start_hunger_games();
+		gettimeofday(&rules.t_start, NULL);
+		start_hunger_games(&rules, argv);
 	}
 	else
 	{
@@ -114,7 +147,8 @@ printf
 malloc
 free
 write,
-usleep
+usleep(useconds_t microseconds)
+	-- suspend thread execution for an interval measured in microseconds
 gettimeofday
 pthread_create
 pthread_detach

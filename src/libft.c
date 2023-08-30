@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/28 16:54:26 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 13:17:20 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static long	max_values(long int *num, int *sign, char c)
 	return ((*num * *sign));
 }
 
-long int	ft_atoi(const char *s)
+long int	ft_atol(const char *s)
 {
 	long int	num;
 	int			sign;

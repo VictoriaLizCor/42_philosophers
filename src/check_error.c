@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/29 16:09:58 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/08/30 13:17:47 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,14 @@ should be <= 10000 and >= 60 ms.
 [4] time_to_sleep (in milliseconds):
 [5] number_of_times_each_philosopher_must_eat
 */
-void	check_arguments(int size, char **argv, int *error)
+void	check_values(int size, char **argv, int *error)
 {
 	int	ac;
 
 	ac = 1;
 	while (ac < size)
 	{
-		if (ft_atoi(argv[ac]) <= 0 || ft_atoi(argv[ac]) > INT_MAX)
+		if (ft_atol(argv[ac]) <= 0 || ft_atol(argv[ac]) > INT_MAX)
 		{
 			printf("%sValid values (0, INT_MAX]%s\n", CRED, CNRM);
 			*error += 1;
@@ -49,7 +49,7 @@ void	check_arguments(int size, char **argv, int *error)
 		}
 		ac++;
 	}
-	if (ft_atoi(argv[2]) < ft_atoi(argv[3]) + ft_atoi(argv[4]))
+	if (ft_atol(argv[2]) < ft_atol(argv[3]) + ft_atol(argv[4]))
 	{
 		printf("%sError!: time_to_die > time_to_eat + time_to_sleep %s\n", \
 		CRED, CNRM);
@@ -57,7 +57,7 @@ void	check_arguments(int size, char **argv, int *error)
 	}
 }
 
-void	check_integers(char **argv, int *error)
+void	check_arguments(char **argv, int *error)
 {
 	char	*copy;
 	int		ac;
@@ -83,5 +83,5 @@ void	check_integers(char **argv, int *error)
 		}
 		ac++;
 	}
-	check_arguments(ac, argv, &*error);
+	check_values(ac, argv, &*error);
 }
