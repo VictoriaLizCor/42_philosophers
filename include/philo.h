@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 16:46:35 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:56:00 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,10 @@ void		*ft_free(char **str);
 # define CMAG  "\x1B[35m"
 # define CCYN  "\x1B[36m"
 # define CWHT  "\x1B[37m"
-
+# define CTEST1 "\033[38;1;42m"
+# define CTEST2 "\x1B[48;5;97m\x1B[38;5;0m"
+// # define CTEST1 "\x1B[41m"
+# define CTESTN "\033[0m"
+// # define CTEST2 "\x1B[0m"
+# define CNRM2 "\033[0m"
 #endif

@@ -6,14 +6,13 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 15:24:44 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 13:02:02 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/12 12:36:47 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include <semaphore.h>
 #include <unistd.h>
 
 void	*func(int n);

@@ -6,13 +6,13 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 16:46:56 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:56:09 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	init_data(t_rules *rules, t_philo **philos, char **argv)
+static void	init_data(t_rules *rules, t_philo **philos, char **argv)
 {
 	int	i;
 
@@ -37,7 +37,7 @@ void	init_data(t_rules *rules, t_philo **philos, char **argv)
 	}
 }
 
-void	start_hunger_games(t_rules *rules, char **argv)
+static void	start_hunger_games(t_rules *rules, char **argv)
 {
 	t_philo			*philos;
 	int				i;
@@ -46,18 +46,26 @@ void	start_hunger_games(t_rules *rules, char **argv)
 	printf("philosophers: %d\n", philos[0].d_rules->n_philos);
 	printf("philo chances to eat: %d\n", philos[0].n_to_eat);
 	i = 1;
-	sleep(i);
-	printf("%lld miliseconds\n", philos[0].get_time(&*rules));
-	sleep(i);
-	printf("%lld miliseconds\n", philos[1].get_time(&*rules));
+	usleep(rules->t_sleep * 1000);
+	printf("\033[33;1;100m miliseconds0 %s\t", CNRM2);
+	printf("%lld\n", philos[0].get_time(&*rules));
+	usleep(rules->t_sleep * 1000);
+	printf("%s miliseconds1 %s\t", CTEST1, CTESTN);
+	printf(" %lld\n", philos[0].get_time(&*rules));
+	printf("%s %lld miliseconds2 %s\n", \
+	CTEST2, current_timestamp(&*rules), CNRM);
+	printf("%s %lld miliseconds3 %s\n", \
+	CTEST1, philos[0].get_time(&*rules), CTESTN);
+	// printf("\033[32;1;49m%lld miliseconds %s\n", \
+	// current_timestamp(&*rules), CNRM);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	t_rules		rules;
 	int			error;
-	char		*input;
 
+	env++;
 	if (argc == 5 || argc == 6)
 	{
 		check_arguments(argv, &error);
@@ -139,7 +147,7 @@ printf
 malloc
 free
 write,
-usleep(useconds_t microseconds)
+usleep(useconds_t microseconds) = usleep(25 ms * 1000) = usleep(250)
 	-- suspend thread execution for an interval measured in microseconds
 gettimeofday
 pthread_create
