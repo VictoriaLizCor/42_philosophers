@@ -6,18 +6,66 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/12 17:56:09 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/14 16:55:44 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-static void	init_data(t_rules *rules, t_philo **philos, char **argv)
+void	func(t_philo *philo)
+{
+	printf("philo L %d | philo M %d| philo R %d\n", philo->left->id, \
+	philo->id, philo->right->id);
+	// pthread_mutex_lock(&phil[n]);
+	// pthread_mutex_lock(&chopstick[(n + 1) % 5]);
+	// printf("\nPhilosopher %d is eating ", n);
+	// sleep(3);
+	// pthread_mutex_unlock(&chopstick[n]);
+	// pthread_mutex_unlock(&chopstick[(n + 1) % 5]);
+	// printf("\nPhilosopher %d Finished eating ", phil->id);
+}
+
+static void	init_philos(t_rules *rules, t_philo **philos)
 {
 	int	i;
+	int	err;
 
 	i = 0;
 	gettimeofday(&rules->t_start, NULL);
+	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos + 1));
+	if (!philos)
+		philos = NULL;
+	while (i < rules->n_philos)
+	{
+		(*philos + i)->id = i + 1;
+		(*philos + i)->d_rules = rules;
+		(*philos + i)->n_to_eat = rules->n_to_eat;
+		(*philos + i)->get_time = &current_timestamp;
+		err = pthread_create(&(*philos + i)->thread, NULL, \
+		(void *)func, (*philos + i));
+		if (err != 0)
+			error_thread(&(*philos + i)->thread, 0, errno);
+		if (i == 0)
+		{
+			(*philos + i)->left = (*philos + (rules->n_philos - 1));
+			(*philos + i)->right = (*philos + 1);
+		}
+		else if (i == rules->n_philos - 1)
+		{
+			(*philos + i)->left = (*philos - 1);
+			(*philos + i)->right = (*philos);
+		}
+		else
+		{
+			(*philos + i)->left = (*philos + i - 1);
+			(*philos + i)->right = (*philos + i + 1);
+		}
+		i++;
+	}
+}
+
+static void	init_rules(t_rules *rules, char **argv)
+{
 	rules->n_philos = ft_atol(argv[1]);
 	rules->t_die = ft_atol(argv[2]);
 	rules->t_eat = ft_atol(argv[3]);
@@ -25,39 +73,28 @@ static void	init_data(t_rules *rules, t_philo **philos, char **argv)
 	rules->n_to_eat = 0;
 	if (argv[5])
 		rules->n_to_eat = ft_atol(argv[5]);
-	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos + 1));
-	if (!philos)
-		philos = NULL;
-	while (i < rules->n_philos)
-	{
-		(*philos + i)->d_rules = rules;
-		(*philos + i)->n_to_eat = rules->n_to_eat;
-		(*philos + i)->get_time = &current_timestamp;
-		i++;
-	}
 }
 
-static void	start_hunger_games(t_rules *rules, char **argv)
+static void	begin_hunger_games(t_rules *rules, char **argv)
 {
-	t_philo			*philos;
 	int				i;
+	t_philo			*philos;
 
-	init_data(&*rules, &philos, argv);
-	printf("philosophers: %d\n", philos[0].d_rules->n_philos);
-	printf("philo chances to eat: %d\n", philos[0].n_to_eat);
+	init_rules(&*rules, argv);
+	printf("philosophers: %d\n", rules->n_philos);
+	init_philos(&*rules, &philos);
 	i = 1;
 	usleep(rules->t_sleep * 1000);
-	printf("\033[33;1;100m miliseconds0 %s\t", CNRM2);
-	printf("%lld\n", philos[0].get_time(&*rules));
+	printf(" %lld\t", philos[0].get_time(&*rules));
+	printf("%s THINKING %s\n", P_THINK, CNRM);
 	usleep(rules->t_sleep * 1000);
-	printf("%s miliseconds1 %s\t", CTEST1, CTESTN);
-	printf(" %lld\n", philos[0].get_time(&*rules));
-	printf("%s %lld miliseconds2 %s\n", \
-	CTEST2, current_timestamp(&*rules), CNRM);
-	printf("%s %lld miliseconds3 %s\n", \
-	CTEST1, philos[0].get_time(&*rules), CTESTN);
-	// printf("\033[32;1;49m%lld miliseconds %s\n", \
-	// current_timestamp(&*rules), CNRM);
+	printf(" %lld\t", philos[0].get_time(&*rules));
+	printf("%s  EATING  %s\n", P_EAT, CNRM);
+	printf(" %lld \t%s SLEEPING %s\n", \
+	current_timestamp(&*rules), P_SLEEP, CNRM);
+	printf(" %lld \t%s   DIED   %s\n", \
+	philos[0].get_time(&*rules), P_DEAD, CNRM);
+	printf("\t\t\t--\n");
 }
 
 int	main(int argc, char **argv, char **env)
@@ -71,7 +108,7 @@ int	main(int argc, char **argv, char **env)
 		check_arguments(argv, &error);
 		if (error)
 			return (printf("%d\n", error));
-		start_hunger_games(&rules, argv);
+		begin_hunger_games(&rules, argv);
 	}
 	else
 	{
@@ -85,89 +122,3 @@ int	main(int argc, char **argv, char **env)
 	}
 	return (0);
 }
-
-/*
-The functions used:
-
-	pthread_mutex_init (&mutex, NULL) – initialization of mutex variable
-	pthread_mutex_lock (&mutex) – attempt to lock a mutex
-	pthread_mutex_unlock (&mutex) – unlock a mutex
-	pthread_create (ptr to thread, NULL, (void*) func, (void*) )
-	pthread_join (ptr to thread, &msg)-This function will make the main 
-	program wait until the called thread is finished executing it’s task.
-	pthread_mutex_destroy (ptr to thread)-
-	pthread_exit(NULL)
-
-Note: while compiling this program use the following:
-[root@Linux philo]# gcc –o dining dining.c -lpthread
-
-Algorithm for process:
-1. Start.
-2. Declare and initialize the thread variables (philosophers) as required.
-3. Declare and initialize the mutex variables (chopsticks) as required.
-4. Create the threads representing philosophers.
-5. Wait until the threads finish execution.
-6. Stop.
-
-Algorithm for thread (philosopher i) function:
-
-	Start.
-	Philosopher i is thinking.
-	Lock the left fork spoon.
-	Lock the right fork spoon.
-	Philosopher i is eating.
-	sleep
-	Release the left fork spoon.
-	Release the right fork spoon.
-	Philosopher i Finished eating.
-	Stop.
-
-should be <= 10000 and >= 60 ms.
-
-[1] number_of_philosophers = forks
-[2] time_to_die (in milliseconds)>  time_to_eat + time_to_sleep.
-[3] time_to_eat (in milliseconds):
-[4] time_to_sleep (in milliseconds):
-[5] number_of_times_each_philosopher_must_eat
-** the simulation stops when a philosopher dies.
-
-◦ timestamp_in_ms X has taken a fork 
-◦ timestamp_in_ms X is eating
-◦ timestamp_in_ms X is sleeping
-◦ timestamp_in_ms X is thinking
-◦ timestamp_in_ms X died
-
-** Each philosopher has a number ranging from 1 to number_of_philosophers.
-** To prevent philosophers from duplicating forks, \
-	you should protect the forks state with a mutex for each of them.
-
---- MANDATORY:
-memset
-printf
-malloc
-free
-write,
-usleep(useconds_t microseconds) = usleep(25 ms * 1000) = usleep(250)
-	-- suspend thread execution for an interval measured in microseconds
-gettimeofday
-pthread_create
-pthread_detach
-pthread_join
-pthread_mutex_init
-pthread_mutex_destroy
-pthread_mutex_lock
-pthread_mutex_unlock
-
-
---- BONUS:
-fork
-kill
-exit
-waitpid
-sem_open
-sem_close
-sem_post
-sem_wait
-sem_unlink
-
-*/

@@ -64,7 +64,7 @@ resan:
 	@make re -C . D=1
 	@make -C . exe
 exe:$(NAME)
-	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_EAT=$(shell seq 1 100 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_SLEEP=$(shell seq 1 100 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP))) | tr '\n' ' '))

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/08/30 15:28:15 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/14 14:39:48 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,14 @@ void	ft_error(char *str1, char *str2, int exit_error)
 		printf("%s", str2);
 	}
 	printf("%s\n", CNRM);
+}
+
+void	error_thread(pthread_t *philos, int type, int errnum)
+{
+	if (type == 0)
+		ft_error("on Thread function", strerror(errnum), 1);
+	else
+		ft_error("on Mutex function ", NULL, 1);
 }
 
 static void	check_values(int size, char **argv, int *error)
