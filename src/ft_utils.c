@@ -6,11 +6,24 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/12 16:42:20 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:39:45 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
+
+void	func(t_philo *philo)
+{
+	printf("philo L %d | philo M %d| philo R %d\n", philo->left->id, \
+	philo->id, philo->right->id);
+	// pthread_mutex_lock(&phil[n]);
+	// pthread_mutex_lock(&chopstick[(n + 1) % 5]);
+	// printf("\nPhilosopher %d is eating ", n);
+	// sleep(3);
+	// pthread_mutex_unlock(&chopstick[n]);
+	// pthread_mutex_unlock(&chopstick[(n + 1) % 5]);
+	// printf("\nPhilosopher %d Finished eating ", phil->id);
+}
 
 long long	current_timestamp(t_rules *rules)
 {

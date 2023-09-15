@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/14 16:40:23 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:41:27 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ typedef struct s_philo
 
 /* main_philo.c */
 /* philo.c */
-long long	current_timestamp(t_rules *rules);
 void		print_intro(void);
 void		check_arguments(char **argv, int *error);
 /* libft.c */
@@ -64,7 +63,9 @@ char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
 long int	ft_atol(const char *s);
 /*ft_utils.c*/
-
+void		func(t_philo *philo);
+long long	current_timestamp(t_rules *rules);
+void		*ft_free(char **str);
 /* check_error.c*/
 void		error_thread(pthread_t *philos, int type, int errnum);
 void		ft_error(char *str1, char *str2, int exit_error);

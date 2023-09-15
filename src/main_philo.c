@@ -6,62 +6,73 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/14 16:55:44 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/15 13:53:10 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	func(t_philo *philo)
+//(*philos + i)
+static void	create_threat(t_philo *philos)
 {
-	printf("philo L %d | philo M %d| philo R %d\n", philo->left->id, \
-	philo->id, philo->right->id);
-	// pthread_mutex_lock(&phil[n]);
-	// pthread_mutex_lock(&chopstick[(n + 1) % 5]);
-	// printf("\nPhilosopher %d is eating ", n);
-	// sleep(3);
-	// pthread_mutex_unlock(&chopstick[n]);
-	// pthread_mutex_unlock(&chopstick[(n + 1) % 5]);
-	// printf("\nPhilosopher %d Finished eating ", phil->id);
+	int	err;
+	int	i;
+
+	i = 0;
+	err = philos[0].d_rules->n_philos;
+	while (i < err)
+	{
+		printf(" %d\t", philos[i].id);
+		i++;
+	}
+	// while (philos[i])
+	// {
+	// 	printf(" %d\t", philos[0].id);
+	// 	i++;
+	}
+	// while (philos[i])
+	// {
+	// 	err = pthread_create(&philos[i]->thread, NULL, \
+	// 	(void *)func, philos[i]);
+	// 	if (err != 0)
+	// 		error_thread(&(*philos + i)->thread, 0, errno);
+	// 	if (i == 0)
+	// 	{
+	// 		philos[i]->left = (philos[(philos->d_rules->n_philos - 1)]);
+	// 		(*philos + i)->right = (*philos + 1);
+	// 	}
+	// 	else if (i == rules->n_philos - 1)
+	// 	{
+	// 		(*philos + i)->left = (*philos - 1);
+	// 		(*philos + i)->right = (*philos);
+	// 	}
+	// 	else
+	// 	{
+	// 		(*philos + i)->left = (*philos + i);
+	// 		(*philos + i)->right = (*philos + i + 1);
+	// 	}
+	// }
 }
 
 static void	init_philos(t_rules *rules, t_philo **philos)
 {
 	int	i;
-	int	err;
 
 	i = 0;
 	gettimeofday(&rules->t_start, NULL);
 	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos + 1));
 	if (!philos)
 		philos = NULL;
+	*(philos + rules->n_philos) = NULL;
 	while (i < rules->n_philos)
 	{
 		(*philos + i)->id = i + 1;
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
 		(*philos + i)->get_time = &current_timestamp;
-		err = pthread_create(&(*philos + i)->thread, NULL, \
-		(void *)func, (*philos + i));
-		if (err != 0)
-			error_thread(&(*philos + i)->thread, 0, errno);
-		if (i == 0)
-		{
-			(*philos + i)->left = (*philos + (rules->n_philos - 1));
-			(*philos + i)->right = (*philos + 1);
-		}
-		else if (i == rules->n_philos - 1)
-		{
-			(*philos + i)->left = (*philos - 1);
-			(*philos + i)->right = (*philos);
-		}
-		else
-		{
-			(*philos + i)->left = (*philos + i - 1);
-			(*philos + i)->right = (*philos + i + 1);
-		}
 		i++;
 	}
+	create_threat(&philos);
 }
 
 static void	init_rules(t_rules *rules, char **argv)
