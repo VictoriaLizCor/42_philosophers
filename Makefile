@@ -8,7 +8,8 @@ SRCS_DIR = src/
 SRCS =	main_philo.c	\
 		philo.c			\
 		check_error.c	\
-		libft.c			\
+		libft_1.c		\
+		libft_2.c		\
 		ft_utils.c		\
 # .c		\
 # .c		\

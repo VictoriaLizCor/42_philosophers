@@ -6,30 +6,27 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/15 13:53:10 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/15 15:15:31 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
 //(*philos + i)
-static void	create_threat(t_philo *philos)
+static void	create_threat(t_philo **philos, int size)
 {
 	int	err;
 	int	i;
 
 	i = 0;
-	err = philos[0].d_rules->n_philos;
-	while (i < err)
+	err = (*philos)[0].d_rules->n_philos;
+	while (philos[i])
 	{
-		printf(" %d\t", philos[i].id);
+		printf(" %d| %p\n", (*philos)[i].id, philos[i]);
+		printf(" %d| %p\n", (*philos + i)->id, philos[i]);
 		i++;
 	}
-	// while (philos[i])
-	// {
-	// 	printf(" %d\t", philos[0].id);
-	// 	i++;
-	}
+	printf(" philos[n_p] %p\n", philos[size]);
 	// while (philos[i])
 	// {
 	// 	err = pthread_create(&philos[i]->thread, NULL, \
@@ -63,16 +60,17 @@ static void	init_philos(t_rules *rules, t_philo **philos)
 	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos + 1));
 	if (!philos)
 		philos = NULL;
-	*(philos + rules->n_philos) = NULL;
+	ft_memset(*philos, 0, sizeof(t_philo) * (rules->n_philos));
+	philos[rules->n_philos] = NULL;
 	while (i < rules->n_philos)
 	{
-		(*philos + i)->id = i + 1;
-		(*philos + i)->d_rules = rules;
-		(*philos + i)->n_to_eat = rules->n_to_eat;
-		(*philos + i)->get_time = &current_timestamp;
+		philos[i]->id = i + 1;
+		philos[i]->d_rules = rules;
+		philos[i]->n_to_eat = rules->n_to_eat;
+		philos[i]->get_time = (void *)current_timestamp;
 		i++;
 	}
-	create_threat(&philos);
+	create_threat(&*philos, rules->n_philos);
 }
 
 static void	init_rules(t_rules *rules, char **argv)
@@ -88,23 +86,12 @@ static void	init_rules(t_rules *rules, char **argv)
 
 static void	begin_hunger_games(t_rules *rules, char **argv)
 {
-	int				i;
 	t_philo			*philos;
 
 	init_rules(&*rules, argv);
 	printf("philosophers: %d\n", rules->n_philos);
 	init_philos(&*rules, &philos);
-	i = 1;
-	usleep(rules->t_sleep * 1000);
-	printf(" %lld\t", philos[0].get_time(&*rules));
-	printf("%s THINKING %s\n", P_THINK, CNRM);
-	usleep(rules->t_sleep * 1000);
-	printf(" %lld\t", philos[0].get_time(&*rules));
-	printf("%s  EATING  %s\n", P_EAT, CNRM);
-	printf(" %lld \t%s SLEEPING %s\n", \
-	current_timestamp(&*rules), P_SLEEP, CNRM);
-	printf(" %lld \t%s   DIED   %s\n", \
-	philos[0].get_time(&*rules), P_DEAD, CNRM);
+	print_msg(&*rules, &philos);
 	printf("\t\t\t--\n");
 }
 
