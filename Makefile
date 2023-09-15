@@ -1,12 +1,12 @@
 NAME = philo
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra #-Werror
 D_SAN = -Wall -Wextra -fsanitize=address
 INCLUDES += -I include/
 CC = gcc
 D = 1
 SRCS_DIR = src/
 SRCS =	main_philo.c	\
-		philo.c			\
+		philo_utils.c			\
 		check_error.c	\
 		libft_1.c		\
 		libft_2.c		\
@@ -27,7 +27,7 @@ $(NAME): $(OBJS)
 ifeq ($(D), 1)
 	$(CC) -g $(D_FLAGS) $(D_SAN) $(INCLUDES) $^ -o $(NAME)
 else
-	$(CC) $(FLAGS) $(INCLUDES) $(OBJS) -o $(NAME)make
+	$(CC) $(FLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
 endif
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
@@ -59,22 +59,30 @@ fclean:	clean
 	@printf "\n$(P_NC)"
 
 reval:
-	@make -C . D=0 re
-	@make -C . exe
+	@make re -C . D=0
+	@make -C . val
+val:$(NAME)
+	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_EAT=$(shell seq 1 5 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_SLEEP=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP))) | tr '\n' ' '))
+	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
+	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
+	./philo $(NUM)
 resan:
 	@make re -C . D=1
 	@make -C . exe
 exe:$(NAME)
 	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_EAT=$(shell seq 1 100 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_SLEEP=$(shell seq 1 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_EAT=$(shell seq 1 5 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_SLEEP=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP))) | tr '\n' ' '))
-	$(eval T_ES2=$(shell echo $$(($(T_ES1) * 2)) | tr '\n' ' '))
+	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
 	./philo $(NUM)
 err:$(NAME)
-
 	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_EAT=$(shell seq -10 100 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_SLEEP=$(shell seq -10 100 | sort -R | tail -n 1 | tr '\n' ' '))

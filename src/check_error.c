@@ -6,16 +6,16 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/14 14:39:48 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/15 16:45:12 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	ft_error(char *str1, char *str2, int exit_error)
+void	ft_error(t_philo *philo, char *str1, char *str2, int exit_error)
 {
 	if (exit_error > 0)
-		printf("%sError!: ", CRED);
+		printf("%sError!: %d", CRED, philo->id);
 	if (str1)
 		printf("%s", str1);
 	if (str2)
@@ -26,12 +26,12 @@ void	ft_error(char *str1, char *str2, int exit_error)
 	printf("%s\n", CNRM);
 }
 
-void	error_thread(pthread_t *philos, int type, int errnum)
+void	error_thread(t_philo *philo, int type, int errnum)
 {
 	if (type == 0)
-		ft_error("on Thread function", strerror(errnum), 1);
+		ft_error(philo, "on Thread function", strerror(errnum), 1);
 	else
-		ft_error("on Mutex function ", NULL, 1);
+		ft_error(philo, "on Mutex function ", NULL, 1);
 }
 
 static void	check_values(int size, char **argv, int *error)

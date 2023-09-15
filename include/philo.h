@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/15 14:59:53 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/15 16:44:19 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_philo
 	pthread_t		thread;
 	int				id;
 	pthread_mutex_t	fork;
-	const t_rules	*d_rules;
+	t_rules			*d_rules;
 	int				n_to_eat;
 	long long		(*get_time)(t_rules *rules);
 	struct s_philo	*right;
@@ -70,8 +70,8 @@ long long	current_timestamp(t_rules *rules);
 void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo **philos);
 /* check_error.c*/
-void		error_thread(pthread_t *philos, int type, int errnum);
-void		ft_error(char *str1, char *str2, int exit_error);
+void		error_thread(t_philo *philo, int type, int errnum);
+void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);
 void		*ft_free(char **str);
 
 # define CNRM "\x1B[0m"
