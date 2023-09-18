@@ -63,8 +63,8 @@ reval:
 	@make -C . val
 val:$(NAME)
 	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_EAT=$(shell seq 1 5 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_SLEEP=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_EAT=$(shell seq 5 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_SLEEP=$(shell seq 10 15 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP))) | tr '\n' ' '))
 	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
@@ -75,8 +75,8 @@ resan:
 	@make -C . exe
 exe:$(NAME)
 	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_EAT=$(shell seq 1 5 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_SLEEP=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_EAT=$(shell seq 20 25 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval T_SLEEP=$(shell seq 20 25 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP))) | tr '\n' ' '))
 	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))

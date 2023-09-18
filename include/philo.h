@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/15 16:44:19 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/18 12:06:39 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ typedef struct s_rules
 	int				n_philos;
 	int				t_die;
 	int				t_eat;
-	int				t_think;
 	int				t_sleep;
 	int				n_to_eat;
 }	t_rules;
