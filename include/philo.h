@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/18 15:09:03 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/18 17:30:10 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct s_philo
 	pthread_mutex_t	fork;
 	t_rules			*d_rules;
 	int				n_to_eat;
-	long long		(*get_time)(t_rules *rules);
+	long long		(*get_time)(t_rules **rules);
 	struct s_philo	*right;
 	struct s_philo	*left;
 }	t_philo;
@@ -65,7 +65,7 @@ long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
 /*ft_utils.c*/
 long long	current_timestamp(t_rules *rules);
-void		func(t_philo *philo);
+void		*func(void *tmp);
 void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo **philos);
 /* check_error.c*/

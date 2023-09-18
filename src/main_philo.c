@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/18 15:49:32 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/18 17:44:19 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,24 +47,23 @@ static void	init_philos(t_rules *rules, t_philo **philos)
 
 	i = 0;
 	j = 0;
-	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos + 1));
+	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos));
 	if (!philos)
 		philos = NULL;
 	ft_memset(*philos, 0, sizeof(t_philo) * (rules->n_philos));
-	*(philos + rules->n_philos) = (void *)0;
 	while (i < rules->n_philos)
 	{
 		(*philos + i)->id = i + 1;
 		(*philos + i)->d_rules = &*rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
 		err = pthread_create(&(*philos + i)->thread, NULL, \
-		(void *)func, (*philos + i));
+		&func, (void *)(*philos + i));
 		if (err != 0)
 			error_thread((*philos + i), 0, errno);
-		(*philos)[i].get_time = &current_timestamp;
+		(*philos + i)->get_time = &current_timestamp;
 		i++;
 	}
-	// create_threat(&*philos, rules->n_philos);
+	create_threat(&*philos, rules->n_philos);
 }
 // *(philos + rules->n_philos) = NULL;
 // while (i < rules->n_philos)
