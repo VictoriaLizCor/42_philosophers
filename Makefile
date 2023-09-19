@@ -91,8 +91,8 @@ err:$(NAME)
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
 	./philo $(NUM)
-ex1:
-	@./philo 8 77 17 61 
+ex1:$(NAME)
+	./philo 5 150 57 61 
 t1:
 	cc test/threads.c -o test/t1
 	./test/t1
