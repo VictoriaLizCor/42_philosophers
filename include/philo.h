@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/19 15:45:26 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/19 17:01:23 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,9 @@ long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
 /*ft_utils.c*/
 long long	current_timestamp(t_rules *rules);
-void		func(t_philo *tmp);
+void		*func(t_philo *tmp);
 void		*ft_free(char **str);
-void		print_msg(t_rules *rules, t_philo **philos);
+void		print_msg(t_rules *rules, t_philo *philos);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);
