@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/19 14:05:52 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/19 15:45:26 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_rules
 {
 	struct timeval	t_start;
 	struct timeval	t_end;
+	long long		mili;
 	int				n_philos;
 	int				t_die;
 	int				t_eat;
@@ -47,9 +48,9 @@ typedef struct s_philo
 	int				id;
 	pthread_mutex_t	fork;
 	t_rules			*d_rules;
-	int				meal;
+	long long		meal;
 	int				n_to_eat;
-	long long		*(*get_time)(t_rules *rules);
+	long long		(*get_time)(t_rules *rules);
 	struct s_philo	*right;
 	struct s_philo	*left;
 }	t_philo;
@@ -65,8 +66,8 @@ size_t		ft_strlen(const char *str);
 long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
 /*ft_utils.c*/
-long long	*current_timestamp(t_rules *rules);
-void		*func(void *tmp);
+long long	current_timestamp(t_rules *rules);
+void		func(t_philo *tmp);
 void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo **philos);
 /* check_error.c*/
@@ -94,6 +95,7 @@ void		*ft_free(char **str);
 # define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"
 # define P_THINK "\x1B[48;5;31m\x1B[38;5;118m"
 # define P_DEAD "\x1B[48;5;237m\x1B[38;5;172m"
+# define P_FORK "\x1B[48;5;255m\x1B[38;5;0m"
 # define CTEST1 "\033[38;1;42m"
 # define CTEST2 "\x1B[48;5;97m\x1B[38;5;0m"
 // # define CTEST1 "\x1B[41m"

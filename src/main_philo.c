@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/19 14:44:45 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/19 16:16:49 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ static void	init_philos(t_rules *rules, t_philo **philos)
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
 		err = pthread_create(&(*philos + i)->thread, NULL, \
-		&func, (void *)(*philos + i));
+		(void *)func, (t_philo *)(*philos + i));
 		if (err != 0)
 			error_thread((*philos + i), 0, errno);
 		(*philos + i)->get_time = &current_timestamp;
@@ -87,8 +87,8 @@ static void	init_philos(t_rules *rules, t_philo **philos)
 		pthread_join((*philos + i)->thread, NULL);
 		i++;
 	}
+	create_threat(&*philos, rules->n_philos);
 }
-// create_threat(&*philos, rules->n_philos);
 
 static void	init_rules(t_rules *rules, char **argv)
 {

@@ -19,7 +19,7 @@ OBJS_DIR = obj/
 OBJS = $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
 
 all: $(NAME)
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) | $(OBJS_DIR)
 	@printf "$(LF)\n🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀$(FG_TEXT)\n"
 	@printf "\n"
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
@@ -32,13 +32,13 @@ endif
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
-$(OBJS_DIR)%.o : $(SRCS_DIR)%.c | $(OBJS_DIR)
+$(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ifeq ($(D), 1)
 	@$(CC) -g $(D_FLAGS) $(INCLUDES) -c $< -o $@
 else
 	@$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@
 endif
-	@printf "$(LF)🚧🚧 $(FG_TEXT)$(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$<"
+	@printf "$(LF)🚧 $(FG_TEXT)$(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$<"
 
 $(OBJS_DIR):
 	@mkdir -p $@
