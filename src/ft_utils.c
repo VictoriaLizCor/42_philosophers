@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/19 13:41:37 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/19 14:34:15 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,21 @@ void	*func(void *tmp)
 	t_philo	*philo;
 
 	philo = (t_philo *)tmp;
-	rules = &*philo->d_rules;
-	printf("\t\t\t\t\t\teat: %d | sleep: %d | die %d \n", rules->t_eat, rules->t_sleep, rules->t_die);
+	rules = philo->d_rules;
+	printf(" %lld \t philo [%d] %shas taken a fork%s\n", \
+	*(long long *)philo->get_time(rules), philo->id, BWHT, CNRM);
+	philo->meal = *(long long *)philo->get_time(rules);
 	printf(" %lld \t philo [%d] is %s EATING %s\n", \
-	*(long long *)philo->get_time(&*rules), philo->id, P_EAT, CNRM);
+	philo->meal, philo->id, P_EAT, CNRM);
 	usleep(rules->t_eat * 1000);
 	printf(" %lld \t philo [%d] is %s SLEEPING %s\n", \
-	*(long long *)philo->get_time(&*rules), philo->id, P_SLEEP, CNRM);
+	*(long long *)philo->get_time(rules), philo->id, P_SLEEP, CNRM);
 	usleep(rules->t_sleep * 1000);
+	printf(" %lld \t philo [%d] is %s THINKING %s\n", \
+	*(long long *)philo->get_time(rules), philo->id, P_THINK, CNRM);
+	usleep(rules->t_sleep * 1000);
+	printf(" %lld \t philo [%d] %s     DIED    %s\n", \
+	*(long long *)philo->get_time(rules), philo->id, P_DEAD, CNRM);
 }
 
 // long long	*current_timestamp(t_rules *philo)

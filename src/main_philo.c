@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/19 13:12:11 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/19 14:44:45 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,8 @@ static void	init_philos(t_rules *rules, t_philo **philos)
 {
 	int	i;
 	int	err;
-	int	j;
 
 	i = 0;
-	j = 0;
 	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos));
 	if (!philos)
 		philos = NULL;
@@ -77,19 +75,23 @@ static void	init_philos(t_rules *rules, t_philo **philos)
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
 		err = pthread_create(&(*philos + i)->thread, NULL, \
-		(void *)func, (void *)(*philos + i));
+		&func, (void *)(*philos + i));
 		if (err != 0)
 			error_thread((*philos + i), 0, errno);
-		(*philos + i)->get_time = (void *)current_timestamp;
+		(*philos + i)->get_time = &current_timestamp;
 		i++;
 	}
-	create_threat(&*philos, rules->n_philos);
+	i = 0;
+	while (i < rules->n_philos)
+	{
+		pthread_join((*philos + i)->thread, NULL);
+		i++;
+	}
 }
+// create_threat(&*philos, rules->n_philos);
 
 static void	init_rules(t_rules *rules, char **argv)
 {
-	printf("eat: %ld | sleep: %ld | die %ld \n", \
-	ft_atol(argv[3]), ft_atol(argv[4]), ft_atol(argv[2]));
 	rules->n_philos = ft_atol(argv[1]);
 	rules->t_die = ft_atol(argv[2]);
 	rules->t_eat = ft_atol(argv[3]);
