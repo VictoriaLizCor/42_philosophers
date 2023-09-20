@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/19 17:01:23 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/20 17:23:10 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,25 @@
 # ifndef DEBUG_PHI
 #  define DEBUG_PHI 0
 # endif
+
+typedef enum e_color{
+	CNRM,
+	CRED,
+	CGRN,
+	CYEL,
+	CBLU,
+	CMAG,
+	CCYN,
+	CWHT,
+	BBLK,
+	BRED,
+	BGRN,
+	BYEL,
+	BBLU,
+	BMAG,
+	BCYN,
+	BWHT,
+}	t_color;
 
 typedef struct s_rules
 {
@@ -66,42 +85,35 @@ size_t		ft_strlen(const char *str);
 long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
 /*ft_utils.c*/
-long long	current_timestamp(t_rules *rules);
-void		*func(t_philo *tmp);
+long long	current_time(t_rules *rules);
+void		func(t_philo *tmp);
 void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo *philos);
+void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);
 void		*ft_free(char **str);
+/* philo_error.c*/
+char		*color(int idx);
 
-# define CNRM "\x1B[0m"
-# define CRED "\x1B[31m"
-# define CGRN "\x1B[32m"
-# define CYEL "\x1B[33m"
-# define CBLU "\x1B[34m"
-# define CMAG "\x1B[35m"
-# define CCYN "\x1B[36m"
-# define CWHT "\x1B[37m"
-# define BBLK "\x1B[40m"
-# define BRED "\x1B[41m"
-# define BGRN "\x1B[42m"
-# define BYEL "\x1B[43m"
-# define BBLU "\x1B[44m"
-# define BMAG "\x1B[45m"
-# define BCYN "\x1B[46m"
-# define BWHT "\x1B[47m"
 # define P_EAT "\x1B[1;41;33m"
 # define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"
 # define P_THINK "\x1B[48;5;31m\x1B[38;5;118m"
 # define P_DEAD "\x1B[48;5;237m\x1B[38;5;172m"
 # define P_FORK "\x1B[48;5;255m\x1B[38;5;0m"
-# define CTEST1 "\033[38;1;42m"
-# define CTEST2 "\x1B[48;5;97m\x1B[38;5;0m"
-// # define CTEST1 "\x1B[41m"
-# define CTESTN "\033[0m"
-// # define CTEST2 "\x1B[0m"
-# define CNRM2 "\033[0m"
+
+// 	P_EAT "\x1B[1;41;33m"
+// 	P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"
+// 	P_THINK "\x1B[48;5;31m\x1B[38;5;118m"
+// 	P_DEAD "\x1B[48;5;237m\x1B[38;5;172m"
+// 	P_FORK "\x1B[48;5;255m\x1B[38;5;0m"
+// 	CTEST1 "\033[38;1;42m"
+// 	CTEST2 "\x1B[48;5;97m\x1B[38;5;0m"
+// // 	CTEST1 "\x1B[41m"
+// 	CTESTN "\033[0m"
+// // 	CTEST2 "\x1B[0m"
+// 	CNRM2 "\033[0m"
 #endif
 
 /*

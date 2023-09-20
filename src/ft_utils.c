@@ -6,13 +6,13 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/20 11:39:53 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/20 17:26:16 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-long long	current_timestamp(t_rules *rules)
+long long	current_time(t_rules *rules)
 {
 	long long	miliseconds;
 
@@ -24,29 +24,31 @@ long long	current_timestamp(t_rules *rules)
 
 // printf("philo L %d | philo M %d| philo R %d\n", philo->left->id,
 // philo->id, philo->right->id);
-void	*func(t_philo *philo)
+void	func(t_philo *philo)
 {
 	t_rules	*rules;
+	int		i;
 
+	i = philo->id;
 	rules = philo->d_rules;
 	usleep(10 * 1000);
-	printf(" %lld\tphilo [%d] %shas taken a fork%s\n", \
-	current_timestamp(rules), philo->id, P_FORK, CNRM);
-	philo->meal = current_timestamp(rules);
-	printf(" %lld\tphilo [%d] %sis    EATING    %s\n", \
-	philo->meal, philo->id, P_EAT, CNRM);
+	printf(" %lld\tphilo %s[%d]%s\t%shas taken a fork%s\n", \
+	current_time(rules), color(i), philo->id, color(0), P_FORK, color(0));
+	philo->meal = current_time(rules);
+	printf(" %lld\tphilo %s[%d]%s\t%sis    EATING    %s\n", \
+	philo->meal, color(i), philo->id, color(0), P_EAT, color(0));
 	usleep(rules->t_eat * 1000);
-	printf(" %lld\tphilo [%d] %sis   SLEEPING   %s\n", \
-	current_timestamp(rules), philo->id, P_SLEEP, CNRM);
+	printf(" %lld\tphilo %s[%d]%s\t%sis   SLEEPING   %s\n", \
+	current_time(rules), color(i), philo->id, color(0), P_SLEEP, color(0));
 	usleep(rules->t_sleep * 1000);
-	printf(" %lld\tphilo [%d] %sis   THINKING   %s\n", \
-	current_timestamp(rules), philo->id, P_THINK, CNRM);
+	printf(" %lld\tphilo %s[%d]%s\t%sis   THINKING   %s\n", \
+	current_time(rules), color(i), philo->id, color(0), P_THINK, color(0));
 	usleep(rules->t_sleep * 1000);
-	printf(" %lld\tphilo [%d] %s       DIED     %s\n", \
-	philo->get_time(rules), philo->id, P_DEAD, CNRM);
+	printf(" %lld\tphilo %s[%d]%s\t%s       DIED     %s\n", \
+	philo->get_time(rules), color(i), philo->id, color(0), P_DEAD, color(0));
 }
 
-void	philo_neightoor(t_philo *philos, int i, int left, int right)
+void	philo_neightbor(t_philo *philos, int i, int left, int right)
 {
 	philos[i].left = &philos[left];
 	philos[i].right = &philos[right];
@@ -61,8 +63,14 @@ void	print_msg(t_rules *rules, t_philo *tmp)
 	philos = &*tmp;
 	while (i < rules->n_philos)
 	{
-		printf("philo L %d | philo M %d| philo R %d\n", \
-		philos[i].left->id, philos[i].id, philos[i].right->id);
+		if (philos[i].left && philos[i].right)
+		{
+			printf("philo L %d | philo M %d| philo R %d\n", \
+			philos[i].left->id, philos[i].id, philos[i].right->id);
+		}
+		else
+			printf("philo L %p | philo M %d| philo R %p\n", \
+			philos[i].left, philos[i].id, philos[i].right);
 		i++;
 	}
 }

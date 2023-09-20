@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/20 11:41:33 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/20 17:23:10 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,23 @@
 
 static void	init_neightbor(t_philo *philos, int size)
 {
-	int	err;
 	int	i;
 
 	i = 0;
-	while (i < size)
+	if (!size)
+	{
+		philos[i].left = (void *)0;
+		philos[i].right = (void *)0;
+		return ;
+	}
+	while (i <= size)
 	{
 		if (i == 0)
-		{
-			philo_neightbor(philos, i, size - 1, i + 1);
-			philos[i].left = &philos[size - 1];
-			philos[i].right = &philos[i + 1];
-		}
-		else if (i == size - 1)
-		{
-			philo_neightbor(philos, i, i - 1, 0);
-			philos[i].left = &philos[i - 1];
-			philos[i].right = &philos[0];
-		}
-		else
-		{
+			philo_neightbor(philos, i, size, i + 1);
+		else if (i != size)
 			philo_neightbor(philos, i, i - 1, i + 1);
-			philos[i].left = &philos[i - 1];
-			philos[i].right = &philos[i + 1];
-		}
+		else if (i == size)
+			philo_neightbor(philos, i, i - 1, 0);
 		i++;
 	}
 }
@@ -59,10 +52,10 @@ static void	init_philos(t_rules *rules, t_philo **philos)
 		if (pthread_create(&(*philos + i)->thread, NULL, \
 		(void *)func, (*philos + i)) != 0)
 			error_thread((*philos + i), 0, errno);
-		(*philos + i)->get_time = &current_timestamp;
+		(*philos + i)->get_time = &current_time;
 		i++;
 	}
-	init_neightbor(*philos, rules->n_philos);
+	init_neightbor(*philos, rules->n_philos - 1);
 	while (i)
 	{
 		pthread_join((*philos + rules->n_philos - i)->thread, NULL);
@@ -108,13 +101,13 @@ int	main(int argc, char **argv, char **env)
 	}
 	else
 	{
-		printf("%sError: Invalid input %s\n", CRED, CNRM);
+		printf("%sError: Invalid input %s\n", color(1), color(0));
 		printf("Valid:\n" \
 		"./philo number_of_philosophers t_to_die(ms) " \
 		"t_to_eat(ms) t_to_sleep(ms) " \
 		"[number_of_times_each_philosopher_must_eat]\n");
-		printf("%si.e.: 1: ./philo 7 98 23 54%s\n", CGRN, CNRM);
-		printf("%si.e.: 2: ./philo 7 98 23 54 3%s\n", CGRN, CNRM);
+		printf("%si.e.: 1: ./philo 7 98 23 54%s\n", color(2), color(0));
+		printf("%si.e.: 2: ./philo 7 98 23 54 3%s\n", color(2), color(0));
 	}
 	return (0);
 }
