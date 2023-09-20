@@ -6,13 +6,13 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/19 17:03:49 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/20 11:41:33 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-static void	create_threat(t_philo *philos, int size)
+static void	init_neightbor(t_philo *philos, int size)
 {
 	int	err;
 	int	i;
@@ -22,16 +22,19 @@ static void	create_threat(t_philo *philos, int size)
 	{
 		if (i == 0)
 		{
+			philo_neightbor(philos, i, size - 1, i + 1);
 			philos[i].left = &philos[size - 1];
 			philos[i].right = &philos[i + 1];
 		}
 		else if (i == size - 1)
 		{
+			philo_neightbor(philos, i, i - 1, 0);
 			philos[i].left = &philos[i - 1];
 			philos[i].right = &philos[0];
 		}
 		else
 		{
+			philo_neightbor(philos, i, i - 1, i + 1);
 			philos[i].left = &philos[i - 1];
 			philos[i].right = &philos[i + 1];
 		}
@@ -59,11 +62,11 @@ static void	init_philos(t_rules *rules, t_philo **philos)
 		(*philos + i)->get_time = &current_timestamp;
 		i++;
 	}
-	i = 0;
-	while (i < rules->n_philos)
+	init_neightbor(*philos, rules->n_philos);
+	while (i)
 	{
-		pthread_join((*philos + i)->thread, NULL);
-		i++;
+		pthread_join((*philos + rules->n_philos - i)->thread, NULL);
+		i--;
 	}
 }
 
@@ -87,11 +90,9 @@ static void	begin_hunger_games(char **argv)
 	printf("philosophers: %d\n", rules.n_philos);
 	gettimeofday(&rules.t_start, NULL);
 	init_philos(&rules, &philos);
-	create_threat(philos, rules.n_philos);
 	printf("\t\t\t--\n");
 	print_msg(&rules, philos);
 }
-// printf("philo [%d] is %s THINKING %s\n", philos[0].id, P_THINK, CNRM);
 
 int	main(int argc, char **argv, char **env)
 {

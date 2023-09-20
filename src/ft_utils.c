@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/19 17:01:35 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/20 11:39:53 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,20 +30,26 @@ void	*func(t_philo *philo)
 
 	rules = philo->d_rules;
 	usleep(10 * 1000);
-	printf(" %lld \t philo [%d] %shas taken a fork%s\n", \
+	printf(" %lld\tphilo [%d] %shas taken a fork%s\n", \
 	current_timestamp(rules), philo->id, P_FORK, CNRM);
 	philo->meal = current_timestamp(rules);
-	printf(" %lld \t philo [%d] %sis    EATING    %s\n", \
+	printf(" %lld\tphilo [%d] %sis    EATING    %s\n", \
 	philo->meal, philo->id, P_EAT, CNRM);
 	usleep(rules->t_eat * 1000);
-	printf(" %lld \t philo [%d] %sis   SLEEPING   %s\n", \
+	printf(" %lld\tphilo [%d] %sis   SLEEPING   %s\n", \
 	current_timestamp(rules), philo->id, P_SLEEP, CNRM);
 	usleep(rules->t_sleep * 1000);
-	printf(" %lld \t philo [%d] %sis   THINKING   %s\n", \
+	printf(" %lld\tphilo [%d] %sis   THINKING   %s\n", \
 	current_timestamp(rules), philo->id, P_THINK, CNRM);
 	usleep(rules->t_sleep * 1000);
-	printf(" %lld \t philo [%d] %s       DIED     %s\n", \
+	printf(" %lld\tphilo [%d] %s       DIED     %s\n", \
 	philo->get_time(rules), philo->id, P_DEAD, CNRM);
+}
+
+void	philo_neightoor(t_philo *philos, int i, int left, int right)
+{
+	philos[i].left = &philos[left];
+	philos[i].right = &philos[right];
 }
 
 void	print_msg(t_rules *rules, t_philo *tmp)
