@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/21 10:27:55 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/21 10:58:28 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,19 +32,19 @@ void	func(t_philo *philo)
 	i = philo->id;
 	rules = philo->d_rules;
 	usleep(10 * 1000);
-	printf(" %lld\tphilo %s [%02d] %s %shas taken a fork%s\n", \
+	printf(" %lld\tphilo %s [%02d] %s %s has taken a fork %s\n", \
 	current_time(rules), color(i), philo->id, color(0), P_FORK, color(0));
 	philo->meal = current_time(rules);
-	printf(" %lld\tphilo %s [%02d] %s %sis    EATING    %s\n", \
+	printf(" %lld\tphilo %s [%02d] %s %s is    EATING     %s\n", \
 	philo->meal, color(i), philo->id, color(0), P_EAT, color(0));
 	usleep(rules->t_eat * 1000);
-	printf(" %lld\tphilo %s [%02d] %s %sis   SLEEPING   %s\n", \
+	printf(" %lld\tphilo %s [%02d] %s %s is   SLEEPING    %s\n", \
 	current_time(rules), color(i), philo->id, color(0), P_SLEEP, color(0));
 	usleep(rules->t_sleep * 1000);
-	printf(" %lld\tphilo %s [%02d] %s %sis   THINKING   %s\n", \
+	printf(" %lld\tphilo %s [%02d] %s %s is   THINKING    %s\n", \
 	current_time(rules), color(i), philo->id, color(0), P_THINK, color(0));
 	usleep(rules->t_sleep * 1000);
-	printf(" %lld\tphilo %s [%02d] %s %s       DIED     %s\n", \
+	printf(" %lld\tphilo %s [%02d] %s %s        DIED      %s\n", \
 	philo->get_time(rules), color(i), philo->id, color(0), P_DEAD, color(0));
 }
 

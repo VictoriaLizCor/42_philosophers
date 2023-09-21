@@ -96,6 +96,12 @@ ex1:$(NAME)
 t1:
 	cc test/threads.c -o test/t1
 	./test/t1
+git:	fclean
+	@echo $(CYAN)
+	git add ./
+	git commit -m "$m"
+	@echo $(YELLOW)
+	git push
 # gcc -o c dining.c -pthread
 re: fclean all
 
@@ -154,7 +160,7 @@ export TRASH
 
 # COLORS
 CL_BOLD = \e[1m
-RAN = \033[0;1;100m
+RAN = \033[48;5;237m\033[38;5;255m;
 NC = \033[m
 
 P_RED = \e[1;91m
