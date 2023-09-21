@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/20 17:23:10 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/21 10:35:52 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,22 @@ char		*color(int idx);
 # define P_DEAD "\x1B[48;5;237m\x1B[38;5;172m"
 # define P_FORK "\x1B[48;5;255m\x1B[38;5;0m"
 
+// # define CNRM "\x1B[0m"
+// # define CRED "\x1B[31m"
+// # define CGRN "\x1B[32m"
+// # define CYEL "\x1B[33m"
+// # define CBLU "\x1B[34m"
+// # define CMAG "\x1B[35m"
+// # define CCYN "\x1B[36m"
+// # define CWHT "\x1B[37m"
+// # define BBLK "\x1B[40m"
+// # define BRED "\x1B[41m"
+// # define BGRN "\x1B[42m"
+// # define BYEL "\x1B[43m"
+// # define BBLU "\x1B[44m"
+// # define BMAG "\x1B[45m"
+// # define BCYN "\x1B[46m"
+// # define BWHT "\x1B[47m"
 // 	P_EAT "\x1B[1;41;33m"
 // 	P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"
 // 	P_THINK "\x1B[48;5;31m\x1B[38;5;118m"
