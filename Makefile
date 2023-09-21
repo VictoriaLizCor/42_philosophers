@@ -179,7 +179,7 @@ GREEN = "\033[1;32m"
 BLUE = "\033[1;34m"
 YELLOW = "\033[1;33m"
 NOCOLOR	= "\033[m"
-CCYN = "\033[0;1;36m"
+CYAN = "\033[0;1;36m"
 PHILO_BANNER = "$$PHILO"
 TRASH_BANNER = "$$TRASH"
 .PHONY: all clean fclean re
