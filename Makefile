@@ -97,7 +97,7 @@ t1:
 	cc test/threads.c -o test/t1
 	./test/t1
 git:	fclean
-	@echo $(CYAN)
+	@echo $(GREEN)
 	git add ./
 	git commit -m "$m"
 	@echo $(YELLOW)
