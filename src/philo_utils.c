@@ -6,21 +6,11 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/21 10:54:33 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:35:06 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
-
-void	print_intro(void)
-{
-	printf("\n%s     . . . . . .    \n  ..         42..", color(0));
-	printf("\n ..             ..\n");
-	printf(".     .. ..      ..\n..   .      .    ..\n");
-	printf("..   .   .   .   ..\n");
-	printf(" ..    ..    .   ..\n  ..        .    .\n");
-	printf("    .. .. ..    ..\n\n%s", color(0));
-}
 
 char	*color(int idx)
 {
@@ -48,3 +38,44 @@ char	*color(int idx)
 		idx = (idx % 15);
 	return (s_color[idx]);
 }
+
+void	philo_neightbor(t_philo *philos, int i, int left, int right)
+{
+	philos[i].left = &philos[left];
+	philos[i].right = &philos[right];
+}
+
+void	print_msg(t_rules *rules, t_philo *tmp)
+{
+	int		i;
+	t_philo	*philos;
+
+	i = 0;
+	philos = tmp;
+	while (i < rules->n_philos)
+	{
+		if (philos[i].left && philos[i].right)
+		{
+			printf("philo L %d | philo M %d| philo R %d\n", \
+			philos[i].left->id, philos[i].id, philos[i].right->id);
+		}
+		else
+			printf("philo L %p | philo M %d| philo R %p\n", \
+			philos[i].left, philos[i].id, philos[i].right);
+		i++;
+	}
+}
+
+// void	*ft_free(char **str)
+// {
+// 	int		i;
+
+// 	i = 0;
+// 	while (str[i] != 0)
+// 	{
+// 		free(str[i]);
+// 		i++;
+// 	}
+// 	free(str);
+// 	return (NULL);
+// }

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/20 17:23:10 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:35:33 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ static void	begin_hunger_games(char **argv)
 	t_philo		*philos;
 
 	init_rules(&rules, argv);
-	printf("philosophers: %d\n", rules.n_philos);
 	gettimeofday(&rules.t_start, NULL);
 	init_philos(&rules, &philos);
 	printf("\t\t\t--\n");

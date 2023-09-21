@@ -25,16 +25,16 @@ $(NAME): $(OBJS) | $(OBJS_DIR)
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
 	@echo $(GREEN)
 ifeq ($(D), 1)
-	$(CC) -g $(D_FLAGS) $(D_SAN) $(INCLUDES) $^ -o $(NAME)
+	$(CC) -g -pthread $(D_FLAGS) $(D_SAN) $(INCLUDES) $^ -o $(NAME)
 else
-	$(CC) $(FLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
+	$(CC) -pthread $(FLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
 endif
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ifeq ($(D), 1)
-	@$(CC) -g $(D_FLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) -g -pthread $(D_FLAGS) $(INCLUDES) -c $< -o $@
 else
 	@$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@
 endif
@@ -92,7 +92,13 @@ err:$(NAME)
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
 	./philo $(NUM)
 ex1:$(NAME)
-	./philo 5 150 57 61 
+	./philo 5 150 57 61
+top:$(NAME)
+ifneq ($(shell pgrep -x philo), 1)
+	top -l0 -stats command,pid,threads,cpu,state,mem,kshrd -pid $$(pgrep -f philo) | grep -A1 COMMAND
+endif
+_top:
+	top -l15 -stats command,pid,threads,cpu,state,mem,kshrd -pid $(pgrep -f philo) | grep -A1 COMMAND
 t1:
 	cc test/threads.c -o test/t1
 	./test/t1
