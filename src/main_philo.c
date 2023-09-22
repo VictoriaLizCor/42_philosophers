@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/22 16:40:46 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/22 16:47:22 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,13 +101,13 @@ int	main(int argc, char **argv, char **env)
 	}
 	else
 	{
-		printf("%sError: Invalid input %s\n", color(1), color(0));
+		printf("%sError: Invalid input %s\n", warn(0), color(0));
 		printf("Valid:\n" \
 		"./philo number_of_philosophers t_to_die(ms) " \
 		"t_to_eat(ms) t_to_sleep(ms) " \
 		"[number_of_times_each_philosopher_must_eat]\n");
-		printf("%si.e.: 1: ./philo 7 98 23 54%s\n", color(2), color(0));
-		printf("%si.e.: 2: ./philo 7 98 23 54 3%s\n", color(2), color(0));
+		printf("%si.e.: 1: ./philo 7 98 23 54%s\n", warn(1), color(0));
+		printf("%si.e.: 2: ./philo 7 98 23 54 3%s\n", warn(1), color(0));
 	}
 	return (0);
 }

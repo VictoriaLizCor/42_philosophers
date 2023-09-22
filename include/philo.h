@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/21 10:35:52 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/22 16:48:25 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);
 void		*ft_free(char **str);
 /* philo_error.c*/
 char		*color(int idx);
+char		*warn(int idx);
 
 # define P_EAT "\x1B[1;41;33m"
 # define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"

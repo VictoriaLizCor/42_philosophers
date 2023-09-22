@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/21 11:35:06 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/22 16:48:13 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,17 @@ char	*color(int idx)
 	};
 	if (idx > 15)
 		idx = (idx % 15);
+	return (s_color[idx]);
+}
+
+char	*warn(int idx)
+{
+	char	**s_color;
+
+	s_color = (char *[]){
+		"\x1B[31m", \
+		"\x1B[32m", \
+	};
 	return (s_color[idx]);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/20 17:23:10 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/22 16:47:59 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	ft_error(t_philo *philo, char *str1, char *str2, int exit_error)
 {
 	if (exit_error > 0)
-		printf("%sError!: %d", color(1), philo->id);
+		printf("%sError!: %d", warn(0), philo->id);
 	if (str1)
 		printf("%s", str1);
 	if (str2)
@@ -43,7 +43,7 @@ static void	check_values(int size, char **argv, int *error)
 	{
 		if (ft_atol(argv[ac]) <= 0 || ft_atol(argv[ac]) > INT_MAX)
 		{
-			printf("%sValid values (0, INT_MAX]%s\n", color(1), color(0));
+			printf("%sValid values (0, INT_MAX]%s\n", warn(0), color(0));
 			*error += 1;
 			break ;
 		}
@@ -52,7 +52,7 @@ static void	check_values(int size, char **argv, int *error)
 	if (ft_atol(argv[2]) < ft_atol(argv[3]) + ft_atol(argv[4]))
 	{
 		printf("%sError!: time_to_die > time_to_eat + time_to_sleep %s\n", \
-		color(1), color(0));
+		warn(0), color(0));
 		*error += 1;
 	}
 }
@@ -69,7 +69,7 @@ void	check_arguments(char **argv, int *error)
 		if (!ft_strlen(argv[ac]))
 		{
 			printf("%sError!: arg[%d] : Invalid input value%s\n", \
-			color(1), ac, color(0));
+			warn(0), ac, color(0));
 		}
 		copy = argv[ac];
 		if (ft_strchr("+", *copy) || ft_isdigit(*copy))
@@ -78,7 +78,7 @@ void	check_arguments(char **argv, int *error)
 			copy++;
 		if (!ft_isdigit(*copy) && *copy != 0 && *error == 0)
 		{
-			printf("%sError!: Invalid input value%s\n", color(1), color(0));
+			printf("%sError!: Invalid input value%s\n", warn(0), color(0));
 			*error += 1;
 		}
 		ac++;
