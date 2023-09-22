@@ -166,7 +166,7 @@ export TRASH
 
 # COLORS
 CL_BOLD = \e[1m
-RAN = \033[48;5;237m\033[38;5;255m;
+RAN = \033[48;5;237m\033[38;5;255m
 NC = \033[m
 
 P_RED = \e[1;91m
