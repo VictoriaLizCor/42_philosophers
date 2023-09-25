@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/22 16:47:22 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/25 17:14:01 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,33 +35,27 @@ static void	init_neightbor(t_philo *philos, int size)
 	}
 }
 
-static void	init_philos(t_rules *rules, t_philo **philos)
+static void	init_philos(t_rules *rules, t_philo **philos, int size)
 {
 	int	i;
 
 	i = 0;
-	*philos = (t_philo *)malloc(sizeof(t_philo) * (rules->n_philos));
+	*philos = (t_philo *)malloc(sizeof(t_philo) * (size));
 	if (!philos)
 		philos = NULL;
-	ft_memset(*philos, 0, sizeof(t_philo) * (rules->n_philos));
-	while (i < rules->n_philos)
+	ft_memset(*philos, 0, sizeof(t_philo) * (size));
+	while (i < size)
 	{
 		(*philos + i)->id = i + 1;
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
-		pthread_mutex_init(&(*philos + i)->fork, NULL);
-		if (pthread_create(&(*philos + i)->thread, NULL, \
-		(void *)func, (*philos + i)) != 0)
-			error_thread((*philos + i), 0, errno);
+		if (pthread_mutex_init(&(*philos + i)->fork, NULL) != 0)
+			printf("%sError in mutex init %s\n", warn(0), color(0));
 		(*philos + i)->get_time = &current_time;
 		i++;
 	}
-	init_neightbor(*philos, rules->n_philos - 1);
-	while (i)
-	{
-		pthread_join((*philos + rules->n_philos - i)->thread, NULL);
-		i--;
-	}
+	init_neightbor(*philos, size - 1);
+	print_msg(rules, *philos);
 }
 
 static void	init_rules(t_rules *rules, char **argv)
@@ -82,9 +76,8 @@ static void	begin_hunger_games(char **argv)
 
 	init_rules(&rules, argv);
 	gettimeofday(&rules.t_start, NULL);
-	init_philos(&rules, &philos);
-	printf("\t\t\t--\n");
-	print_msg(&rules, philos);
+	init_philos(&rules, &philos, rules.n_philos);
+	start_threads(philos, rules.n_philos);
 }
 
 int	main(int argc, char **argv, char **env)

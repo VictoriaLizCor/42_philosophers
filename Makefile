@@ -6,12 +6,12 @@ CC = gcc
 D = 1
 SRCS_DIR = src/
 SRCS =	main_philo.c	\
-		philo_utils.c			\
+		philo_utils1.c		\
+		philo_utils2.c	\
 		check_error.c	\
 		libft_1.c		\
 		libft_2.c		\
-		ft_utils.c		\
-# .c		\
+		init_func.c		\
 # .c		\
 # .c		\
 
@@ -25,18 +25,18 @@ $(NAME): $(OBJS) | $(OBJS_DIR)
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
 	@echo $(GREEN)
 ifeq ($(D), 1)
-	$(CC) -g -pthread $(D_FLAGS) $(D_SAN) $(INCLUDES) $^ -o $(NAME)
+	$(CC) -g $(D_FLAGS) $(D_SAN) $(INCLUDES) $^ -pthread -o $(NAME)
 else
-	$(CC) -pthread $(FLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
+	$(CC) $(FLAGS) $(INCLUDES) $(OBJS) -pthread-o $(NAME)
 endif
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ifeq ($(D), 1)
-	@$(CC) -g -pthread $(D_FLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) -g $(D_FLAGS) $(INCLUDES) -c $< -pthread -o $@
 else
-	@$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(FLAGS) $(INCLUDES) -c $< -pthread -o $@
 endif
 	@printf "$(LF)🚧 $(FG_TEXT)$(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$<"
 

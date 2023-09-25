@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*   philo_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/22 16:48:13 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/25 13:10:40 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,16 @@ char	*warn(int idx)
 	return (s_color[idx]);
 }
 
+long long	current_time(t_rules *rules)
+{
+	long long	miliseconds;
+
+	gettimeofday(&rules->t_end, NULL);
+	miliseconds = ((rules->t_end.tv_sec - rules->t_start.tv_sec) * 1000LL + \
+	(rules->t_end.tv_usec - rules->t_start.tv_usec) * 0.001);
+	return (miliseconds);
+}
+
 void	philo_neightbor(t_philo *philos, int i, int left, int right)
 {
 	philos[i].left = &philos[left];
@@ -75,6 +85,7 @@ void	print_msg(t_rules *rules, t_philo *tmp)
 			philos[i].left, philos[i].id, philos[i].right);
 		i++;
 	}
+	printf("\n");
 }
 
 // void	*ft_free(char **str)

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 15:24:44 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/21 11:27:44 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:53:23 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(void)
 
 	for(i = 1;i <= 5; i++)
 	{
-		k = pthread_mutex_init(&chopstick[i], NULL);
+		k = pthread_mutex_init(&chopstick[i], (void *)0);
 		if (k == -1)
 		{
 			printf("\n Mutex initialization failed");
@@ -37,7 +37,7 @@ int	main(void)
 	}
 	for(i = 1;i <= 5; i++)
 	{
-		k = pthread_create(&philosopher[i], NULL, (void *)func, (int *)i);
+		k = pthread_create(&philosopher[i], (void *)0, (void *)func, (int *)i);
 		if (k != 0)
 		{
 			printf("\n Thread creation error \n");

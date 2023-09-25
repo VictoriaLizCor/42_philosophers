@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/22 16:48:25 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/25 17:40:36 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,36 +63,41 @@ typedef struct s_rules
 
 typedef struct s_philo
 {
-	pthread_t		thread;
 	int				id;
-	pthread_mutex_t	fork;
 	t_rules			*d_rules;
 	long long		meal;
 	int				n_to_eat;
 	long long		(*get_time)(t_rules *rules);
+	pthread_t		thread;
+	pthread_mutex_t	fork;
+	bool			f_status;
+	int				*status;
 	struct s_philo	*right;
 	struct s_philo	*left;
 }	t_philo;
 
 /* main_philo.c */
-/* philo.c */
-void		print_intro(void);
-void		check_arguments(char **argv, int *error);
+// void		begin_hunger_games(char **argv);
+/* init_func.c */
+
 /* libft.c */
 int			ft_isdigit(int ch);
 char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
 long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
-/*ft_utils.c*/
+/* philo_utils2.c */
 long long	current_time(t_rules *rules);
+void		start_threads(t_philo *philos, int size);
 void		func(t_philo *tmp);
+/* philo_utils2.c */
 void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);
+void		check_arguments(char **argv, int *error);
 void		*ft_free(char **str);
 /* philo_error.c*/
 char		*color(int idx);
