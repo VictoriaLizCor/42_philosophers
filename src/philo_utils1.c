@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/26 12:29:33 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:14:56 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	take_eat(t_philo *philo, t_rules *rules, int i)
 	current_time(rules), color(i), i, color(0), P_FORK, color(0));
 	printf(" %lld\tphilo %s [%03d] %s %s is    EATING     %s\n", \
 	current_time(rules), color(i), i, color(0), P_EAT, color(0));
-	philo->meal = current_time(rules);
+	philo->meal = current_time(rules) + (rules->t_eat / 2);
 	usleep(rules->t_eat * 1000);
 }
 
@@ -46,11 +46,13 @@ static void	sleep_think(t_philo *philo, t_rules *rules, int i)
 {
 	if (philo->to_lock)
 	{
-		fprintf(stderr, "\t\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->id);
 		pthread_mutex_unlock(&philo->fork);
-		fprintf(stderr, "\t\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->to_lock->id);
+		philo->f_status = false;
+		fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->id);
 		pthread_mutex_unlock(&philo->to_lock->fork);
 		philo->to_lock->f_status = false;
+		fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->to_lock->id);
+		philo->to_lock = NULL;
 	}
 	printf(" %lld\tphilo %s [%03d] %s %s is   SLEEPING    %s\n", \
 	current_time(rules), color(i), i, color(0), P_SLEEP, color(0));
@@ -62,32 +64,26 @@ static void	sleep_think(t_philo *philo, t_rules *rules, int i)
 
 static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
-	int	self_lock;
-	int	right_lock;
-	int	left_lock;
-
-	if (philo->f_status || !right || !left)
-		return ;
-	self_lock = pthread_mutex_lock(&philo->fork);
-	philo->f_status = true;
-	fprintf(stderr, "\t\t\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
-	philo->id, philo->f_status, right->id, right->f_status, left->id, left->f_status);
-	if (!philo->to_lock && !right->f_status)
+	if (!philo->f_status)
 	{
-		right_lock = pthread_mutex_lock(&right->fork);
-		right->f_status = true;
-		fprintf(stderr, "\t\t\t\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
-		philo->id, philo->f_status, right->id, right->f_status, left->id, left->f_status);
-		philo->to_lock = right;
-	}
-	else if (!philo->to_lock && !left->f_status)
-	{
-		left_lock = pthread_mutex_lock(&left->fork);
-		left->f_status = true;
-		fprintf(stderr, "\t\t\t\t\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
-philo->id, philo->f_status, right->id, right->f_status, left->id, left->f_status);
-		if (!left_lock)
+		pthread_mutex_lock(&philo->fork);
+		philo->f_status = true;
+		if (philo->f_status && !philo->to_lock && !right->f_status)
+		{
+			pthread_mutex_lock(&right->fork);
+			right->f_status = true;
+			fprintf(stderr, "\t\tright\t\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
+			philo->id, philo->f_status, right->id, right->f_status, left->id, left->f_status);
+			philo->to_lock = right;
+		}
+		else if (philo->f_status && !philo->to_lock && !left->f_status)
+		{
+			pthread_mutex_lock(&left->fork);
+			left->f_status = true;
+			fprintf(stderr, "\t\tleft\t\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
+			philo->id, philo->f_status, right->id, right->f_status, left->id, left->f_status);
 			philo->to_lock = left;
+		}
 	}
 }
 
@@ -98,16 +94,24 @@ void	rutine(t_philo *philo)
 
 	i = philo->id;
 	rules = philo->d_rules;
-	philo->to_lock = NULL;
-	fprintf(stderr, "\t\t\t\t[%d]_status = %d\n", philo->id, philo->f_status);
-	check_locks(philo, philo->right, philo->left);
-	fprintf(stderr, "%p \n", philo->to_lock);
-	if (philo->to_lock)
-		take_eat(philo, rules, i);
-	sleep_think(philo, rules, i);
-	if (philo->meal + current_time(rules) > rules->t_die || !philo->to_lock)
+	while (1)
 	{
-		printf(" %lld\tphilo %s [%03d] %s %s        DIED      %s\n", \
-		current_time(rules), color(i), i, color(0), P_DEAD, color(0));
+		if ((current_time(rules) - philo->meal) >= rules->t_die)
+		{
+			fprintf(stderr, "\t\t\t\t\t[%d][%lld] meal\n", philo->id, philo->meal);
+			printf(" %lld\tphilo %s [%03d] %s %s        DIED      %s\n", \
+			current_time(rules), color(i), i, color(0), P_DEAD, color(0));
+			ft_free_threads(philo->head, rules->n_philos);
+			break ;
+		}
+		else
+		{
+			philo->to_lock = NULL;
+			if (philo->right && philo->left)
+				check_locks(philo, philo->right, philo->left);
+			if (philo->to_lock)
+				take_eat(philo, rules, i);
+			sleep_think(philo, rules, i);
+		}
 	}
 }

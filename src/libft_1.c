@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.c                                            :+:      :+:    :+:   */
+/*   libft_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/15 14:09:21 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 15:54:45 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,29 +17,6 @@ int	ft_isdigit(int ch)
 	if (ch >= '0' && ch <= '9')
 		return (1);
 	return (0);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if (!(*s) && !c)
-		return ((char *)s);
-	return (NULL);
-}
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	cnt;
-
-	cnt = 0;
-	while (str[cnt])
-		cnt++;
-	return (cnt);
 }
 
 static long	max_values(long int *num, int *sign, char c)

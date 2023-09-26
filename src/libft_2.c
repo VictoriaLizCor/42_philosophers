@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/15 14:18:57 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 15:54:52 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,27 @@ void	*ft_memset(void *s, int c, size_t n)
 		i++;
 	}
 	return (s);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if (!(*s) && !c)
+		return ((char *)s);
+	return (NULL);
+}
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	cnt;
+
+	cnt = 0;
+	while (str[cnt])
+		cnt++;
+	return (cnt);
 }

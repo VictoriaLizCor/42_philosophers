@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/26 11:22:23 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:46:37 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <stdbool.h>
-# include <sys/wait.h>
 # include <sys/types.h>
 # include <stdbool.h>
 # include <errno.h>
@@ -30,30 +29,9 @@
 #  define DEBUG_PHI 0
 # endif
 
-typedef enum e_color{
-	CNRM,
-	CRED,
-	CGRN,
-	CYEL,
-	CBLU,
-	CMAG,
-	CCYN,
-	CWHT,
-	BBLK,
-	BRED,
-	BGRN,
-	BYEL,
-	BBLU,
-	BMAG,
-	BCYN,
-	BWHT,
-}	t_color;
-
 typedef struct s_rules
 {
-	struct timeval	t_start;
-	struct timeval	t_end;
-	long long		mili;
+	time_t			t_start;
 	int				n_philos;
 	int				t_die;
 	int				t_eat;
@@ -64,22 +42,23 @@ typedef struct s_rules
 typedef struct s_philo
 {
 	int				id;
-	t_rules			*d_rules;
+	bool			f_status;
 	long long		meal;
 	int				n_to_eat;
 	long long		(*get_time)(t_rules *rules);
 	pthread_t		thread;
 	pthread_mutex_t	fork;
-	bool			f_status;
+	t_rules			*d_rules;
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
+	struct s_philo	*head;
 }	t_philo;
 
 /* main_philo.c */
 // void		begin_hunger_games(char **argv);
-/* init_func.c */
-
+/* free.c */
+void		ft_free_threads(t_philo *philos, int size);
 /* libft.c */
 int			ft_isdigit(int ch);
 char		*ft_strchr(const char *s, int c);

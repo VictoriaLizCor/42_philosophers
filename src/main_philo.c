@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/25 17:14:01 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:44:51 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->id = i + 1;
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
+		(*philos + i)->head = *philos;
 		if (pthread_mutex_init(&(*philos + i)->fork, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
 		(*philos + i)->get_time = &current_time;
@@ -71,11 +72,13 @@ static void	init_rules(t_rules *rules, char **argv)
 
 static void	begin_hunger_games(char **argv)
 {
-	t_rules		rules;
-	t_philo		*philos;
+	t_rules			rules;
+	t_philo			*philos;
+	struct timeval	start;
 
 	init_rules(&rules, argv);
-	gettimeofday(&rules.t_start, NULL);
+	gettimeofday(&start, NULL);
+	rules.t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
 	init_philos(&rules, &philos, rules.n_philos);
 	start_threads(philos, rules.n_philos);
 }

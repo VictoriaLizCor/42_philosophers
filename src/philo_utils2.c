@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/26 12:34:36 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:45:02 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,16 @@ char	*warn(int idx)
 
 long long	current_time(t_rules *rules)
 {
-	long long	miliseconds;
+	long long		ms;
+	long long		t1;
+	long long		t2;
+	struct timeval	current;
 
-	gettimeofday(&rules->t_end, NULL);
-	miliseconds = ((rules->t_end.tv_sec - rules->t_start.tv_sec) * 1000LL + \
-	(rules->t_end.tv_usec - rules->t_start.tv_usec) * 0.001);
-	return (miliseconds);
+	gettimeofday(&current, NULL);
+	t1 = current.tv_sec * 1000;
+	t2 = current.tv_usec / 1000;
+	ms = (t1 + t2) - rules->t_start;
+	return (ms);
 }
 
 void	philo_neightbor(t_philo *philos, int i, int left, int right)
@@ -77,12 +81,11 @@ void	print_msg(t_rules *rules, t_philo *tmp)
 	{
 		if (philos[i].left && philos[i].right)
 		{
-			printf("philo L %d [%p]| philo M %d| philo R %d [%p]\n", \
-			philos[i].left->id, philos[i].left ,philos[i].id, \
-			philos[i].right->id, philos[i].right);
+			printf("philo L %d  philo M %d [%p]|| philo R %d \n", \
+			philos[i].left->id, philos[i].id, &philos[i], philos[i].right->id);
 		}
 		else
-			printf("philo L %p | philo M %d| philo R %p\n", \
+			printf("philo L %p | philo M %d || philo R %p\n", \
 			philos[i].left, philos[i].id, philos[i].right);
 		i++;
 	}

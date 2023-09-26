@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/22 16:47:59 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:10:43 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	ft_error(t_philo *philo, char *str1, char *str2, int exit_error)
 {
 	if (exit_error > 0)
-		printf("%sError!: %d", warn(0), philo->id);
+		printf("%sError!: %d ", warn(0), philo->id);
 	if (str1)
 		printf("%s", str1);
 	if (str2)
@@ -49,7 +49,7 @@ static void	check_values(int size, char **argv, int *error)
 		}
 		ac++;
 	}
-	if (ft_atol(argv[2]) < ft_atol(argv[3]) + ft_atol(argv[4]))
+	if (ft_atol(argv[2]) <= ft_atol(argv[3]) + ft_atol(argv[4]))
 	{
 		printf("%sError!: time_to_die > time_to_eat + time_to_sleep %s\n", \
 		warn(0), color(0));
