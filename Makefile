@@ -94,7 +94,7 @@ err:$(NAME)
 ex1:$(NAME)
 	./philo 5 150 57 61
 top:$(NAME)
-	top -oth -stats command,pid,threads,cpu,state,mem,kshrd
+	top -opid -stats command,pid,threads,cpu,state,mem,kshrd
 # 	while $(shell ps | awk '/philo/ && !/awk/ {print $$1}') ; do \
 # 		top -l1 -stats command,pid,threads,cpu,state,mem,kshrd -o th | grep -A3 COMMAND | awk 'NR==1 || /philo/'
 # 	done ; \
