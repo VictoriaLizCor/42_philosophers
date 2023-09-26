@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/25 13:10:40 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 12:34:36 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,9 @@ void	print_msg(t_rules *rules, t_philo *tmp)
 	{
 		if (philos[i].left && philos[i].right)
 		{
-			printf("philo L %d | philo M %d| philo R %d\n", \
-			philos[i].left->id, philos[i].id, philos[i].right->id);
+			printf("philo L %d [%p]| philo M %d| philo R %d [%p]\n", \
+			philos[i].left->id, philos[i].left ,philos[i].id, \
+			philos[i].right->id, philos[i].right);
 		}
 		else
 			printf("philo L %p | philo M %d| philo R %p\n", \
