@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/26 10:37:37 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/09/26 10:38:19 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static t_philo	*check_locks(t_philo *philo, t_philo *right, t_philo *left)
 	int	right_lock;
 	int	left_lock;
 
-	if (!right && !left || (right->f_status || left->f_status))
+	if (!right && !left)
 		return (NULL);
 	self_lock = pthread_mutex_lock(&philo->fork);
 	philo->f_status = true;
