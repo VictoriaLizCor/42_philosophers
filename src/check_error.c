@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/26 16:10:43 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/02 11:52:06 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 void	ft_error(t_philo *philo, char *str1, char *str2, int exit_error)
 {
 	if (exit_error > 0)
-		printf("%sError!: %d ", warn(0), philo->id);
+		printf("%sError!: ", warn(0));
 	if (str1)
-		printf("%s", str1);
+		printf("%s from thread: %d", str1 , philo->id);
 	if (str2)
 	{
 		printf(" : ");

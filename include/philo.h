@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/26 16:46:37 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/02 13:10:26 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,13 @@
 #  define DEBUG_PHI 0
 # endif
 
+typedef struct s_mutex
+{
+	bool			stat;
+	pthread_mutex_t	lock;
+	void			(*f)(void *);
+}	t_mutex;
+
 typedef struct s_rules
 {
 	time_t			t_start;
@@ -37,17 +44,17 @@ typedef struct s_rules
 	int				t_eat;
 	int				t_sleep;
 	int				n_to_eat;
+	t_mutex			death_flag;
 }	t_rules;
 
 typedef struct s_philo
 {
 	int				id;
-	bool			f_status;
 	long long		meal;
 	int				n_to_eat;
 	long long		(*get_time)(t_rules *rules);
 	pthread_t		thread;
-	pthread_mutex_t	fork;
+	t_mutex			fork;
 	t_rules			*d_rules;
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
@@ -57,8 +64,6 @@ typedef struct s_philo
 
 /* main_philo.c */
 // void		begin_hunger_games(char **argv);
-/* free.c */
-void		ft_free_threads(t_philo *philos, int size);
 /* libft.c */
 int			ft_isdigit(int ch);
 char		*ft_strchr(const char *s, int c);
@@ -73,6 +78,9 @@ void		rutine(t_philo *philo);
 void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
+/* philo_utils3.c */
+void		destroy_fork(t_philo philo);
+void		died_msg(t_philo *philo, int i);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);

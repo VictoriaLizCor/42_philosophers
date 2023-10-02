@@ -1,17 +1,22 @@
 NAME = philo
 FLAGS = -Wall -Wextra #-Werror
-D_SAN = -Wall -Wextra -fsanitize=address
+#D_SAN = -Wall -Wextra -fsanitize=thread
 INCLUDES += -I include/
 CC = gcc
 D = 1
+ifeq ($(S), 1)
+D_SAN = -Wall -Wextra -fsanitize=thread
+else
+D_SAN = -Wall -Wextra -fsanitize=address
+endif
 SRCS_DIR = src/
 SRCS =	main_philo.c	\
-		philo_utils1.c		\
+		philo_utils1.c	\
 		philo_utils2.c	\
+		philo_utils3.c	\
 		check_error.c	\
 		libft_1.c		\
 		libft_2.c		\
-		free.c		\
 # .c		\
 # .c		\
 
@@ -25,16 +30,16 @@ $(NAME): $(OBJS) | $(OBJS_DIR)
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
 	@echo $(GREEN)
 ifeq ($(D), 1)
-	$(CC) -g $(D_FLAGS) $(D_SAN) $(INCLUDES) $^ -pthread -o $(NAME)
+	$(CC) -g $(D_SAN) $(INCLUDES) $^ -pthread -o $(NAME)
 else
-	$(CC) $(FLAGS) $(INCLUDES) $(OBJS) -pthread-o $(NAME)
+	$(CC) $(FLAGS) $(INCLUDES) $(OBJS) -pthread -o $(NAME)
 endif
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ifeq ($(D), 1)
-	@$(CC) -g $(D_FLAGS) $(INCLUDES) -c $< -pthread -o $@
+	@$(CC) -g $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
 else
 	@$(CC) $(FLAGS) $(INCLUDES) -c $< -pthread -o $@
 endif
@@ -69,10 +74,10 @@ val:$(NAME)
 	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
-	./philo $(NUM)
+	./phi
 resan:
 	@make re -C . D=1
-	@make -C . exe
+	@make -C . e1
 e1:$(NAME)
 	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_EAT=$(shell seq 100 120 | sort -R | tail -n 1 | tr '\n' ' '))
