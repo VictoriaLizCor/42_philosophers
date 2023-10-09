@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/02 13:10:26 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/09 17:30:31 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct s_rules
 typedef struct s_philo
 {
 	int				id;
-	long long		meal;
+	long long		t_meal;
 	int				n_to_eat;
 	long long		(*get_time)(t_rules *rules);
 	pthread_t		thread;
@@ -79,7 +79,7 @@ void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-void		destroy_fork(t_philo philo);
+void		destroy_fork(t_philo *philo, t_rules *rules);
 void		died_msg(t_philo *philo, int i);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);

@@ -116,7 +116,7 @@ top:$(NAME)
 # _top:
 # 	top -l15 -stats command,pid,threads,cpu,state,mem,kshrd -pid $(pgrep -f philo) | grep -A1 COMMAND
 t1:
-	cc test/threads.c -o test/t1
+	cc test/threads.c -pthread -o test/t1
 	./test/t1
 git:	fclean
 	@echo $(GREEN)
