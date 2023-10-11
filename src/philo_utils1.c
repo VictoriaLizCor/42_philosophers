@@ -6,31 +6,11 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/09 17:34:04 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/11 16:57:35 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
-
-void	start_threads(t_philo *philos, int size)
-{
-	int	i;
-
-	i = 0;
-	while (i < size)
-	{
-		if (pthread_create(&philos[i].thread, NULL, \
-		(void *)rutine, &philos[i]) != 0)
-			error_thread(&philos[i], 0, errno);
-		i++;
-	}
-	i = 0;
-	while (i < size)
-	{
-		pthread_join(philos[i].thread, NULL);
-		i++;
-	}
-}
 
 static void	take_eat(t_philo *philo, t_rules *rules, int i)
 {
@@ -44,31 +24,21 @@ static void	take_eat(t_philo *philo, t_rules *rules, int i)
 	usleep(rules->t_eat * 1000);
 }
 
-static void	sleep_think(t_philo *philo, t_rules *rules, int i)
+static void	sleep_think(t_rules *rules, int i)
 {
-	if (philo->to_lock)
-	{
-		philo->fork.stat = false;
-		pthread_mutex_unlock(&philo->fork.lock);
-		fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->id);
-		philo->to_lock->fork.stat = false;
-		pthread_mutex_unlock(&philo->to_lock->fork.lock);
-		fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->to_lock->id);
-		philo->to_lock = NULL;
-	}
-	if (!rules->death_flag.stat)
-	{
-		printf(" %lld\tphilo %s [%03d] %s %s is   SLEEPING    %s\n", \
-		current_time(rules), color(i), i, color(0), P_SLEEP, color(0));
-		usleep(rules->t_sleep * 1000);
-		printf(" %lld\tphilo %s [%03d] %s %s is   THINKING    %s\n", \
-		current_time(rules), color(i), i, color(0), P_THINK, color(0));
-		usleep(rules->t_sleep * 1000);
-	}
+	if (rules->death_flag.stat)
+		return ;
+	printf(" %lld\tphilo %s [%03d] %s %s is   SLEEPING    %s\n", \
+	current_time(rules), color(i), i, color(0), P_SLEEP, color(0));
+	usleep(rules->t_sleep * 1000);
+	printf(" %lld\tphilo %s [%03d] %s %s is   THINKING    %s\n", \
+	current_time(rules), color(i), i, color(0), P_THINK, color(0));
+	usleep(rules->t_sleep * 1000);
 }
 
 static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
+	pthread_mutex_lock(&philo->d_rules->death_flag.lock);
 	if (!philo->fork.stat && !philo->d_rules->death_flag.stat)
 	{
 		pthread_mutex_lock(&philo->fork.lock);
@@ -90,9 +60,10 @@ static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 			philo->to_lock = left;
 		}
 	}
+	pthread_mutex_unlock(&philo->d_rules->death_flag.lock);
 }
 
-void	rutine(t_philo *philo)
+static void	exe(t_philo *philo)
 {
 	t_rules	*rules;
 
@@ -100,10 +71,7 @@ void	rutine(t_philo *philo)
 	while (1)
 	{
 		if ((current_time(rules) - philo->t_meal) >= rules->t_die)
-		{
-			died_msg(philo, philo->id);
-			return ;
-		}
+			break ;
 		else
 		{
 			philo->to_lock = NULL;
@@ -111,7 +79,43 @@ void	rutine(t_philo *philo)
 				check_locks(philo, philo->right, philo->left);
 			if (philo->to_lock)
 				take_eat(philo, rules, philo->id);
-			sleep_think(philo, rules, philo->id);
+			if (philo->to_lock)
+			{
+				philo->fork.stat = false;
+				pthread_mutex_lock(&philo->fork.lock);
+				philo->to_lock->fork.stat = false;
+				pthread_mutex_unlock(&philo->fork.lock);
+				fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->id);
+				fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->to_lock->id);
+				
+				philo->to_lock = NULL;
+			}
+			sleep_think(rules, philo->id);
 		}
+	}
+	pthread_mutex_lock(&rules->death_flag.lock);
+	if (!rules->death_flag.stat)
+		died_msg(philo, philo->id);
+	pthread_mutex_unlock(&rules->death_flag.lock);
+	return ;
+}
+
+void	start_threads(t_philo *philos, int size)
+{
+	int	i;
+
+	i = 0;
+	while (i < size)
+	{
+		if (pthread_create(&philos[i].thread, NULL, \
+		(void *)exe, &philos[i]) != 0)
+			error_thread(&philos[i], 0, errno);
+		i++;
+	}
+	i = 0;
+	while (i < size)
+	{
+		pthread_join(philos[i].thread, NULL);
+		i++;
 	}
 }

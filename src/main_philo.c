@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/09 17:34:54 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/11 16:31:13 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->t_sleep = ft_atol(argv[4]);
 	rules->n_to_eat = 0;
 	rules->death_flag.stat = false;
+	if (pthread_mutex_init(&rules->death_flag.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
 		rules->n_to_eat = ft_atol(argv[5]);
 }
@@ -85,7 +87,7 @@ static void	begin_hunger_games(char **argv)
 	start_threads(philos, rules.n_philos);
 	if (philos)
 	{
-		destroy_fork(philos->head, &rules);
+		destroy_mutex(philos, &rules);
 		ft_memset(philos, 0, sizeof(t_philo) * rules.n_philos);
 		free(philos);
 	}

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/09 17:30:31 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/11 15:45:11 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,13 @@ void		*ft_memset(void *s, int c, size_t n);
 /* philo_utils2.c */
 long long	current_time(t_rules *rules);
 void		start_threads(t_philo *philos, int size);
-void		rutine(t_philo *philo);
+// void		rutine(t_philo *philo);
 /* philo_utils2.c */
 void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-void		destroy_fork(t_philo *philo, t_rules *rules);
+void		destroy_mutex(t_philo *philo, t_rules *rules);
 void		died_msg(t_philo *philo, int i);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);
