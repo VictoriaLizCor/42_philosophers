@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/10 17:46:35 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/11 12:42:50 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,13 @@ typedef struct s_philo
 	struct s_philo	*head;
 }	t_philo;
 
+typedef struct s_rutine
+{
+	t_rules		*rules;
+	t_philo		*philos;
+	int			idx;
+}	t_rutine;
+
 /* main_philo.c */
 // void		begin_hunger_games(char **argv);
 /* libft.c */
@@ -72,8 +79,10 @@ long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
 /* philo_utils2.c */
 long long	current_time(t_rules *rules);
-void		start_threads(t_philo *philos, int size);
-void		rutine(t_philo *philo);
+void		start_threads(t_philo *philos, t_rules *rules, int size);
+// void		start_threads(t_philo *philos, t_rules *rules, int size, \
+// void (*arg)(t_philo *, t_rules *, int));
+// void		rutine(t_philo *philo);
 /* philo_utils2.c */
 void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo *philos);
@@ -81,6 +90,7 @@ void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 void		destroy_fork(t_philo *philo, t_rules *rules);
 void		died_msg(t_philo *philo, int i);
+void		farg(t_philo *philos, t_rules *rules, int idx);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);

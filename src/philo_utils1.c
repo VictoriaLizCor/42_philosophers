@@ -6,32 +6,14 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/09 17:34:04 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/11 13:17:56 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	start_threads(t_philo *philos, int size)
-{
-	int	i;
-
-	i = 0;
-	while (i < size)
-	{
-		if (pthread_create(&philos[i].thread, NULL, \
-		(void *)rutine, &philos[i]) != 0)
-			error_thread(&philos[i], 0, errno);
-		i++;
-	}
-	i = 0;
-	while (i < size)
-	{
-		pthread_join(philos[i].thread, NULL);
-		i++;
-	}
-}
-
+// if (pthread_create(&philos[i].thread, NULL, \
+		// (void *)rutine, (&philos[i])) != 0)
 static void	take_eat(t_philo *philo, t_rules *rules, int i)
 {
 	if (rules->death_flag.stat)
@@ -92,26 +74,56 @@ static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 	}
 }
 
-void	rutine(t_philo *philo)
+// (current_time(rules) - philos[idx].t_meal) >= rules->t_die
+// void rutine(void (*farg)(t_philo *, t_rules *, int))
+void	*rutine(t_rutine	*data)
 {
+	t_philo	*philos;
 	t_rules	*rules;
+	int		idx;
 
-	rules = philo->d_rules;
+	philos = data->philos;
+	rules = data->rules;
+	idx = data->idx;
 	while (1)
 	{
-		if ((current_time(rules) - philo->t_meal) >= rules->t_die)
+		if ((current_time(rules) - philos[idx].t_meal) >= rules->t_die)
 		{
-			died_msg(philo, philo->id);
-			return ;
+			// died_msg(&philos[idx], idx);
+			return (NULL);
 		}
 		else
 		{
-			philo->to_lock = NULL;
-			if (philo->right && philo->left)
-				check_locks(philo, philo->right, philo->left);
-			if (philo->to_lock)
-				take_eat(philo, rules, philo->id);
-			sleep_think(philo, rules, philo->id);
+			philos[idx].to_lock = NULL;
+			if (philos[idx].right && philos[idx].left)
+				check_locks(&philos[idx], philos[idx].right, philos[idx].left);
+			if (philos[idx].to_lock)
+				take_eat(&philos[idx], rules, idx);
+			sleep_think(&philos[idx], rules, idx);
 		}
+	}
+}
+
+void	start_threads(t_philo *philos, t_rules *rules, int size)
+{
+	int			i;
+	t_rutine	data;
+
+	i = 0;
+	data.philos = philos;
+	data.rules = rules;
+	while (i < size)
+	{
+		data.idx = philos[i].id;
+		if (pthread_create(&philos[i].thread, NULL, \
+		(void *)rutine, &data) != 0)
+			error_thread(&philos[i], 0, errno);
+		i++;
+	}
+	i = 0;
+	while (i < size)
+	{
+		pthread_join(philos[i].thread, NULL);
+		i++;
 	}
 }
