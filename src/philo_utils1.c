@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 12:00:57 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 12:03:41 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	sleep_think(t_rules *rules, int i)
 
 static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
-	if (!philo->fork.stat && !philo->d_rules->death_flag.stat)
+	if (!philo->d_rules->death_flag.stat)
 	{
 		pthread_mutex_lock(&philo->fork.lock);
 		philo->fork.stat = true;
