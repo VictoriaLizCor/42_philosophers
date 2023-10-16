@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 13:49:04 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 13:57:54 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	died_msg(t_rules *rules, t_philo *philo, int i)
 	if (res)
 	{
 		fprintf(stderr, "\t\t\t\t\t\t\t\t\t[%d]==> [%lld][%lld]\n", \
-			philo->id, (current_time(rules) - philo->t_meal), rules->t_die);
+		philo->id, current_time(rules) - philo->t_meal, rules->t_die);
 	}
 	return (res);
 }
