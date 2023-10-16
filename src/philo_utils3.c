@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/11 15:44:52 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 11:31:17 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,14 +34,16 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		error_thread(&philos[i], 1, errno);
 }
 
-void	died_msg(t_philo *philo, int i)
+void	died_msg(t_rules *rules, t_philo *philo, int i)
 {
-	t_rules	*rules;
-
-	rules = philo->d_rules;
-	fprintf(stderr, "\t\t\t\t\t[%d][%lld] meal\n", philo->id, philo->t_meal);
-	printf(" %lld\tphilo %s [%03d] %s %s        DIED      %s\n", \
-		current_time(rules), color(i), i, color(0), P_DEAD, color(0));
-	rules->death_flag.stat = true;
+	pthread_mutex_lock(&rules->death_flag.lock);
+	if (!rules->death_flag.stat)
+	{
+		fprintf(stderr, "\t\t\t\t\t[%d][%lld] meal\n", philo->id, philo->t_meal);
+		printf(" %lld\tphilo %s [%03d] %s %s        DIED      %s\n", \
+			current_time(rules), color(i), i, color(0), P_DEAD, color(0));
+		rules->death_flag.stat = true;
+	}
+	pthread_mutex_unlock(&rules->death_flag.lock);
 }
 

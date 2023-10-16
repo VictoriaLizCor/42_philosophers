@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/11 15:45:11 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 11:49:07 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ typedef struct s_rules
 {
 	time_t			t_start;
 	int				n_philos;
-	int				t_die;
-	int				t_eat;
-	int				t_sleep;
+	long long		t_die;
+	long long		t_eat;
+	long long		t_sleep;
 	int				n_to_eat;
 	t_mutex			death_flag;
 }	t_rules;
@@ -80,7 +80,7 @@ void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 void		destroy_mutex(t_philo *philo, t_rules *rules);
-void		died_msg(t_philo *philo, int i);
+void		died_msg(t_rules *rules, t_philo *philo, int i);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);

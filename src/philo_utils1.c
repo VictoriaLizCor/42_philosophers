@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/11 16:57:35 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 12:00:57 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ static void	sleep_think(t_rules *rules, int i)
 
 static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
-	pthread_mutex_lock(&philo->d_rules->death_flag.lock);
 	if (!philo->fork.stat && !philo->d_rules->death_flag.stat)
 	{
 		pthread_mutex_lock(&philo->fork.lock);
@@ -50,6 +49,7 @@ static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 			fprintf(stderr, "\t\tright\t\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
 			philo->id, philo->fork.stat, right->id, right->fork.stat, left->id, left->fork.stat);
 			philo->to_lock = right;
+			pthread_mutex_unlock(&right->fork.lock);
 		}
 		else if (philo->fork.stat && !philo->to_lock && !left->fork.stat)
 		{
@@ -58,9 +58,10 @@ static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 			fprintf(stderr, "\t\tleft\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
 			philo->id, philo->fork.stat, right->id, right->fork.stat, left->id, left->fork.stat);
 			philo->to_lock = left;
+			pthread_mutex_unlock(&left->fork.lock);
 		}
+		pthread_mutex_unlock(&philo->fork.lock);
 	}
-	pthread_mutex_unlock(&philo->d_rules->death_flag.lock);
 }
 
 static void	exe(t_philo *philo)
@@ -71,33 +72,34 @@ static void	exe(t_philo *philo)
 	while (1)
 	{
 		if ((current_time(rules) - philo->t_meal) >= rules->t_die)
-			break ;
-		else
 		{
-			philo->to_lock = NULL;
-			if (philo->right && philo->left)
-				check_locks(philo, philo->right, philo->left);
-			if (philo->to_lock)
-				take_eat(philo, rules, philo->id);
-			if (philo->to_lock)
-			{
-				philo->fork.stat = false;
-				pthread_mutex_lock(&philo->fork.lock);
-				philo->to_lock->fork.stat = false;
-				pthread_mutex_unlock(&philo->fork.lock);
-				fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->id);
-				fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->to_lock->id);
-				
-				philo->to_lock = NULL;
-			}
-			sleep_think(rules, philo->id);
+		// 	fprintf(stderr, "\t\t\t\t\t[%lld][%lld]\n", \
+		// 	(current_time(rules) - philo->t_meal), rules->t_die);
+		// 	died_msg(rules, philo, philo->id);
+			break ;
 		}
+		philo->to_lock = NULL;
+		if (philo->right && philo->left)
+			check_locks(philo, philo->right, philo->left);
+		if (philo->to_lock)
+			take_eat(philo, rules, philo->id);
+		sleep_think(rules, philo->id);
+		if (rules->n_philos == 1)
+			break ;
+		pthread_mutex_unlock(&philo->fork.lock);
+		pthread_mutex_unlock(&philo->to_lock->fork.lock);
+		philo->fork.stat = false;
+		philo->to_lock->fork.stat = false;
+		pthread_mutex_unlock(&philo->to_lock->fork.lock);
+		pthread_mutex_unlock(&philo->fork.lock);
+		fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->id);
+		fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->to_lock->id);
+		// philo->to_lock = NULL;
+		
 	}
-	pthread_mutex_lock(&rules->death_flag.lock);
-	if (!rules->death_flag.stat)
-		died_msg(philo, philo->id);
-	pthread_mutex_unlock(&rules->death_flag.lock);
-	return ;
+	fprintf(stderr, "\t\t\t\t\t[%lld][%lld]\n", \
+	(current_time(rules) - philo->t_meal), rules->t_die);
+	died_msg(rules, philo, philo->id);
 }
 
 void	start_threads(t_philo *philos, int size)
