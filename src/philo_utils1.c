@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 16:56:50 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 16:59:06 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,6 @@ static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 			{
 				right->fork.stat = true;
 				philo->to_lock = right;
-			}
-			else
-			{
-				pthread_mutex_lock(&left->fork.lock);
-				if (!left->fork.stat)
-				{
-					left->fork.stat = true;
-					philo->to_lock = left;
-				}
 			}
 		}
 	}
