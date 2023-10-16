@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 11:49:07 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 13:01:38 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 void		destroy_mutex(t_philo *philo, t_rules *rules);
-void		died_msg(t_rules *rules, t_philo *philo, int i);
+int			died_msg(t_rules *rules, t_philo *philo, int i);
 /* check_error.c*/
 void		error_thread(t_philo *philo, int type, int errnum);
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);

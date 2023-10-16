@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 11:31:17 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 13:49:04 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,31 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		error_thread(&philos[i], 1, errno);
 }
 
-void	died_msg(t_rules *rules, t_philo *philo, int i)
+int	died_msg(t_rules *rules, t_philo *philo, int i)
 {
+	int	res;
+
+	res = 0;
 	pthread_mutex_lock(&rules->death_flag.lock);
 	if (!rules->death_flag.stat)
 	{
-		fprintf(stderr, "\t\t\t\t\t[%d][%lld] meal\n", philo->id, philo->t_meal);
-		printf(" %lld\tphilo %s [%03d] %s %s        DIED      %s\n", \
+		// fprintf(stderr, "\t\t\t\t\t[%d][%lld] meal\n", philo->id, philo->t_meal);
+		if ((current_time(rules) - philo->t_meal) >= rules->t_die)
+		{
+			rules->death_flag.stat = true;
+			printf(" %lld\tphilo %s [%03d] %s %s        DIED      %s\n", \
 			current_time(rules), color(i), i, color(0), P_DEAD, color(0));
-		rules->death_flag.stat = true;
+			res = 1;
+		}
 	}
+	else
+		res = 1;
 	pthread_mutex_unlock(&rules->death_flag.lock);
+	if (res)
+	{
+		fprintf(stderr, "\t\t\t\t\t\t\t\t\t[%d]==> [%lld][%lld]\n", \
+			philo->id, (current_time(rules) - philo->t_meal), rules->t_die);
+	}
+	return (res);
 }
 
