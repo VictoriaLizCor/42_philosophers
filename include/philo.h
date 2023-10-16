@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 13:01:38 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 16:30:26 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ typedef struct s_philo
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
-	struct s_philo	*head;
 }	t_philo;
 
 /* main_philo.c */
