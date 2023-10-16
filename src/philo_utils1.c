@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 16:59:06 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/16 17:29:30 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,19 +78,21 @@ static void	exe(t_philo *philo)
 			pthread_mutex_unlock(&philo->to_lock->fork.lock);
 			fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->id, color(0));
 			fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->to_lock->id, color(0));
+			philo->fork.stat = false;
+			pthread_mutex_unlock(&philo->fork.lock);
 		}
-		philo->fork.stat = false;
-		pthread_mutex_unlock(&philo->fork.lock);
 		sleep_think(philo, rules, philo->id);
 	}
 }
 
 void	start_threads(t_philo *philos, int size)
 {
-	int	i;
-	int	res;
+	int			i;
+	int			res;
+	// long long	rand_idx;
 
 	i = 0;
+	// rand_idx
 	while (i < size)
 	{
 		res = pthread_create(&philos[i].thread, NULL, \
