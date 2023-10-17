@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 16:30:26 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/17 11:04:38 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ typedef struct s_philo
 /* main_philo.c */
 // void		begin_hunger_games(char **argv);
 /* libft.c */
+long long	generateRandomNumber(long long min, long long max);
 int			ft_isdigit(int ch);
 char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
@@ -71,7 +72,7 @@ long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
 /* philo_utils2.c */
 long long	current_time(t_rules *rules);
-void		start_threads(t_philo *philos, int size);
+void		start_threads(t_philo *philos, t_rules *rules);
 // void		rutine(t_philo *philo);
 /* philo_utils2.c */
 void		*ft_free(char **str);

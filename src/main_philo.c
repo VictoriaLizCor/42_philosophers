@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 16:45:46 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/17 10:58:32 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,10 @@ static void	begin_hunger_games(char **argv)
 {
 	t_rules			rules;
 	t_philo			*philos;
-	struct timeval	start;
 
 	init_rules(&rules, argv);
-	gettimeofday(&start, NULL);
-	rules.t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
 	init_philos(&rules, &philos, rules.n_philos);
-	start_threads(philos, rules.n_philos);
+	start_threads(philos, &rules);
 	if (philos)
 	{
 		destroy_mutex(philos, &rules);

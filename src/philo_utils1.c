@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/16 17:29:30 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/17 10:59:49 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,22 +78,25 @@ static void	exe(t_philo *philo)
 			pthread_mutex_unlock(&philo->to_lock->fork.lock);
 			fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->id, color(0));
 			fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->to_lock->id, color(0));
-			philo->fork.stat = false;
-			pthread_mutex_unlock(&philo->fork.lock);
 		}
+		philo->fork.stat = false;
+		pthread_mutex_unlock(&philo->fork.lock);
 		sleep_think(philo, rules, philo->id);
 	}
 }
 
-void	start_threads(t_philo *philos, int size)
+void	start_threads(t_philo *philos, t_rules *rules)
 {
-	int			i;
-	int			res;
+	int				i;
+	int				res;
+	struct timeval	start;
 	// long long	rand_idx;
 
 	i = 0;
 	// rand_idx
-	while (i < size)
+	gettimeofday(&start, NULL);
+	rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+	while (i < rules->n_philos)
 	{
 		res = pthread_create(&philos[i].thread, NULL, \
 		(void *)exe, &philos[i]);
@@ -102,7 +105,7 @@ void	start_threads(t_philo *philos, int size)
 		i++;
 	}
 	i = 0;
-	while (i < size)
+	while (i < rules->n_philos)
 	{
 		pthread_join(philos[i].thread, NULL);
 		i++;

@@ -6,12 +6,34 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/26 15:54:45 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/17 11:04:24 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
+long long	generateRandomNumber(long long min, long long max)
+{
+	struct timeval tv;
+	long long randomNumber;
+
+	gettimeofday(&tv, NULL);
+
+	// Use the current time in microseconds as the seed
+	long long seed = (long long)tv.tv_sec * 1000000 + (long long)tv.tv_usec;
+
+	// Use the Xorshift algorithm to generate a random number
+	seed ^= seed << 13;
+	seed ^= seed >> 7;
+	seed ^= seed << 17;
+	randomNumber =  min + (seed % (max - min + 1));
+	if (randomNumber < 1)
+	{
+		randomNumber = (randomNumber * -1) + 1;
+	}
+	// Return the random number within the specified interval
+	return (randomNumber);
+}
 int	ft_isdigit(int ch)
 {
 	if (ch >= '0' && ch <= '9')
