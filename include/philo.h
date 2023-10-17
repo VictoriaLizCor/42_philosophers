@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/17 11:04:38 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/17 17:53:24 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 typedef struct s_mutex
 {
 	bool			stat;
+	int				philo_group;
 	pthread_mutex_t	lock;
 	void			(*f)(void *);
 }	t_mutex;
@@ -44,12 +45,13 @@ typedef struct s_rules
 	long long		t_eat;
 	long long		t_sleep;
 	int				n_to_eat;
-	t_mutex			death_flag;
+	t_mutex			lock_flags;
 }	t_rules;
 
 typedef struct s_philo
 {
 	int				id;
+	int				action;
 	long long		t_meal;
 	int				n_to_eat;
 	long long		(*get_time)(t_rules *rules);
@@ -64,7 +66,8 @@ typedef struct s_philo
 /* main_philo.c */
 // void		begin_hunger_games(char **argv);
 /* libft.c */
-long long	generateRandomNumber(long long min, long long max);
+long long	generate_rand_num(long long min, long long max);
+int			*random_num_array(int min, int size);
 int			ft_isdigit(int ch);
 char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
@@ -79,6 +82,8 @@ void		*ft_free(char **str);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
+void		wait_all_philos(t_rules *rules, t_philo *philo);
+void		philo_actin_msg(long long time, int i, char *msg, char * msg_color);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 int			died_msg(t_rules *rules, t_philo *philo, int i);
 /* check_error.c*/

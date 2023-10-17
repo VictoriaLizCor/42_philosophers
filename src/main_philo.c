@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/17 10:58:32 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/17 15:38:54 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,13 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
 		(*philos + i)->t_meal = 0;
+		(*philos + i)->action = 3;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
 		(*philos + i)->get_time = &current_time;
 		i++;
 	}
 	init_neightbor(*philos, size - 1);
-	print_msg(rules, *philos);
 }
 
 static void	init_rules(t_rules *rules, char **argv)
@@ -66,8 +66,9 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->t_eat = ft_atol(argv[3]);
 	rules->t_sleep = ft_atol(argv[4]);
 	rules->n_to_eat = 0;
-	rules->death_flag.stat = false;
-	if (pthread_mutex_init(&rules->death_flag.lock, NULL) != 0)
+	rules->lock_flags.stat = false;
+	rules->lock_flags.philo_group = 0;
+	if (pthread_mutex_init(&rules->lock_flags.lock, NULL) != 0)
 		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
 		rules->n_to_eat = ft_atol(argv[5]);
