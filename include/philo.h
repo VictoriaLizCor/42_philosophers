@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/18 11:53:40 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/18 15:28:21 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,11 @@ char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);
 long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
-/* philo_utils2.c */
+/* philo_utils1.c */
+void		check_locks(t_philo *philo, t_philo *right, t_philo *left);
+void		philo_actions(t_philo *philo, t_rules *rules, int col);
 long long	current_time(t_rules *rules);
-void		start_threads(t_philo *philos, t_rules *rules);
+void		start_threads(t_philo *philos, t_rules *rules, int *array);
 // void		rutine(t_philo *philo);
 /* philo_utils2.c */
 void		*ft_free(char **str);
@@ -83,7 +85,7 @@ void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 void		wait_all_philos(t_rules *rules, t_philo *philo);
-void		philo_actin_msg(long long time, int i, char *msg, char * msg_color);
+void		philo_actin_msg(long long time, int i, char *msg, char *msg_color);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 int			died_msg(t_rules *rules, t_philo *philo, int i);
 /* check_error.c*/

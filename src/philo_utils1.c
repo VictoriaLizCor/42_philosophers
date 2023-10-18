@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/18 12:25:03 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/18 17:39:12 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,9 @@ static void	sleep_think(t_philo *philo, t_rules *rules, int i)
 	usleep(rules->t_sleep * 1000);
 }
 
-static void	philo_actions(t_philo *philo, t_rules *rules, int col)
+void	philo_actions(t_philo *philo, t_rules *rules, int col)
 {
-	if (died_msg(rules, philo, philo->id) == 1)
+	if (died_msg(rules, philo, philo->id))
 		return ;
 	if (philo->action == 1 && philo->to_lock)
 		philo_actin_msg(current_time(rules), col, "has taken a fork", P_FORK);
@@ -55,24 +55,24 @@ static void	philo_actions(t_philo *philo, t_rules *rules, int col)
 		philo->id, philo->t_meal, rules->t_die);
 		usleep(rules->t_eat * 1000);
 	}
-	else if (philo->action == 3)
-		philo_actin_msg(current_time(rules), col, "is  SLEEPING   ", P_SLEEP);
-	else if (philo->action == 4)
+	else if (philo->action == 3 && !philo->to_lock)
 	{
-		philo_actin_msg(current_time(rules), col, "is  THINKING   ", P_THINK);
+		philo_actin_msg(current_time(rules), col, "is  SLEEPING   ", P_SLEEP);
 		usleep(rules->t_sleep * 1000);
 	}
-	if (philo->action == 0)
-		philo->action = 3;
-	else
-		philo->action++;
+	else if (philo->action == 4 && !philo->to_lock)
+		philo_actin_msg(current_time(rules), col, "is  THINKING   ", P_THINK);
+	philo->action++;
+	if (philo->action > 4)
+		philo->action = 1;
 }
 
-static void	check_locks(t_philo *philo, t_philo *right, t_philo *left, int i)
+void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
 	if (!right || !left)
 		return ;
 	pthread_mutex_lock(&philo->fork.lock);
+	philo_actions(philo, philo->d_rules, philo->id);
 	if (!philo->fork.stat)
 	{
 		philo->fork.stat = true;
@@ -83,50 +83,52 @@ static void	check_locks(t_philo *philo, t_philo *right, t_philo *left, int i)
 			{
 				right->fork.stat = true;
 				philo->to_lock = right;
+				// philo->to_lock->action += 2;
+				philo_actions(philo->to_lock, philo->d_rules, philo->to_lock->id);
+				// philo->to_lock->action++;
+				// died_msg(philo->d_rules, philo, philo->id);
+				// died_msg(philo->d_rules, philo->to_lock, philo->to_lock->id);
 			}
+			else
+			{
+				philo->to_lock->fork.stat = false;
+				fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->to_lock->id, color(0));
+			}
+			pthread_mutex_unlock(&philo->to_lock->fork.lock);
 		}
 	}
+	else
+	{
+		philo->fork.stat = false;
+		fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->id, color(0));
+	}
+	// philo_actions(philo, philo->d_rules, philo->id);
+	pthread_mutex_unlock(&philo->fork.lock);
 }
 
 static void	exe(t_philo *philo)
 {
 	t_rules	*rules;
+	int		i;
 
 	rules = philo->d_rules;
-	while (1)
+	i = 0;
+	while (i++ < 10)
 	{
 		if (died_msg(rules, philo, philo->id))
 			return ;
-		philo->to_lock = NULL;
-		check_locks(philo, philo->right, philo->left, 1);
-		if (philo->to_lock)
-		{
-			philo_actions(philo, rules, philo->id);
-			// take_eat(philo, rules, philo->id);
-			philo->to_lock->fork.stat = false;
-			pthread_mutex_unlock(&philo->to_lock->fork.lock);
-			fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->to_lock->id, color(0));
-			philo->fork.stat = false;
-			fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->id, color(0));
-			pthread_mutex_unlock(&philo->fork.lock);
-		}
-		// sleep_think(philo, rules, philo->id);
+		check_locks(philo, philo->right, philo->left);
 		philo_actions(philo, rules, philo->id);
+		// philo->to_lock = NULL;
 	}
 }
 
-void	start_threads(t_philo *philos, t_rules *rules)
+void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
 	int				i;
 	int				res;
-	int				*rand_array;
 	struct timeval	start;
 
-	i = 0;
-	rand_array = random_non_repetive_values(0, rules->n_philos);
-	while (i < rules->n_philos)
-		fprintf(stderr, "%d ", rand_array[i++] + 1);
-	fprintf(stderr, "\n");
 	i = 0;
 	gettimeofday(&start, NULL);
 	rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
@@ -144,5 +146,4 @@ void	start_threads(t_philo *philos, t_rules *rules)
 		pthread_join(philos[rand_array[i]].thread, NULL);
 		i++;
 	}
-	free(rand_array);
 }

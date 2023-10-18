@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/17 17:20:25 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/18 17:33:48 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,18 @@ int	died_msg(t_rules *rules, t_philo *philo, int i)
 	pthread_mutex_lock(&rules->lock_flags.lock);
 	if (!rules->lock_flags.stat)
 	{
-		if (philo->action < 4)
-			fprintf(stderr, "\t\t\t\t\t\t\t[%d] ==> last_meal[%lld] \t action = %d\n", \
+		// philo->action++;
+			// philo->to_lock->action++;
+			// philo_actions(philo->to_lock, rules, philo->to_lock->id);
+		//  philo_actions(philo, rules, philo->id);
+		if (philo->action <= 4 && philo->action > 0)
+		{
+			fprintf(stderr, "\t\t\t\t\t\t\t[%d]==> last_meal[%lld] \t action = %d", \
 			philo->id, philo->t_meal, philo->action);
+			if (philo->to_lock)
+				fprintf(stderr, "\t to_lock_id=%d\n", philo->to_lock->id);
+			fprintf(stderr, "\n");
+		}
 		time = (current_time(rules) - philo->t_meal);
 		if (time >= rules->t_die)
 		{

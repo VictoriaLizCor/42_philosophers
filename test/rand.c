@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <string.h> 
 
 long long	generate_rand_num(long long min, long long max)
 {
@@ -17,19 +18,19 @@ long long	generate_rand_num(long long min, long long max)
 }
 
 // Function to generate a random number within a given interval
-long long	rand_pos(long long min, long long max)
-{
-	long long		random_num;
+// long long	rand_pos(long long min, long long max)
+// {
+// 	long long		random_num;
 
-	random_num = 0;
-	while (1)
-	{
-		random_num = generate_rand_num(min, max);
-		if (random_num > 0)
-			break ;
-	}
-	return (random_num);
-}
+// 	random_num = 0;
+// 	while (1)
+// 	{
+// 		random_num = generate_rand_num(min, max);
+// 		if (random_num > 0)
+// 			break ;
+// 	}
+// 	return (random_num);
+// }
 
 int	val_exist(long long num, int arr[], int size)
 {
@@ -54,18 +55,25 @@ int	*random_non_repetive_values(int min, int max, int size)
 	int		random_num;
 
 	array = (int *)calloc(size, sizeof(int));
+	memset(array, min - 1, sizeof(int) * (size));
 	i = 0;
-	random_num = 0;
+	random_num = min - 1;
 	while (i < size)
 	{
-		while (val_exist(random_num, array, i))
+		/* in case of non_repetive values */
+		// while (val_exist(random_num, array, i))
 		{
 			while (1)
 			{
-				random_num = generate_rand_num(min, max);
-				if (random_num > 0)
+				random_num = (int)generate_rand_num(min, max);
+					/* in case of negative numbers*/
+				if (random_num < 0 && random_num < min)
+					random_num *= -1;
+				printf("%d ", random_num);
+				if (random_num >= min && random_num <= max)
 					break ;
 			}
+			printf("\n");
 		}
 		array[i] = random_num;
 		i++;
@@ -78,13 +86,13 @@ int	main(void)
 	int			min;
 	int			max;
 	int			i;
-	long long	random_number;
+	int			size;
 	int			*array;
 
-	array = random_non_repetive_values(1, 5, 5);
-	min = 10;
-	max = 50;
-	i = 0;
+	min = -2;
+	max = 10;
+	size = 5;
+	array = random_non_repetive_values(min, max, size);
 	// printf("Random number within interval [%d, %d]: %lld\n", min, max, random_number);
 	// while (i++ < 100)
 	// {
@@ -94,7 +102,7 @@ int	main(void)
 	// 	// 	printf("i = %d %% 4=> %d\n", i, i % 4);
 	// }
 	printf("\n--> [");
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < size; i++) {
 		printf("%d ", array[i]);
 	}
 	printf("]\n");

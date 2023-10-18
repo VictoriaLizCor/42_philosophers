@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/18 12:07:15 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/18 14:26:07 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,17 +72,19 @@ int	*random_non_repetive_values(int min, int size)
 	int		random_num;
 
 	array = (int *)malloc(size * sizeof(int));
-	ft_memset(array, -1, sizeof(int) * (size));
+	ft_memset(array, min - 1, sizeof(int) * (size));
 	i = 0;
-	random_num = -1;
+	random_num = min - 1;
 	while (i < size)
 	{
 		while (val_exist(random_num, array, i))
 		{
 			while (1)
 			{
-				random_num = generate_rand_num(min, size -1);
-				if (random_num > -1)
+				random_num = (int)generate_rand_num(min, size - 1);
+				if (random_num < 0 && random_num < min)
+					random_num *= -1;
+				if (random_num >= min && random_num <= size - 1)
 					break ;
 			}
 		}

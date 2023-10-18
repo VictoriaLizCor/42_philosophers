@@ -4,6 +4,7 @@ FLAGS = -Wall -Wextra #-Werror
 INCLUDES += -I include/
 CC = gcc
 D = 1
+S = 1
 ifeq ($(S), 1)
 D_SAN = -Wall -Wextra -fsanitize=thread
 else
@@ -106,8 +107,11 @@ err:$(NAME)
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
 	./philo $(NUM)
+ex4:$(NAME)
+	@make re -C .
+	./philo 4 410 200 200
 ex1:$(NAME)
-	./philo 5 150 57 61
+	./philo 1 210 100 100
 top:$(NAME)
 	top -opid -stats command,pid,threads,cpu,state,mem,kshrd
 # 	while $(shell ps | awk '/philo/ && !/awk/ {print $$1}') ; do \

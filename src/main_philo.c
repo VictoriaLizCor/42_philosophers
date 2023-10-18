@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/17 15:38:54 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/18 16:10:01 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
 		(*philos + i)->t_meal = 0;
-		(*philos + i)->action = 3;
+		(*philos + i)->action = 0;
+		(*philos + i)->to_lock = (void *)0;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
 		(*philos + i)->get_time = &current_time;
@@ -78,10 +79,21 @@ static void	begin_hunger_games(char **argv)
 {
 	t_rules			rules;
 	t_philo			*philos;
+	int				*rand_array;
+	int				i;
 
+	i = 0;
 	init_rules(&rules, argv);
 	init_philos(&rules, &philos, rules.n_philos);
-	start_threads(philos, &rules);
+	rand_array = random_non_repetive_values(0, rules.n_philos);
+	while (i < rules.n_philos)
+	{
+		rand_array[i] = i;
+		fprintf(stderr, "%d ", rand_array[i++] + 1);
+	}
+	fprintf(stderr, "\n");
+	start_threads(philos, &rules, rand_array);
+	free(rand_array);
 	if (philos)
 	{
 		destroy_mutex(philos, &rules);
