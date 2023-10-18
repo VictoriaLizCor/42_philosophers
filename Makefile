@@ -79,7 +79,7 @@ resan:
 	@make re -C . D=1
 	@make -C . e1
 e1:$(NAME)
-	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 1 4 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_EAT=$(shell seq 100 120 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_SLEEP=$(shell seq 100 120 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP) + 1)) | tr '\n' ' '))

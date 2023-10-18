@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/17 17:53:24 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:53:40 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ typedef struct s_philo
 // void		begin_hunger_games(char **argv);
 /* libft.c */
 long long	generate_rand_num(long long min, long long max);
-int			*random_num_array(int min, int size);
+int			*random_non_repetive_values(int min, int size);
 int			ft_isdigit(int ch);
 char		*ft_strchr(const char *s, int c);
 size_t		ft_strlen(const char *str);

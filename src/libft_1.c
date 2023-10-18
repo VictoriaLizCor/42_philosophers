@@ -6,58 +6,20 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/17 17:53:51 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/18 11:51:58 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-long long	generate_rand_num(long long min, long long max)
+size_t	ft_strlen(const char *str)
 {
-	struct timeval	tv;
-	long long		random_num;
-	long long		seed;
+	size_t	cnt;
 
-	gettimeofday(&tv, NULL);
-	seed = (long long)tv.tv_sec * 1000000 + (long long)tv.tv_usec;
-
-	seed ^= seed << 13;
-	seed ^= seed >> 7;
-	seed ^= seed << 17;
-	random_num = min + (seed % (max - min + 1));
-	if (random_num < 1)
-	{
-		random_num = (random_num * -1) + 1;
-	}
-	return (random_num);
-}
-
-int	*random_num_array(int min, int size)
-{
-	int		*array;
-	int		i;
-	int		j;
-	int		random_num;
-
-	array = (int *)malloc(size * sizeof(int));
-	i = 0;
-	while (i < size)
-	{
-		j = 0;
-		random_num = generate_rand_num(min, size);
-		while (j < i)
-		{
-			if (array[j] == random_num)
-				break ;
-			j++;
-		}
-		if (j == i)
-		{
-			array[i] = random_num;
-			i++;
-		}
-	}
-	return (array);
+	cnt = 0;
+	while (str[cnt])
+		cnt++;
+	return (cnt);
 }
 
 int	ft_isdigit(int ch)
