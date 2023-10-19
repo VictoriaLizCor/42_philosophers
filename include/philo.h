@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/18 15:28:21 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/19 14:00:24 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,9 @@ typedef struct s_philo
 	int				action;
 	long long		t_meal;
 	int				n_to_eat;
-	long long		(*get_time)(t_rules *rules);
+	time_t			t_start;
+	time_t			t_current;
+	long long		(*get_time)(time_t start);
 	pthread_t		thread;
 	t_mutex			fork;
 	t_rules			*d_rules;
@@ -64,7 +66,6 @@ typedef struct s_philo
 }	t_philo;
 
 /* main_philo.c */
-// void		begin_hunger_games(char **argv);
 /* libft.c */
 long long	generate_rand_num(long long min, long long max);
 int			*random_non_repetive_values(int min, int size);
@@ -74,9 +75,9 @@ size_t		ft_strlen(const char *str);
 long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
 /* philo_utils1.c */
-void		check_locks(t_philo *philo, t_philo *right, t_philo *left);
-void		philo_actions(t_philo *philo, t_rules *rules, int col);
-long long	current_time(t_rules *rules);
+int			check_locks(t_philo *philo, t_philo *right, t_philo *left);
+int		philo_actions(t_philo *philo, t_rules *rules, int col, int ext);
+long long	current_time(time_t t_start);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 // void		rutine(t_philo *philo);
 /* philo_utils2.c */

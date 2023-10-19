@@ -107,11 +107,23 @@ err:$(NAME)
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
 	./philo $(NUM)
+ex1:$(NAME)
+	./philo 1 410 200 200
+#dead
+ex2:$(NAME)
+	./philo 2 310 200 100
+ex4d:$(NAME)
+	@make re -C .
+	./philo 4 310 200 100
 ex4:$(NAME)
 	@make re -C .
 	./philo 4 410 200 200
-ex1:$(NAME)
-	./philo 1 210 100 100
+ex5:$(NAME)
+	@make re -C .
+	./philo 5 800 200 200
+ex5d:$(NAME)
+	@make re -C .
+	./philo 5 800 200 200 7
 top:$(NAME)
 	top -opid -stats command,pid,threads,cpu,state,mem,kshrd
 # 	while $(shell ps | awk '/philo/ && !/awk/ {print $$1}') ; do \

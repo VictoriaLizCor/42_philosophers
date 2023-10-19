@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/09/26 16:45:02 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/19 11:45:39 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*warn(int idx)
 	return (s_color[idx]);
 }
 
-long long	current_time(t_rules *rules)
+long long	current_time(time_t t_start)
 {
 	long long		ms;
 	long long		t1;
@@ -60,7 +60,7 @@ long long	current_time(t_rules *rules)
 	gettimeofday(&current, NULL);
 	t1 = current.tv_sec * 1000;
 	t2 = current.tv_usec / 1000;
-	ms = (t1 + t2) - rules->t_start;
+	ms = (t1 + t2) - t_start;
 	return (ms);
 }
 
