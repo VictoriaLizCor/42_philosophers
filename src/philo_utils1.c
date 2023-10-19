@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/19 14:32:23 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/19 17:46:12 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	philo_actions(t_philo *philo, t_rules *rules, int col, int ext)
 {
-	// if (died_msg(rules, philo, philo->id))
-	// 	return (1);
+	if (died_msg(philo->d_rules, philo, philo->id))
+		return (1);
 	if (philo->action <= 4 && philo->action >= 0)
 	{
 		fprintf(stderr, "\t\t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
@@ -24,6 +24,7 @@ int	philo_actions(t_philo *philo, t_rules *rules, int col, int ext)
 			fprintf(stderr, "\t to_lock_id=%d\n", philo->to_lock->id);
 		fprintf(stderr, "\n");
 	}
+	philo->action++;
 	if (philo->action == 1 && philo->to_lock)
 		philo_actin_msg(philo->t_current, col, "has taken a fork", P_FORK);
 	else if (philo->action == 2 && philo->to_lock)
@@ -41,51 +42,32 @@ int	philo_actions(t_philo *philo, t_rules *rules, int col, int ext)
 	}
 	else if (philo->action == 4 && !philo->to_lock)
 		philo_actin_msg(philo->t_current, col, "is  THINKING   ", P_THINK);
-	philo->action++;
 	return (0);
 }
 
 int	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
-	if (!right || !left)
-		return (1);
 	pthread_mutex_lock(&philo->fork.lock);
-	// if (!philo->fork.stat)
-	// {
-	// 	philo->fork.stat = true;
-		// if (philo->to_lock && right)
-		// {
-			pthread_mutex_lock(&right->fork.lock);
-			// if (!right->fork.stat)
-			// {
-			// 	right->fork.stat = true;
-				philo->to_lock = right;
-				// philo->to_lock->action++;
-				// philo->to_lock->action += 2;
-				philo->t_current = current_time(philo->t_start);
-				philo->to_lock->t_current = philo->t_current + 1;
-				philo->to_lock->action++;
-				if (died_msg(philo->d_rules, philo, philo->id))
-					return (1);
-				philo_actions(philo, philo->d_rules, philo->id, philo->id);
-				philo_actions(philo->to_lock, philo->d_rules, philo->to_lock->id, philo->id);
-				// philo_actions(philo->to_lock, philo->d_rules, philo->to_lock->id);
-				// philo->to_lock->action++;
-			// }
-			// else
-			// {
-			// 	philo->to_lock->fork.stat = false;
-			// 	fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->to_lock->id, color(0));
-			// }
-			pthread_mutex_unlock(&philo->to_lock->fork.lock);
-		// }
-	// }
-	// else
-	// {
-	// 	philo->fork.stat = false;
-	// 	fprintf(stderr, "\t\t\t\t\t %s[%d][%d] unlock%s\n", color(philo->id), philo->id, philo->id, color(0));
-	// }
-	philo->to_lock = NULL;
+	if (right)
+	{
+		pthread_mutex_lock(&right->fork.lock);
+		philo->to_lock = right;
+		if (philo_actions(philo, philo->d_rules, philo->id, philo->id) || \
+		philo_actions(philo->to_lock, philo->d_rules, philo->to_lock->id, philo->id) || \
+		philo_actions(philo->to_lock, philo->d_rules, philo->to_lock->id, philo->id))
+		{
+			pthread_mutex_unlock(&philo->fork.lock);
+			pthread_mutex_unlock(&right->fork.lock);
+			return (1);
+		}
+		pthread_mutex_unlock(&philo->to_lock->fork.lock);
+		philo->to_lock = NULL;
+	}
+	else if (!right && philo_actions(philo, philo->d_rules, philo->id, philo->id))
+	{
+		
+		return (1);
+	}
 	pthread_mutex_unlock(&philo->fork.lock);
 	return (0);
 }
@@ -97,14 +79,18 @@ static void	exe(t_philo *philo)
 
 	rules = philo->d_rules;
 	i = 0;
-	// while (i++ < 10)
 	while (1)
 	{
+		// pthread_mutex_lock(&rules->lock_flags.lock);
+		// if (rules->lock_flags.stat)
+		// {
+		// 	philo_actin_msg(philo->t_current, i, "      DIED    ", P_DEAD);
+		// }
+		// pthread_mutex_unlock(&rules->lock_flags.lock);
+		// if (died_msg(philo->d_rules, philo, philo->id))
+		// 	return ;
 		if (check_locks(philo, philo->right, philo->left))
 			return ;
-		if (philo_actions(philo, philo->d_rules, philo->id, philo->id))
-			return ;
-		// philo->to_lock = NULL;
 	}
 }
 

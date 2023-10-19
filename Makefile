@@ -112,6 +112,8 @@ ex1:$(NAME)
 #dead
 ex2:$(NAME)
 	./philo 2 310 200 100
+ex3:$(NAME)
+	./philo 3 310 200 100
 ex4d:$(NAME)
 	@make re -C .
 	./philo 4 310 200 100

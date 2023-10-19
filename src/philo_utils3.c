@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/19 13:39:57 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/19 17:13:41 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ void	wait_all_philos(t_rules *rules, t_philo *philo)
 	static int		flag;
 	struct timeval	start;
 
-	// while (1)
-	// usleep(generate_rand_num(500, 700));
 	{
 		pthread_mutex_lock(&rules->lock_flags.lock);
 		if (!rules->lock_flags.philo_group)
@@ -63,6 +61,18 @@ void	wait_all_philos(t_rules *rules, t_philo *philo)
 	}
 }
 
+int	check_dead(t_rules *rules, t_philo *philo)
+{
+	long long	time;
+
+	pthread_mutex_lock(&rules->lock_flags.lock);
+	philo->t_current = current_time(philo->t_start);
+	time = (philo->t_current - philo->t_meal);
+	fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld/%lld | %lld]\n", \
+			philo->id, philo->t_meal, time, rules->t_die);
+	pthread_mutex_unlock(&rules->lock_flags.lock);
+}
+
 int	died_msg(t_rules *rules, t_philo *philo, int i)
 {
 	int			res;
@@ -72,13 +82,12 @@ int	died_msg(t_rules *rules, t_philo *philo, int i)
 	pthread_mutex_lock(&rules->lock_flags.lock);
 	if (!rules->lock_flags.stat)
 	{
+		philo->t_current = current_time(rules->t_start);
 		time = (philo->t_current - philo->t_meal);
 		if (time >= rules->t_die)
 		{
 			rules->lock_flags.stat = true;
-			philo_actin_msg(philo->get_time(philo->t_start), i, "      DIED    ", P_DEAD);
-			fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld | %lld]\n", \
-			philo->id, time, rules->t_die);
+			philo_actin_msg(philo->t_current, i, "      DIED    ", P_DEAD);
 			res = 1;
 		}
 	}
