@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/19 17:46:12 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/19 17:50:49 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,9 @@ int	philo_actions(t_philo *philo, t_rules *rules, int col, int ext)
 
 int	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
+	int	res;
+
+	res = 0;
 	pthread_mutex_lock(&philo->fork.lock);
 	if (right)
 	{
@@ -56,20 +59,17 @@ int	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 		philo_actions(philo->to_lock, philo->d_rules, philo->to_lock->id, philo->id) || \
 		philo_actions(philo->to_lock, philo->d_rules, philo->to_lock->id, philo->id))
 		{
-			pthread_mutex_unlock(&philo->fork.lock);
-			pthread_mutex_unlock(&right->fork.lock);
-			return (1);
+			res = 1;
 		}
 		pthread_mutex_unlock(&philo->to_lock->fork.lock);
 		philo->to_lock = NULL;
 	}
 	else if (!right && philo_actions(philo, philo->d_rules, philo->id, philo->id))
 	{
-		
-		return (1);
+		res = 1;
 	}
 	pthread_mutex_unlock(&philo->fork.lock);
-	return (0);
+	return (res);
 }
 
 static void	exe(t_philo *philo)
