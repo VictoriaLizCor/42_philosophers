@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/19 14:31:16 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/19 14:32:23 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ int	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 				// philo->to_lock->action += 2;
 				philo->t_current = current_time(philo->t_start);
 				philo->to_lock->t_current = philo->t_current + 1;
-				philo->action++;
 				philo->to_lock->action++;
 				if (died_msg(philo->d_rules, philo, philo->id))
 					return (1);
