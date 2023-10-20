@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 15:42:16 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 16:27:45 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_mutex
 
 typedef struct s_rules
 {
-	time_t			t_start;
+	long long		t_start;
 	int				n_philos;
 	long long		t_die;
 	long long		t_eat;
@@ -52,7 +52,7 @@ typedef struct s_philo
 	int				action;
 	int				n_to_eat;
 	long long		t_meal;
-	time_t			time;
+	long long		time;
 	pthread_t		thread;
 	t_mutex			fork;
 	t_mutex			msg;
@@ -64,7 +64,7 @@ typedef struct s_philo
 
 /* main_philo.c */
 /* libft.c */
-time_t		current_time(time_t t_start);
+long long	current_time(time_t t_start);
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);

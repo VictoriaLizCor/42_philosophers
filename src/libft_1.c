@@ -6,13 +6,13 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 15:40:19 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 16:27:56 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-time_t	current_time(time_t t_start)
+long long	current_time(time_t t_start)
 {
 	time_t			ms;
 	time_t			t1;
