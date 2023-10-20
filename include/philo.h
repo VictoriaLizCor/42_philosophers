@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 15:20:50 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:42:16 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,11 @@ typedef struct s_philo
 	int				action;
 	int				n_to_eat;
 	long long		t_meal;
-	long long		time;
+	time_t			time;
 	pthread_t		thread;
 	t_mutex			fork;
 	t_mutex			msg;
 	t_rules			*d_rules;
-	long long		(*get_time)(time_t t_start);
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -65,7 +64,7 @@ typedef struct s_philo
 
 /* main_philo.c */
 /* libft.c */
-long long	current_time(time_t t_start);
+time_t		current_time(time_t t_start);
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
@@ -77,7 +76,7 @@ void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
 char		*warn(int idx);
-void		philo_msg(long long time, int i, char *msg, char *msg_color);
+void		philo_msg(t_philo *philo, char *msg, char *msg_color);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */

@@ -6,34 +6,31 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 15:20:10 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:49:08 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-static void	philo_lock_msg(t_philo *philo, int id)
+static void	philo_lock_msg(t_philo *philo)
 {
 	philo->action++;
 	pthread_mutex_lock(&philo->msg.lock);
-	printf(" %lld\tphilo %s [%03d] %s", philo->time, color(id), id, color(0));
 	died_msg(philo->d_rules, philo);
 	if (philo->to_lock)
 	{
 		if (philo->action == 1)
-			printf(" %s %s %s\n", P_FORK, "has taken a fork", color(0));
+			philo_msg(philo, "has taken a fork", P_FORK);
 		if (philo->action == 2)
-			printf(" %s %s %s\n", P_EAT, "is    EATING    ", color(0));
+			philo_msg(philo, "is    EATING    ", P_EAT);
 	}
 	else
 	{
 		if (philo->action == 3)
-			printf(" %s %s %s\n", P_SLEEP, "is   SLEEPING   ", color(0));
+			philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
 		if (philo->action == 4)
-			printf(" %s %s %s\n", P_THINK, "is   THINKING   ", color(0));
+			philo_msg(philo, "is   THINKING   ", P_THINK);
 	}
-	if (philo->action == -1)
-		printf(" %s %s %s\n", P_DEAD, "      DIED      ", color(0));
 	pthread_mutex_unlock(&philo->msg.lock);
 }
 
@@ -56,12 +53,12 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, int col, t_philo *call
 			fprintf(stderr, "\n");
 			pthread_mutex_unlock(&philo->msg.lock);
 		}
-		philo_msg(philo, philo->id);
+		philo_lock_msg(philo);
 		if (philo->action == 1 && philo->to_lock)
-			philo_msg(philo->to_lock, philo->to_lock->id);
+			philo_lock_msg(philo->to_lock);
 		else if (philo->action == 2 && philo->to_lock)
 		{
-			philo_msg(philo->to_lock, philo->to_lock->id);
+			philo_lock_msg(philo->to_lock);
 			philo->t_meal = philo->time;
 			fprintf(stderr, "\t\t\t\t\t\t\t\t[%d] ==> %lld| %lld \t action = %d\n", \
 			philo->id, philo->t_meal, rules->t_die, philo->action);
@@ -136,7 +133,7 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 
 	i = 0;
 	gettimeofday(&start, NULL);
-	rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+	rules->t_start = ((start.tv_sec * 1000) + (start.tv_usec / 1000));
 	while (i < rules->n_philos)
 	{
 		res = pthread_create(&philos[rand_array[i]].thread, NULL, \

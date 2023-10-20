@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 15:19:25 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:48:33 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,13 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		error_thread(&philos[i], 1, errno);
 }
 
-void	philo_msg(long long time, int i, char *msg, char *msg_color)
+void	philo_msg(t_philo *philo, char *msg, char *msg_color)
 {
+	int	i;
+
+	i = philo->id;
 	printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
-	time, color(i), i, color(0), msg_color, msg, color(0));
+	philo->time, color(i), i, color(0), msg_color, msg, color(0));
 }
 
 // void	wait_all_philos(t_rules *rules, t_philo *philo)
@@ -91,8 +94,8 @@ int	died_msg(t_rules *rules, t_philo *philo)
 		time = (philo->time - philo->t_meal);
 		if (time >= rules->t_die)
 		{
-			philo->action = -1;
 			rules->lock_flags.stat = true;
+			philo_msg(philo, "      DIED      ", P_DEAD);
 			fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld/%lld | %lld]\n", \
 			philo->id, philo->t_meal, time, rules->t_die);
 			res = 1;
