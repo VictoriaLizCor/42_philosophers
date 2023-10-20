@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/19 11:45:39 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 10:48:41 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,20 +48,6 @@ char	*warn(int idx)
 		"\x1B[32m", \
 	};
 	return (s_color[idx]);
-}
-
-long long	current_time(time_t t_start)
-{
-	long long		ms;
-	long long		t1;
-	long long		t2;
-	struct timeval	current;
-
-	gettimeofday(&current, NULL);
-	t1 = current.tv_sec * 1000;
-	t2 = current.tv_usec / 1000;
-	ms = (t1 + t2) - t_start;
-	return (ms);
 }
 
 void	philo_neightbor(t_philo *philos, int i, int left, int right)

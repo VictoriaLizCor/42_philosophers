@@ -6,11 +6,25 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/18 11:51:58 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 10:48:47 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
+
+long long	current_time(time_t t_start)
+{
+	long long		ms;
+	long long		t1;
+	long long		t2;
+	struct timeval	current;
+
+	gettimeofday(&current, NULL);
+	t1 = current.tv_sec * 1000;
+	t2 = current.tv_usec / 1000;
+	ms = (t1 + t2) - t_start;
+	return (ms);
+}
 
 size_t	ft_strlen(const char *str)
 {

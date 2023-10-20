@@ -6,17 +6,11 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/19 17:13:41 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 11:00:29 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
-
-void	philo_actin_msg(long long time, int i, char *msg, char *msg_color)
-{
-	printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
-	time, color(i), i, color(0), msg_color, msg, color(0));
-}
 
 void	destroy_mutex(t_philo *philos, t_rules *rules)
 {
@@ -30,10 +24,9 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 			philos[i].t_meal = rules->t_die;
 			if (pthread_mutex_destroy(&philos[i].fork.lock))
 				error_thread(&philos[i], 1, errno);
-			// ft_memset(&philos[i], 0, sizeof(t_philo));
+			ft_memset(&philos[i], 0, sizeof(t_philo));
 			i++;
 		}
-		// ft_memset(philos, 0, sizeof(t_philo) * size);
 	}
 	fprintf(stderr, "\t\t\t\t\t[ALL ERASED]\n");
 	if (pthread_mutex_destroy(&rules->lock_flags.lock))
@@ -61,18 +54,6 @@ void	wait_all_philos(t_rules *rules, t_philo *philo)
 	}
 }
 
-int	check_dead(t_rules *rules, t_philo *philo)
-{
-	long long	time;
-
-	pthread_mutex_lock(&rules->lock_flags.lock);
-	philo->t_current = current_time(philo->t_start);
-	time = (philo->t_current - philo->t_meal);
-	fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld/%lld | %lld]\n", \
-			philo->id, philo->t_meal, time, rules->t_die);
-	pthread_mutex_unlock(&rules->lock_flags.lock);
-}
-
 int	died_msg(t_rules *rules, t_philo *philo, int i)
 {
 	int			res;
@@ -82,12 +63,14 @@ int	died_msg(t_rules *rules, t_philo *philo, int i)
 	pthread_mutex_lock(&rules->lock_flags.lock);
 	if (!rules->lock_flags.stat)
 	{
-		philo->t_current = current_time(rules->t_start);
+		philo->t_current = rules->lock_flags.get_time(rules->t_start);
 		time = (philo->t_current - philo->t_meal);
 		if (time >= rules->t_die)
 		{
 			rules->lock_flags.stat = true;
-			philo_actin_msg(philo->t_current, i, "      DIED    ", P_DEAD);
+			philo_msg(philo->t_current, i, "      DIED      ", P_DEAD);
+			fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld/%lld | %lld]\n", \
+			philo->id, philo->t_meal, time, rules->t_die);
 			res = 1;
 		}
 	}

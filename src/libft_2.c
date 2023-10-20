@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/18 14:26:07 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 10:41:47 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-long long	generate_rand_num(long long min, long long max)
+static long long	generate_rand_num(long long min, long long max)
 {
 	struct timeval	tv;
 	long long		seed;
@@ -51,7 +51,7 @@ long long	generate_rand_num(long long min, long long max)
 	return (min + (seed % (max - min + 1)));
 }
 
-int	val_exist(long long num, int arr[], int size)
+static int	val_exist(long long num, int arr[], int size)
 {
 	int	i;
 

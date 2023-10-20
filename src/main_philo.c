@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/19 11:53:03 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 10:33:25 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,14 +47,16 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	while (i < size)
 	{
 		(*philos + i)->id = i + 1;
-		(*philos + i)->d_rules = rules;
-		(*philos + i)->n_to_eat = rules->n_to_eat;
-		(*philos + i)->t_meal = 0;
 		(*philos + i)->action = 0;
+		(*philos + i)->d_rules = rules;
+		(*philos + i)->t_meal = 0;
+		(*philos + i)->t_die = rules->t_die;
+		(*philos + i)->t_eat = rules->t_eat;
+		(*philos + i)->t_sleep = rules->t_sleep;
+		(*philos + i)->n_to_eat = rules->n_to_eat;
 		(*philos + i)->to_lock = (void *)0;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
-		(*philos + i)->get_time = &current_time;
 		i++;
 	}
 	init_neightbor(*philos, size - 1);
@@ -69,6 +71,7 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->n_to_eat = 0;
 	rules->lock_flags.stat = false;
 	rules->lock_flags.philo_group = 0;
+	rules->lock_flags.get_time = &current_time;
 	if (pthread_mutex_init(&rules->lock_flags.lock, NULL) != 0)
 		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
