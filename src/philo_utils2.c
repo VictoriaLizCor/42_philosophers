@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 10:48:41 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 11:19:38 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,17 +77,3 @@ void	print_msg(t_rules *rules, t_philo *tmp)
 	}
 	printf("\n");
 }
-
-// void	*ft_free(char **str)
-// {
-// 	int		i;
-
-// 	i = 0;
-// 	while (str[i] != 0)
-// 	{
-// 		free(str[i]);
-// 		i++;
-// 	}
-// 	free(str);
-// 	return (NULL);
-// }

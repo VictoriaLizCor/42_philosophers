@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 10:48:56 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:20:50 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,7 @@
 typedef struct s_mutex
 {
 	bool			stat;
-	int				philo_group;
 	pthread_mutex_t	lock;
-	long long		(*get_time)(time_t t_start);
 }	t_mutex;
 
 typedef struct s_rules
@@ -54,14 +52,12 @@ typedef struct s_philo
 	int				action;
 	int				n_to_eat;
 	long long		t_meal;
-	long long		t_die;
-	long long		t_eat;
-	long long		t_sleep;
-	time_t			t_start;
-	time_t			t_current;
+	long long		time;
 	pthread_t		thread;
 	t_mutex			fork;
+	t_mutex			msg;
 	t_rules			*d_rules;
+	long long		(*get_time)(time_t t_start);
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -77,17 +73,18 @@ void		*ft_memset(void *s, int c, size_t n);
 char		*ft_strchr(const char *s, int c);
 int			*random_non_repetive_values(int min, int size);
 /* philo_utils1.c */
-void		philo_msg(long long time, int i, char *msg, char *msg_color);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
 char		*warn(int idx);
+void		philo_msg(long long time, int i, char *msg, char *msg_color);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
+bool		ft_usleep(t_rules *rules, t_philo *philo, long long time);
 void		wait_all_philos(t_rules *rules, t_philo *philo);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
-int			died_msg(t_rules *rules, t_philo *philo, int i);
+int			died_msg(t_rules *rules, t_philo *philo);
 /* check_error.c*/
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);
 void		error_thread(t_philo *philo, int type, int errnum);
