@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 15:49:08 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/20 15:54:36 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, int col, t_philo *call
 	{
 		if (philo->action <= 4 && philo->action >= 0)
 		{
-			pthread_mutex_lock(&philo->msg.lock);
 			fprintf(stderr, "\t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
 			caller->id, philo->id, philo->t_meal, philo->action);
 			if (philo->to_lock)
