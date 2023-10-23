@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 15:32:26 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/23 15:54:57 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *locked)
 	/* DELETE */
 	if (philo->action <= 4 && philo->action >= 0)
 	{
+		pthread_mutex_lock(&philo->msg.lock);
 		if (philo->to_lock)
 			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
 			current_time(philo->d_rules->t_start), philo->id, locked->id, philo->t_meal, philo->action);
@@ -28,6 +29,7 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *locked)
 		if (philo->to_lock)
 			fprintf(stderr, "\t to_lock_id=%d\n", philo->to_lock->id);
 		fprintf(stderr, "\n");
+		pthread_mutex_unlock(&philo->msg.lock);
 	}
 	/*/////////*/
 	res = 0;
@@ -86,10 +88,11 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 		philo->to_lock = right;
 		if (philo_actions(philo, philo->d_rules, philo->to_lock))
 			res = 1;
-		philo_lock_msg(philo->to_lock, NULL);
+		// philo_actions(philo->to_lock, philo->d_rules, NULL);
 		pthread_mutex_unlock(&philo->to_lock->fork.lock);
 		philo->to_lock = NULL;
 		pthread_mutex_unlock(&philo->fork.lock);
+		// philo_actions(philo, philo->d_rules, NULL);
 	}
 	return (res);
 }
