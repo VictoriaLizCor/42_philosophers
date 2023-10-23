@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 11:30:56 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/23 11:31:30 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,9 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 		philo->id, philo->t_meal, rules->t_die, philo->action);
 		res = ft_usleep(philo->d_rules, philo, rules->t_eat);
 	}
-	else if (philo->action == 3 && !philo->to_lock)
+	else if (philo->action == 3 && !lock)
 		res = ft_usleep(philo->d_rules, philo, rules->t_sleep);
-	else if (philo->action == 4 && !philo->to_lock)
+	else if (philo->action == 4 && !lock)
 		philo->action = 0;
 	return (res);
 }
