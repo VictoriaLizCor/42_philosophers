@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 18:06:19 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/23 10:36:21 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller, t_philo *locked)
 		fprintf(stderr, "\n");
 	}
 	/*/////////*/
+	res = 0;
 	philo->action++;
 	if (died_msg(philo->d_rules, philo) != 1)
 	{
@@ -41,14 +42,13 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller, t_philo *locked)
 			if (philo->action == 2)
 				philo_msg(philo, "is    EATING    ", P_EAT);
 		}
-		else if (philo->to_lock)
+		else if (!philo->to_lock)
 		{
 			if (philo->action == 3)
 				philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
 			if (philo->action == 4)
 				philo_msg(philo, "is   THINKING   ", P_THINK);
 		}
-		res = 0;
 	}
 	else
 		res = 1;
@@ -62,11 +62,13 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 
 	res = 0;
 	res = philo_lock_msg(philo, lock, philo);
+	if (lock)
+		philo_actions(lock, rules, NULL);
 	if (philo->action == 1 && lock)
-		res = philo_lock_msg(philo->to_lock, philo, NULL);
+		res = philo_lock_msg(lock, philo, NULL);
 	else if (philo->action == 2 && lock)
 	{
-		res = philo_lock_msg(philo->to_lock, philo, NULL);
+		res = philo_lock_msg(lock, philo, NULL);
 		philo->t_meal = philo->time;
 		fprintf(stderr, "\t\t\t\t\t\t\t\t[%d] ==> %lld| %lld \t action = %d\n", \
 		philo->id, philo->t_meal, rules->t_die, philo->action);
@@ -109,7 +111,7 @@ static void	exe(t_philo *philo)
 	rules = philo->d_rules;
 	i = 0;
 	while (1)
-	// while (i++<10)
+	// while (i++<10)w
 	{
 		res = check_locks(philo, philo->right, philo->left);
 		if (res)

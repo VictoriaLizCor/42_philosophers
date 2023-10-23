@@ -44,7 +44,7 @@ ifeq ($(D), 1)
 else
 	@$(CC) $(FLAGS) $(INCLUDES) -c $< -pthread -o $@
 endif
-	@printf "$(LF)🚧 $(FG_TEXT)$(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$<"
+	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$< $(FG_TEXT)"
 
 $(OBJS_DIR):
 	@mkdir -p $@
