@@ -75,7 +75,6 @@ val:$(NAME)
 	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
-	./phi
 resan:
 	@make re -C . D=1
 	@make -C . e1
@@ -87,6 +86,7 @@ e1:$(NAME)
 	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
+	@echo ./philo n die eat sleep
 	./philo $(NUM)
 e2:$(NAME)
 	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
@@ -108,23 +108,26 @@ err:$(NAME)
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
 	./philo $(NUM)
 ex1:$(NAME)
+	@echo ./philo n die eat sleep
 	./philo 1 410 200 200
 #dead
 ex2:$(NAME)
+	@echo ./philo n die eat sleep
 	./philo 2 310 200 100
 ex3:$(NAME)
+
 	./philo 3 310 200 100
 ex4d:$(NAME)
-	@make re -C .
+	@echo ./philo n die eat sleep
 	./philo 4 310 200 100
 ex4:$(NAME)
-	@make re -C .
+	@echo ./philo n die eat sleep
 	./philo 4 410 200 200
 ex5:$(NAME)
-	@make re -C .
+	@echo ./philo n die eat sleep
 	./philo 5 800 200 200
 ex5d:$(NAME)
-	@make re -C .
+	@echo ./philo n die eat sleep
 	./philo 5 800 200 200 7
 top:$(NAME)
 	top -opid -stats command,pid,threads,cpu,state,mem,kshrd
