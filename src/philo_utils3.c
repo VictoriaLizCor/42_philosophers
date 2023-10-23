@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 14:47:12 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/23 15:16:45 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time)
 	{
 		if (died_msg(rules, philo))
 			return (1);
-		usleep(850);
+		usleep(820);
 		i++;
 	}
 	return (0);
@@ -95,7 +95,7 @@ int	died_msg(t_rules *rules, t_philo *philo)
 	{
 		philo->time = current_time(rules->t_start);
 		time = (philo->time - philo->t_meal);
-		if (time + 10 >= rules->t_die)
+		if (time >= rules->t_die)
 		{
 			rules->lock_flags.stat = true;
 			philo_msg(philo, "      DIED      ", P_DEAD);
