@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 11:18:18 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/23 11:30:19 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +35,14 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *calling, t_philo *locked)
 	philo->action++;
 	if (died_msg(philo->d_rules, philo) != 1)
 	{
-		if (locked)
-		{
-			if (philo->action == 1)
-				philo_msg(philo, "has taken a fork", P_FORK);
-			if (philo->action == 2)
-				philo_msg(philo, "is    EATING    ", P_EAT);
-		}
-		else if (!locked)
-		{
-			if (philo->action == 3)
-				philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
-			if (philo->action == 4)
-				philo_msg(philo, "is   THINKING   ", P_THINK);
-		}
+		if (philo->action == 1 && locked)
+			philo_msg(philo, "has taken a fork", P_FORK);
+		if (philo->action == 2 && locked)
+			philo_msg(philo, "is    EATING    ", P_EAT);
+		if (philo->action == 3 && !locked)
+			philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
+		if (philo->action == 4 && !locked)
+			philo_msg(philo, "is   THINKING   ", P_THINK);
 	}
 	else
 		res = 1;
