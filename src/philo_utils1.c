@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 11:30:19 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/23 11:30:56 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,8 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 	res = philo_lock_msg(philo, lock, lock);
 	if (lock)
 		philo_actions(lock, rules, NULL);
-	if (philo->action == 1 && lock)
-		res = philo_lock_msg(lock, philo, NULL);
-	else if (philo->action == 2 && lock)
+	if (philo->action == 2 && lock)
 	{
-		res = philo_lock_msg(lock, philo, NULL);
 		philo->t_meal = philo->time;
 		fprintf(stderr, "\t\t\t\t\t\t\t\t[%d] ==> %lld| %lld \t action = %d\n", \
 		philo->id, philo->t_meal, rules->t_die, philo->action);
