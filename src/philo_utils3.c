@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 15:16:45 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/23 17:22:50 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,13 @@
 bool	ft_usleep(t_rules *rules, t_philo *philo, long long time)
 {
 	int			i;
-	long long	add;
 
 	i = 0;
-	add = 1000 / time ;
 	while (i <= time)
 	{
 		if (died_msg(rules, philo))
 			return (1);
-		usleep(820);
+		usleep(840);
 		i++;
 	}
 	return (0);
@@ -87,20 +85,20 @@ void	philo_msg(t_philo *philo, char *msg, char *msg_color)
 int	died_msg(t_rules *rules, t_philo *philo)
 {
 	int			res;
-	long long	time;
+	long long	death_time;
 
 	res = 0;
 	pthread_mutex_lock(&rules->lock_flags.lock);
 	if (!rules->lock_flags.stat)
 	{
 		philo->time = current_time(rules->t_start);
-		time = (philo->time - philo->t_meal);
-		if (time >= rules->t_die)
+		death_time = (philo->time - philo->t_meal);
+		if (death_time >= rules->t_die)
 		{
 			rules->lock_flags.stat = true;
 			philo_msg(philo, "      DIED      ", P_DEAD);
 			fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld/%lld | %lld]\n", \
-			philo->id, philo->t_meal, time, rules->t_die);
+			philo->id, philo->t_meal, death_time, rules->t_die);
 			res = 1;
 		}
 	}
