@@ -6,13 +6,13 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 10:36:21 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/23 11:18:18 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-static bool	philo_lock_msg(t_philo *philo, t_philo *caller, t_philo *locked)
+static bool	philo_lock_msg(t_philo *philo, t_philo *calling, t_philo *locked)
 {
 	bool	res;
 
@@ -20,9 +20,9 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller, t_philo *locked)
 	/* DELETE */
 	if (philo->action <= 4 && philo->action >= 0)
 	{
-		if (caller)
+		if (calling)
 			fprintf(stderr, "\t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
-			philo->id, caller->id, philo->t_meal, philo->action);
+			philo->id, calling->id, philo->t_meal, philo->action);
 		else
 			fprintf(stderr, "\t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
 			philo->id, philo->id, philo->t_meal, philo->action);
@@ -35,14 +35,14 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller, t_philo *locked)
 	philo->action++;
 	if (died_msg(philo->d_rules, philo) != 1)
 	{
-		if (philo->to_lock)
+		if (locked)
 		{
 			if (philo->action == 1)
 				philo_msg(philo, "has taken a fork", P_FORK);
 			if (philo->action == 2)
 				philo_msg(philo, "is    EATING    ", P_EAT);
 		}
-		else if (!philo->to_lock)
+		else if (!locked)
 		{
 			if (philo->action == 3)
 				philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
@@ -61,7 +61,7 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 	bool	res;
 
 	res = 0;
-	res = philo_lock_msg(philo, lock, philo);
+	res = philo_lock_msg(philo, lock, lock);
 	if (lock)
 		philo_actions(lock, rules, NULL);
 	if (philo->action == 1 && lock)
@@ -111,7 +111,7 @@ static void	exe(t_philo *philo)
 	rules = philo->d_rules;
 	i = 0;
 	while (1)
-	// while (i++<10)w
+	// while (i++<10)
 	{
 		res = check_locks(philo, philo->right, philo->left);
 		if (res)
