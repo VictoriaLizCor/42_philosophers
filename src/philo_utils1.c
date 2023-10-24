@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/24 11:11:12 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/24 11:33:19 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
 		else if (philo->action == 2 && philo->to_lock)
 			philo_msg(philo, "is    EATING    ", P_EAT);
 		else if (philo->action == 3)
+		{
 			philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
+			philo->t_sleep = philo->time;
+		}
 		else if (philo->action == 4)
 		{
 			philo_msg(philo, "is   THINKING   ", P_THINK);
@@ -39,11 +42,11 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
 	{
 		pthread_mutex_lock(&philo->msg.lock);
 		if (philo->to_lock)
-			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
-			current_time(philo->d_rules->t_start), philo->id, caller->id, philo->t_meal, philo->action);
+			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]{%d} ==> last_meal[%lld]", \
+			current_time(philo->d_rules->t_start), philo->id, caller->id, philo->action, philo->t_meal);
 		else
-			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
-			current_time(philo->d_rules->t_start), caller->id, philo->id, philo->t_meal, philo->action);
+			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]{%d} ==> last_meal[%lld]", \
+			current_time(philo->d_rules->t_start), caller->id, philo->id, philo->action, philo->t_meal);
 		fprintf(stderr, "\n");
 		pthread_mutex_unlock(&philo->msg.lock);
 	}
@@ -67,12 +70,16 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 		if (philo->action == 2 && lock)
 		{
 			philo->t_meal = philo->time;
-			fprintf(stderr, " %lld\t\t\t\t\t\t\t\t[%d] ==> %lld| %lld \t action = %d\n", \
-			current_time(philo->d_rules->t_start), philo->id, philo->t_meal, rules->t_die, philo->action);
+			fprintf(stderr, " %lld\t\t\t\t\t\t\t\t[%d]{%d} ==> %lld| %lld\n", \
+			current_time(philo->d_rules->t_start), philo->id, philo->action, philo->t_meal, rules->t_die);
 			res = ft_usleep(rules, philo, rules->t_eat);
 		}
-		else if (philo->action == 3 && !lock)
+		else if (philo->action == 3 && philo->time - philo->t_sleep < rules->t_sleep)
+		{
+			fprintf(stderr, " %lld\t\t\t\t\t\t\t\t[%d]{%d} ==> %lld| %lld\n", \
+			current_time(philo->d_rules->t_start), philo->id, philo->action, philo->t_sleep, philo->time);
 			res = ft_usleep(rules, philo, rules->t_sleep);
+		}
 	}
 	else
 		res = 1;

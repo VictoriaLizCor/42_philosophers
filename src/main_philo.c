@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 11:44:31 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/24 11:19:54 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->action = 0;
 		(*philos + i)->d_rules = rules;
 		(*philos + i)->t_meal = 0;
+		(*philos + i)->t_sleep = 0;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
 		(*philos + i)->to_lock = (void *)0;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 16:27:45 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/24 11:18:28 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct s_philo
 	int				action;
 	int				n_to_eat;
 	long long		t_meal;
+	long long		t_sleep;
 	long long		time;
 	pthread_t		thread;
 	t_mutex			fork;
