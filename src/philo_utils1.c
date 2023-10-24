@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/24 11:00:07 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/24 11:11:12 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
 		pthread_mutex_lock(&philo->msg.lock);
 		if (philo->to_lock)
 			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
-			current_time(philo->d_rules->t_start), philo->id, philo->to_lock->id, philo->t_meal, philo->action);
+			current_time(philo->d_rules->t_start), philo->id, caller->id, philo->t_meal, philo->action);
 		else
 			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]==> last_meal[%lld] \t action = %d", \
 			current_time(philo->d_rules->t_start), caller->id, philo->id, philo->t_meal, philo->action);
