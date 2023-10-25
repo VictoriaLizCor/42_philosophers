@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/24 17:01:22 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/25 13:51:50 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,15 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
 	res = 0;
 	philo->action++;
 	/* DELETE */
-	if (philo->action <= 4 && philo->action >= 0)
+	if (philo->action >= 0 && philo->action <= 4)
 	{
 		pthread_mutex_lock(&philo->msg.lock);
 		if (philo->to_lock)
-			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]{%d} ==> last_meal[%lld]", \
-			current_time(philo->d_rules->t_start), philo->id, caller->id, philo->action, philo->t_meal);
+			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]{%d} ==> last_meal[%lld] \t last_sleep[%lld]", \
+			current_time(philo->d_rules->t_start), philo->id, caller->id, philo->action, philo->t_meal, philo->t_sleep);
 		else
-			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]{%d} ==> last_meal[%lld]", \
-			current_time(philo->d_rules->t_start), caller->id, philo->id, philo->action, philo->t_meal);
+			fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]{%d} ==> last_meal[%lld] \t last_sleep[%lld]", \
+			current_time(philo->d_rules->t_start), caller->id, philo->id, philo->action, philo->t_meal, philo->t_sleep);
 		fprintf(stderr, "\n");
 		pthread_mutex_unlock(&philo->msg.lock);
 	}
@@ -54,10 +54,6 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
 	return (res);
 }
 
-	// if (lock)
-	// 	lock->action++;
-	// if (lock)
-	// 	philo_actions(lock, rules, NULL);
 static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 {
 	bool	res;
@@ -65,28 +61,31 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 	res = philo_lock_msg(philo, philo);
 	if (!res)
 	{
-		if (philo->action == 1 && lock && lock->action == 0)
+		if (lock)
 		{
-			philo->to_lock->action += 2;
-			res = philo_lock_msg(philo->to_lock, philo);
+			pthread_mutex_lock(&lock->fork.lock);
+			if (philo->action == 1 && lock->action == 0)
+			{
+				lock->action += 2;
+				res = philo_lock_msg(lock, philo);
+			}
+			if (philo->action == 2 && !res)
+			{
+				philo->t_meal = philo->time;
+				res = ft_usleep(rules, philo, rules->t_eat);
+			}
+			pthread_mutex_unlock(&lock->fork.lock);
 		}
-		if (philo->action == 2 && lock)
+		if (philo->action == 3)
 		{
-			philo->t_meal = philo->time;
-			fprintf(stderr, " %lld\t\t\t\t\t\t\t\t[%d]{%d} ==> meal %lld| %lld\n", \
-			current_time(rules->t_start), philo->id, philo->action, philo->t_meal, rules->t_die);
-			res = ft_usleep(rules, philo, rules->t_eat);
-		}
-		else if (philo->action == 3)
-		{
-			fprintf(stderr, " %lld\t\t\t\t\t\t[%d]{%d} ==> sleep  %lld| %lld\n", \
-			current_time(rules->t_start), philo->id, philo->action, philo->t_sleep, philo->time);
+			fprintf(stderr, " %lld \t\t\t\t\t\t[%d]{%d} ==> last_meal[%lld] last_sleep[%lld]\n", \
+					current_time(rules->t_start), philo->id, philo->action, philo->t_meal, philo->t_sleep);
 			if (philo->time - philo->t_sleep < rules->t_sleep + 3)
 				res = ft_usleep(rules, philo, rules->t_sleep);
 		}
 	}
 	else
-		res = philo_lock_msg(philo, philo);
+		res = 0;
 	return (res);
 }
 
@@ -95,18 +94,21 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 	int	res;
 
 	res = 0;
-	{
-		pthread_mutex_lock(&philo->fork.lock);
-		fprintf(stderr, " %lld\t\t\t\t\t\t[%d]{%d}\n", \
+	pthread_mutex_lock(&philo->fork.lock);
+	fprintf(stderr, " %lld\t\t\t\t\t\t[%d]{%d}\n", \
 		current_time(philo->d_rules->t_start), philo->id, philo->action);
+	if (philo->action == 2 || philo->action == 3)
+		res = philo_actions(philo, philo->d_rules, NULL);
+	pthread_mutex_unlock(&philo->fork.lock);
+	pthread_mutex_lock(&philo->fork.lock);
+	if (philo->action == 0 || philo->action == 1)
+	{
 		philo->to_lock = right;
-		pthread_mutex_lock(&philo->to_lock->fork.lock);
 		if (philo_actions(philo, philo->d_rules, philo->to_lock))
 			res = 1;
-		pthread_mutex_unlock(&philo->to_lock->fork.lock);
 		philo->to_lock = NULL;
-		pthread_mutex_unlock(&philo->fork.lock);
 	}
+	pthread_mutex_unlock(&philo->fork.lock);
 	return (res);
 }
 
@@ -118,26 +120,14 @@ static void	exe(t_philo *philo)
 
 	rules = philo->d_rules;
 	i = 0;
-	while (1)
-	// while (i++<10)
+	while (!died_msg(rules, philo))
 	{
 		if (!philo->right)
 			res = philo_actions(philo, philo->d_rules, NULL);
 		else
 			res = check_locks(philo, philo->right, philo->left);
 		if (res)
-		{
-			fprintf(stderr, "\t CHECK_LOCK[%d]_res[%d]\n", philo->id, res);
-			if (philo->to_lock)
-				pthread_mutex_unlock(&philo->to_lock->fork.lock);
-			pthread_mutex_unlock(&philo->fork.lock);
 			return ;
-		}
-		else
-		{
-			if (died_msg(rules, philo))
-				return ;
-		}
 	}
 }
 

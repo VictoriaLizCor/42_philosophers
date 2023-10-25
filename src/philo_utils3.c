@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/23 17:22:50 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/25 11:59:12 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,12 +93,26 @@ int	died_msg(t_rules *rules, t_philo *philo)
 	{
 		philo->time = current_time(rules->t_start);
 		death_time = (philo->time - philo->t_meal);
-		if (death_time >= rules->t_die)
+		if (death_time > rules->t_die)
 		{
 			rules->lock_flags.stat = true;
 			philo_msg(philo, "      DIED      ", P_DEAD);
 			fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld/%lld | %lld]\n", \
 			philo->id, philo->t_meal, death_time, rules->t_die);
+			/* DELETE */
+			if (philo->action <= 4 && philo->action >= 0)
+			{
+				pthread_mutex_lock(&philo->msg.lock);
+				if (philo->to_lock)
+					fprintf(stderr, " %lld \t\t\t\t\t\t[%d]{%d} ==> last_meal[%lld] \t last_sleep[%lld]\n", \
+					current_time(rules->t_start), philo->id, philo->action, philo->t_meal, philo->t_sleep);
+				else
+					fprintf(stderr, " %lld \t\t\t\t\t\t[%d]{%d} ==> last_meal[%lld] \t last_sleep[%lld]\n", \
+					current_time(rules->t_start), philo->id, philo->action, philo->t_meal, philo->t_sleep);
+				fprintf(stderr, "\n");
+				pthread_mutex_unlock(&philo->msg.lock);
+			}
+			/*/////////*/
 			res = 1;
 		}
 	}

@@ -109,7 +109,7 @@ err:$(NAME)
 	./philo $(NUM)
 ex1:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 1 410 200 200
+	./philo 1 510 200 200
 #dead
 ex2:$(NAME)
 	@echo ./philo n die eat sleep
