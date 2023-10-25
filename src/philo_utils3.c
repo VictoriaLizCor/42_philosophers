@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/25 11:59:12 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/25 14:31:20 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,12 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time)
 	{
 		if (died_msg(rules, philo))
 			return (1);
+		if(philo->action == 2 && i + 2 == time)
+			fprintf(stderr, " %lld \t\t\t\t\t\t [%d] FINISHED EATING!\n", \
+			philo->time, philo->id);
+		if(philo->action == 3 && i + 2 == time)
+			fprintf(stderr, " %lld \t\t\t\t\t\t [%d] WOKE UP!\n", \
+			philo->time, philo->id);
 		usleep(840);
 		i++;
 	}
