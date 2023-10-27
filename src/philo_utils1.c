@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/27 16:45:34 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/27 17:01:09 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
 
 	print_action(philo, caller);
 	res = 0;
-	if (philo->action == 1 && philo->fork.stat == 1)
+	if (philo->action == 1 && philo->to_lock)
 		res = philo_msg(philo, "has taken a fork", P_FORK);
-	else if (philo->action == 2 && philo->fork.stat == 1)
+	else if (philo->action == 2 && philo->to_lock)
 		res = philo_msg(philo, "is    EATING    ", P_EAT);
 	else if (philo->action == 3 && !philo->to_lock)
 	{
@@ -111,8 +111,10 @@ static void	exe(t_philo *philo)
 
 	rules = philo->d_rules;
 	i = 0;
+	pthread_mutex_lock(&philo->fork.lock);
 	if (philo->id == rules->n_philos)
 		philo->action = 2;
+	pthread_mutex_unlock(&philo->fork.lock);
 	while (1)
 	{
 		res = check_locks(philo, philo->right, philo->left);
