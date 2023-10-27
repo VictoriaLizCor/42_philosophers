@@ -6,18 +6,18 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/09 14:51:35 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/02 11:52:06 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:58:28 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	ft_error(t_philo *philo, char *str1, char *str2, int exit_error)
+void	ft_error(int id, char *str1, char *str2, int exit_error)
 {
 	if (exit_error > 0)
 		printf("%sError!: ", warn(0));
 	if (str1)
-		printf("%s from thread: %d", str1 , philo->id);
+		printf("%s from thread: %d", str1, id);
 	if (str2)
 	{
 		printf(" : ");
@@ -26,12 +26,20 @@ void	ft_error(t_philo *philo, char *str1, char *str2, int exit_error)
 	printf("%s\n", color(0));
 }
 
-void	error_thread(t_philo *philo, int type, int errnum)
+void	error_thread(void *data, int type)
 {
+	int	id;
+
+	id = ((t_philo *)data)->id;
 	if (type == 0)
-		ft_error(philo, "on Thread function", strerror(errnum), 1);
-	else
-		ft_error(philo, "on Mutex function ", NULL, 1);
+		ft_error(id, "on Thread function", NULL, 1);
+	else if (type == 1)
+		ft_error(id, "on Mutex function ", NULL, 1);
+	else if (type == 2)
+	{
+		id = 0;
+		ft_error(id, "on Mutex function ", NULL, 1);
+	}
 }
 
 static void	check_values(int size, char **argv, int *error)

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/27 12:09:58 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/27 16:00:38 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <errno.h>
 
 # ifndef DEBUG_PHI
-#  define DEBUG_PHI 0
+#  define DEBUG_PHI 1
 # endif
 
 typedef struct s_mutex
@@ -84,18 +84,21 @@ void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
 char		*warn(int idx);
-void		philo_msg(t_philo *philo, char *msg, char *msg_color);
+bool		philo_msg(t_philo *philo, char *msg, char *msg_color);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 bool		ft_usleep(t_rules *rules, t_philo *philo, long long time);
 void		wait_all_philos(t_rules *rules, t_philo *philo);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
-int			died_msg(t_rules *rules, t_philo *philo);
+bool		died_msg(t_rules *rules, t_philo *philo);
 /* check_error.c*/
-void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);
-void		error_thread(t_philo *philo, int type, int errnum);
+void		ft_error(int id, char *str1, char *str2, int exit_error);
+void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
+/* debug.c*/
+void		print_action(t_philo *philo, t_philo *caller);
+void		print_death_action(t_philo *philo, t_rules *rules, long long time);
 
 # define P_EAT "\x1B[1;41;33m"
 # define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"

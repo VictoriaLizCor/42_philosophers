@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/27 12:09:46 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/27 16:28:26 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,17 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time)
 	int			i;
 
 	i = 0;
-	while (i <= time)
+	time *= 10;
+	while (i <= (time))
 	{
+		if(philo->to_lock)
+		{
+			if (died_msg(rules, philo->to_lock))
+				return (1);
+		}	
 		if (died_msg(rules, philo))
 			return (1);
-		usleep(840);
+		usleep(78);
 		i++;
 	}
 	return (0);
@@ -36,29 +42,30 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 	{
 		while (i < rules->n_philos)
 		{
-			philos[i].t_meal = rules->t_die;
-			if (pthread_mutex_destroy(&philos[i].fork.lock))
-				error_thread(&philos[i], 1, errno);
-			if (pthread_mutex_destroy(&philos[i].msg.lock))
-				error_thread(&philos[i], 1, errno);
 			ft_memset(&philos[i], 0, sizeof(t_philo));
 			i++;
 		}
 	}
 	fprintf(stderr, "\t\t\t\t\t[ALL ERASED]\n");
 	if (pthread_mutex_destroy(&rules->lock_flags.lock))
-		error_thread(&philos[i], 1, errno);
+		error_thread(&rules->lock_flags.stat, 2);
 }
 
-void	philo_msg(t_philo *philo, char *msg, char *msg_color)
+bool	philo_msg(t_philo *philo, char *msg, char *msg_color)
 {
-	int	i;
+	int		i;
+	bool	res;
 
 	pthread_mutex_lock(&philo->msg.lock);
+	res = 0;
 	i = philo->id;
-	printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
-	philo->time, color(i), i, color(0), msg_color, msg, color(0));
+	if (!philo->msg.stat && !died_msg(philo->d_rules, philo))
+		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
+		philo->time, color(i), i, color(0), msg_color, msg, color(0));
+	else
+		res = 1;
 	pthread_mutex_unlock(&philo->msg.lock);
+	return (res);
 }
 
 // void	wait_all_philos(t_rules *rules, t_philo *philo)
@@ -82,9 +89,10 @@ void	philo_msg(t_philo *philo, char *msg, char *msg_color)
 // 	}
 // }
 
-int	died_msg(t_rules *rules, t_philo *philo)
+bool	died_msg(t_rules *rules, t_philo *philo)
 {
-	int			res;
+	bool		res;
+	int			id;
 	long long	death_time;
 
 	res = 0;
@@ -96,28 +104,23 @@ int	died_msg(t_rules *rules, t_philo *philo)
 		if (death_time > rules->t_die)
 		{
 			rules->lock_flags.stat = true;
-			philo_msg(philo, "      DIED      ", P_DEAD);
-			fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld/%lld | %lld]\n", \
-			philo->id, philo->t_meal, death_time, rules->t_die);
+			id = philo->id;
+			printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
+			philo->time, color(id), id, color(0), \
+			P_DEAD, "      DIED      ", color(0));
+			philo->msg.stat = true;
 			/* DELETE */
-			if (philo->action <= 4 && philo->action >= 0)
-			{
-				pthread_mutex_lock(&philo->msg.lock);
-				if (philo->to_lock)
-					fprintf(stderr, " %lld \t\t\t\t\t\t[%d]{%d} ==> last_meal[%lld] \t last_sleep[%lld]\n", \
-					current_time(rules->t_start), philo->id, philo->action, philo->t_meal, philo->t_sleep);
-				else
-					fprintf(stderr, " %lld \t\t\t\t\t\t[%d]{%d} ==> last_meal[%lld] \t last_sleep[%lld]\n", \
-					current_time(rules->t_start), philo->id, philo->action, philo->t_meal, philo->t_sleep);
-				fprintf(stderr, "\n");
-				pthread_mutex_unlock(&philo->msg.lock);
-			}
+			if(DEBUG_PHI)
+				print_death_action(philo, rules, death_time);
 			/*/////////*/
 			res = 1;
 		}
 	}
 	else
+	{
+		philo->msg.stat = true;
 		res = 1;
+	}
 	pthread_mutex_unlock(&rules->lock_flags.lock);
 	return (res);
 }

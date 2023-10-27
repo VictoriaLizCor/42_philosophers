@@ -18,7 +18,7 @@ SRCS =	main_philo.c	\
 		check_error.c	\
 		libft_1.c		\
 		libft_2.c		\
-# .c		\
+		debug.c		\
 # .c		\
 
 OBJS_DIR = obj/
@@ -115,7 +115,7 @@ ex2:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 310 200 100
 ex3:$(NAME)
-
+	@echo ./philo n die eat sleep
 	./philo 3 310 200 100
 ex4d:$(NAME)
 	@echo ./philo n die eat sleep
