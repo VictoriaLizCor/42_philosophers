@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/11 12:18:26 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:16:07 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,19 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	while (i < size)
 	{
 		(*philos + i)->id = i + 1;
+		(*philos + i)->action = 0;
 		(*philos + i)->d_rules = rules;
-		(*philos + i)->n_to_eat = rules->n_to_eat;
-		(*philos + i)->head = *philos;
 		(*philos + i)->t_meal = 0;
+		(*philos + i)->t_sleep = 0;
+		(*philos + i)->n_to_eat = rules->n_to_eat;
+		(*philos + i)->to_lock = (void *)0;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
-		(*philos + i)->get_time = &current_time;
+		if (pthread_mutex_init(&(*philos + i)->msg.lock, NULL) != 0)
+			printf("%sError in mutex init %s\n", warn(0), color(0));
 		i++;
 	}
 	init_neightbor(*philos, size - 1);
-	print_msg(rules, *philos);
 }
 
 static void	init_rules(t_rules *rules, char **argv)
@@ -68,7 +70,10 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->t_eat = ft_atol(argv[3]);
 	rules->t_sleep = ft_atol(argv[4]);
 	rules->n_to_eat = 0;
-	rules->death_flag.stat = false;
+	rules->lock_flags.stat = false;
+	// rules->lock_flags.philo_group = 0;
+	if (pthread_mutex_init(&rules->lock_flags.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
 		rules->n_to_eat = ft_atol(argv[5]);
 }
@@ -77,16 +82,24 @@ static void	begin_hunger_games(char **argv)
 {
 	t_rules			rules;
 	t_philo			*philos;
-	struct timeval	start;
+	int				*rand_array;
+	int				i;
 
+	i = 0;
 	init_rules(&rules, argv);
-	gettimeofday(&start, NULL);
-	rules.t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
 	init_philos(&rules, &philos, rules.n_philos);
-	start_threads(philos, &rules, rules.n_philos);
+	rand_array = random_non_repetive_values(0, rules.n_philos);
+	while (i < rules.n_philos)
+	{
+		rand_array[i] = i;
+		fprintf(stderr, "%d ", rand_array[i++] + 1);
+	}
+	fprintf(stderr, "\n");
+	start_threads(philos, &rules, rand_array);
+	free(rand_array);
 	if (philos)
 	{
-		destroy_fork(philos->head, &rules);
+		destroy_mutex(philos, &rules);
 		ft_memset(philos, 0, sizeof(t_philo) * rules.n_philos);
 		free(philos);
 	}

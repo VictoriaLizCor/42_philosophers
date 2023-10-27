@@ -6,124 +6,163 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/11 13:17:56 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:12:07 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-// if (pthread_create(&philos[i].thread, NULL, \
-		// (void *)rutine, (&philos[i])) != 0)
-static void	take_eat(t_philo *philo, t_rules *rules, int i)
+static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
 {
-	if (rules->death_flag.stat)
-		return ;
-	printf(" %lld\tphilo %s [%03d] %s %s has taken a fork %s\n", \
-	current_time(rules), color(i), i, color(0), P_FORK, color(0));
-	printf(" %lld\tphilo %s [%03d] %s %s is    EATING     %s\n", \
-	current_time(rules), color(i), i, color(0), P_EAT, color(0));
-	philo->t_meal = current_time(rules) + (rules->t_eat / 2);
-	usleep(rules->t_eat * 1000);
-}
+	bool	res;
 
-static void	sleep_think(t_philo *philo, t_rules *rules, int i)
-{
-	if (philo->to_lock)
+	res = 0;
+	if (died_msg(philo->d_rules, philo) != 1)
 	{
-		philo->fork.stat = false;
-		pthread_mutex_unlock(&philo->fork.lock);
-		fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->id);
-		philo->to_lock->fork.stat = false;
-		pthread_mutex_unlock(&philo->to_lock->fork.lock);
-		fprintf(stderr, "\t\t\t\t\t[%d][%d] unlock\n", philo->id, philo->to_lock->id);
-		philo->to_lock = NULL;
-	}
-	if (!rules->death_flag.stat)
-	{
-		printf(" %lld\tphilo %s [%03d] %s %s is   SLEEPING    %s\n", \
-		current_time(rules), color(i), i, color(0), P_SLEEP, color(0));
-		usleep(rules->t_sleep * 1000);
-		printf(" %lld\tphilo %s [%03d] %s %s is   THINKING    %s\n", \
-		current_time(rules), color(i), i, color(0), P_THINK, color(0));
-		usleep(rules->t_sleep * 1000);
-	}
-}
-
-static void	check_locks(t_philo *philo, t_philo *right, t_philo *left)
-{
-	if (!philo->fork.stat && !philo->d_rules->death_flag.stat)
-	{
-		pthread_mutex_lock(&philo->fork.lock);
-		philo->fork.stat = true;
-		if (philo->fork.stat && !philo->to_lock && !right->fork.stat)
+		/* DELETE */
+		if (philo->action >= 0 && philo->action <= 4)
 		{
-			pthread_mutex_lock(&right->fork.lock);
-			right->fork.stat = true;
-			fprintf(stderr, "\t\tright\t\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
-			philo->id, philo->fork.stat, right->id, right->fork.stat, left->id, left->fork.stat);
-			philo->to_lock = right;
+			pthread_mutex_lock(&philo->msg.lock);
+			if (philo->to_lock)
+				fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]{%d} ==> last_meal[%lld]  last_sleep[%lld]\n", \
+				current_time(philo->d_rules->t_start), philo->id, caller->id, philo->action, philo->t_meal, philo->t_sleep);
+			else
+				fprintf(stderr, " %lld \t\t\t\t\t\t[%d][%d]{%d} ==> last_meal[%lld]  last_sleep[%lld]\n", \
+				current_time(philo->d_rules->t_start), caller->id, philo->id, philo->action, philo->t_meal, philo->t_sleep);
+			pthread_mutex_unlock(&philo->msg.lock);
 		}
-		else if (philo->fork.stat && !philo->to_lock && !left->fork.stat)
+		/*/////////*/
+		if (philo->action == 1 && philo->to_lock)
+			philo_msg(philo, "has taken a fork", P_FORK);
+		else if (philo->action == 2 && philo->to_lock)
+			philo_msg(philo, "is    EATING    ", P_EAT);
+		else if (philo->action == 3)
 		{
-			pthread_mutex_lock(&left->fork.lock);
-			left->fork.stat = true;
-			fprintf(stderr, "\t\tleft\t\t[%d]_status = %d | [%d]_status  = %d | [%d]_status  = %d \n", \
-			philo->id, philo->fork.stat, right->id, right->fork.stat, left->id, left->fork.stat);
-			philo->to_lock = left;
+			philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
+			philo->t_sleep = philo->time;
 		}
+		else if (philo->action == 4)
+			philo_msg(philo, "is   THINKING   ", P_THINK);
 	}
+	else
+		res = 1;
+	return (res);
 }
 
-// (current_time(rules) - philos[idx].t_meal) >= rules->t_die
-// void rutine(void (*farg)(t_philo *, t_rules *, int))
-void	*rutine(t_rutine	*data)
+static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 {
-	t_philo	*philos;
-	t_rules	*rules;
-	int		idx;
+	bool	res;
 
-	philos = data->philos;
-	rules = data->rules;
-	idx = data->idx;
-	while (1)
+	res = philo_lock_msg(philo, philo);
+	if (!res)
 	{
-		if ((current_time(rules) - philos[idx].t_meal) >= rules->t_die)
+		if (lock)
 		{
-			// died_msg(&philos[idx], idx);
-			return (NULL);
+			pthread_mutex_lock(&lock->fork.lock);
+			if (philo->action == 1 && lock->action == 0)
+			{
+				lock->action = 3;
+				res = philo_lock_msg(lock, philo);
+			}
+			else if (philo->action == 2 && !res)
+			{
+				philo->t_meal = philo->time;
+				res = ft_usleep(rules, philo, rules->t_eat);
+			}
+			pthread_mutex_unlock(&lock->fork.lock);
 		}
 		else
 		{
-			philos[idx].to_lock = NULL;
-			if (philos[idx].right && philos[idx].left)
-				check_locks(&philos[idx], philos[idx].right, philos[idx].left);
-			if (philos[idx].to_lock)
-				take_eat(&philos[idx], rules, idx);
-			sleep_think(&philos[idx], rules, idx);
+			if (philo->action == 3)
+			{
+				if (philo->right)
+					pthread_mutex_unlock(&philo->fork.lock);
+				if (philo->time - philo->t_sleep < rules->t_sleep + 3)
+					res = ft_usleep(rules, philo, rules->t_sleep);
+			}
+			else if (philo->action == 4)
+			{
+				philo->action = 0;
+				if (philo->right)
+					pthread_mutex_unlock(&philo->fork.lock);
+			}
+		}
+	}
+	else
+		res = 0;
+	return (res);
+}
+
+static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
+{
+	int	res;
+
+	if (!philo->right)
+	{
+		philo->action++;
+		res = philo_actions(philo, philo->d_rules, NULL);
+	}
+	else
+	{
+		res = 0;
+		pthread_mutex_lock(&philo->fork.lock);
+		philo->action++;
+		fprintf(stderr, " %lld\t\t\t\t\t\t[%d]{%d}\n", \
+		current_time(philo->d_rules->t_start), philo->id, philo->action);
+		if (philo->action == 1 || philo->action == 2)
+		{
+			philo->to_lock = right;
+			res = philo_actions(philo, philo->d_rules, philo->to_lock);
+			philo->to_lock = NULL;
+			pthread_mutex_unlock(&philo->fork.lock);
+		}
+		else
+			res = philo_actions(philo, philo->d_rules, NULL);
+	}
+	return (res);
+}
+
+static void	exe(t_philo *philo)
+{
+	t_philo	*philos;
+	t_rules	*rules;
+	int		i;
+	int		res;
+
+	rules = philo->d_rules;
+	i = 0;
+	while (1)
+	{
+		res = check_locks(philo, philo->right, philo->left);
+		if (res || died_msg(rules, philo))
+		{
+			return ;
 		}
 	}
 }
 
-void	start_threads(t_philo *philos, t_rules *rules, int size)
+void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
-	int			i;
-	t_rutine	data;
+	int				i;
+	int				res;
+	struct timeval	start;
 
 	i = 0;
-	data.philos = philos;
-	data.rules = rules;
-	while (i < size)
+	gettimeofday(&start, NULL);
+	rules->t_start = ((start.tv_sec * 1000) + (start.tv_usec / 1000));
+	while (i < rules->n_philos)
 	{
-		data.idx = philos[i].id;
-		if (pthread_create(&philos[i].thread, NULL, \
-		(void *)rutine, &data) != 0)
-			error_thread(&philos[i], 0, errno);
+		res = pthread_create(&philos[rand_array[i]].thread, NULL, \
+		(void *)exe, &philos[rand_array[i]]);
+		if (res)
+			error_thread(&philos[rand_array[i]], 0, errno);
 		i++;
 	}
 	i = 0;
-	while (i < size)
+	while (i < rules->n_philos)
 	{
-		pthread_join(philos[i].thread, NULL);
+		if (pthread_join(philos[rand_array[i]].thread, NULL))
+			return ;
 		i++;
 	}
 }

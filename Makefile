@@ -4,6 +4,7 @@ FLAGS = -Wall -Wextra #-Werror
 INCLUDES += -I include/
 CC = gcc
 D = 1
+S = 1
 ifeq ($(S), 1)
 D_SAN = -Wall -Wextra -fsanitize=thread
 else
@@ -43,7 +44,7 @@ ifeq ($(D), 1)
 else
 	@$(CC) $(FLAGS) $(INCLUDES) -c $< -pthread -o $@
 endif
-	@printf "$(LF)🚧 $(FG_TEXT)$(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$<"
+	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$< $(FG_TEXT)"
 
 $(OBJS_DIR):
 	@mkdir -p $@
@@ -74,18 +75,18 @@ val:$(NAME)
 	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
-	./phi
 resan:
 	@make re -C . D=1
 	@make -C . e1
 e1:$(NAME)
-	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 6 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_EAT=$(shell seq 100 120 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_SLEEP=$(shell seq 100 120 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP) + 1)) | tr '\n' ' '))
 	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
 	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
+	@echo ./philo n die eat sleep
 	./philo $(NUM)
 e2:$(NAME)
 	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
@@ -107,7 +108,27 @@ err:$(NAME)
 	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
 	./philo $(NUM)
 ex1:$(NAME)
-	./philo 5 150 57 61
+	@echo ./philo n die eat sleep
+	./philo 1 510 200 200
+#dead
+ex2:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 310 200 100
+ex3:$(NAME)
+
+	./philo 3 310 200 100
+ex4d:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 4 310 200 100
+ex4:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 4 410 200 200
+ex5:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 5 800 200 200
+ex5d:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 5 800 200 200 7
 top:$(NAME)
 	top -opid -stats command,pid,threads,cpu,state,mem,kshrd
 # 	while $(shell ps | awk '/philo/ && !/awk/ {print $$1}') ; do \

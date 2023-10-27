@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/11 12:42:50 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:09:58 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,33 +33,34 @@ typedef struct s_mutex
 {
 	bool			stat;
 	pthread_mutex_t	lock;
-	void			(*f)(void *);
 }	t_mutex;
 
 typedef struct s_rules
 {
-	time_t			t_start;
+	long long		t_start;
 	int				n_philos;
-	int				t_die;
-	int				t_eat;
-	int				t_sleep;
+	long long		t_die;
+	long long		t_eat;
+	long long		t_sleep;
 	int				n_to_eat;
-	t_mutex			death_flag;
+	t_mutex			lock_flags;
 }	t_rules;
 
 typedef struct s_philo
 {
 	int				id;
-	long long		t_meal;
+	int				action;
 	int				n_to_eat;
-	long long		(*get_time)(t_rules *rules);
+	long long		t_meal;
+	long long		t_sleep;
+	long long		time;
 	pthread_t		thread;
 	t_mutex			fork;
+	t_mutex			msg;
 	t_rules			*d_rules;
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
-	struct s_philo	*head;
 }	t_philo;
 
 typedef struct s_rutine
@@ -70,35 +71,31 @@ typedef struct s_rutine
 }	t_rutine;
 
 /* main_philo.c */
-// void		begin_hunger_games(char **argv);
 /* libft.c */
-int			ft_isdigit(int ch);
-char		*ft_strchr(const char *s, int c);
+long long	current_time(time_t t_start);
 size_t		ft_strlen(const char *str);
+int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
+char		*ft_strchr(const char *s, int c);
+int			*random_non_repetive_values(int min, int size);
+/* philo_utils1.c */
+void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
-long long	current_time(t_rules *rules);
-void		start_threads(t_philo *philos, t_rules *rules, int size);
-// void		start_threads(t_philo *philos, t_rules *rules, int size, \
-// void (*arg)(t_philo *, t_rules *, int));
-// void		rutine(t_philo *philo);
-/* philo_utils2.c */
-void		*ft_free(char **str);
+char		*color(int idx);
+char		*warn(int idx);
+void		philo_msg(t_philo *philo, char *msg, char *msg_color);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-void		destroy_fork(t_philo *philo, t_rules *rules);
-void		died_msg(t_philo *philo, int i);
-void		farg(t_philo *philos, t_rules *rules, int idx);
+bool		ft_usleep(t_rules *rules, t_philo *philo, long long time);
+void		wait_all_philos(t_rules *rules, t_philo *philo);
+void		destroy_mutex(t_philo *philo, t_rules *rules);
+int			died_msg(t_rules *rules, t_philo *philo);
 /* check_error.c*/
-void		error_thread(t_philo *philo, int type, int errnum);
 void		ft_error(t_philo *philo, char *str1, char *str2, int exit_error);
+void		error_thread(t_philo *philo, int type, int errnum);
 void		check_arguments(char **argv, int *error);
-void		*ft_free(char **str);
-/* philo_error.c*/
-char		*color(int idx);
-char		*warn(int idx);
 
 # define P_EAT "\x1B[1;41;33m"
 # define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"

@@ -6,13 +6,28 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/11 13:15:22 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/27 12:09:46 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	destroy_fork(t_philo *philos, t_rules *rules)
+bool	ft_usleep(t_rules *rules, t_philo *philo, long long time)
+{
+	int			i;
+
+	i = 0;
+	while (i <= time)
+	{
+		if (died_msg(rules, philo))
+			return (1);
+		usleep(840);
+		i++;
+	}
+	return (0);
+}
+
+void	destroy_mutex(t_philo *philos, t_rules *rules)
 {
 	int	i;
 
@@ -21,74 +36,88 @@ void	destroy_fork(t_philo *philos, t_rules *rules)
 	{
 		while (i < rules->n_philos)
 		{
-			fprintf(stderr, "\t\t\t\t\t[%d]\n", philos[i].id);
 			philos[i].t_meal = rules->t_die;
 			if (pthread_mutex_destroy(&philos[i].fork.lock))
 				error_thread(&philos[i], 1, errno);
-			// ft_memset(&philos[i], 0, sizeof(t_philo));
+			if (pthread_mutex_destroy(&philos[i].msg.lock))
+				error_thread(&philos[i], 1, errno);
+			ft_memset(&philos[i], 0, sizeof(t_philo));
 			i++;
 		}
-		// ft_memset(philos, 0, sizeof(t_philo) * size);
 	}
+	fprintf(stderr, "\t\t\t\t\t[ALL ERASED]\n");
+	if (pthread_mutex_destroy(&rules->lock_flags.lock))
+		error_thread(&philos[i], 1, errno);
 }
 
-void	died_msg(t_philo *philo, int i)
+void	philo_msg(t_philo *philo, char *msg, char *msg_color)
 {
-	t_rules	*rules;
+	int	i;
 
-	rules = philo->d_rules;
-	pthread_mutex_lock(&rules->death_flag.lock);
-	fprintf(stderr, "\t\t\t\t\t[%d][%lld] meal\n", philo->id, philo->t_meal);
-	rules = philo->d_rules;
-	printf(" %lld\tphilo %s [%03d] %s %s        DIED      %s\n", \
-		current_time(rules), color(i), i, color(0), P_DEAD, color(0));
-	rules->death_flag.stat = true;
-	pthread_mutex_unlock(&rules->death_flag.lock);
+	pthread_mutex_lock(&philo->msg.lock);
+	i = philo->id;
+	printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
+	philo->time, color(i), i, color(0), msg_color, msg, color(0));
+	pthread_mutex_unlock(&philo->msg.lock);
 }
 
-// static void	rutine(void (*arg)(t_philo *, t_rules *, int), \
-// t_philo *philos, t_rules *rules, int idx)
+// void	wait_all_philos(t_rules *rules, t_philo *philo)
 // {
-// 	fprintf(stderr, "PASS\n");
-	// while (1)
-	// {
-	// 	if ((current_time(rules) - philo->t_meal) >= rules->t_die)
-	// 	{
-	// 		died_msg(philo, philo->id);
-	// 		return ;
-	// 	}
-	// 	else
-	// 	{
-	// 		philo->to_lock = NULL;
-	// 		if (philo->right && philo->left)
-	// 			check_locks(philo, philo->right, philo->left);
-	// 		if (philo->to_lock)
-	// 			take_eat(philo, rules, philo->id);
-	// 		sleep_think(philo, rules, philo->id);
-	// 	}
-	// }
-// }
+// 	static int		flag;
+// 	struct timeval	start;
 
-// void	start_threads(t_philo *philos, t_rules *rules, int size)
-// {
-// 	int			i;
-// 	t_rutine	arg;
-
-// 	i = 0;
-// 	arg.philos = philos;
-// 	arg.rules = rules;
-// 	while (i < size)
 // 	{
-// 		arg.idx = 1;
-// 		if (pthread_create(&philos[i].thread, NULL, \
-// 		(void *)rutine, &arg) != 0)
-// 			error_thread(&philos[i], 0, errno);
-// 		i++;
-// 	}
-// 	i = 0;
-// 	while (i < size)
-// 	{
-// 		pthread_join(philos[i].thread, NULL);
-// 		i++;
+// 		pthread_mutex_lock(&rules->lock_flags.lock);
+// 		if (!rules->lock_flags.philo_group)
+// 		{
+// 			gettimeofday(&start, NULL);
+// 			rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+// 		}
+// 		rules->lock_flags.philo_group++;
+// 		fprintf(stderr, "\t\t\t\t\t\t\t check[%d]{%d}\n", \
+// 		philo->id, rules->lock_flags.philo_group);
+// 		if (rules->lock_flags.philo_group < rules->n_philos)
+// 			flag ++;
+// 		pthread_mutex_unlock(&rules->lock_flags.lock);
 // 	}
 // }
+
+int	died_msg(t_rules *rules, t_philo *philo)
+{
+	int			res;
+	long long	death_time;
+
+	res = 0;
+	pthread_mutex_lock(&rules->lock_flags.lock);
+	if (!rules->lock_flags.stat)
+	{
+		philo->time = current_time(rules->t_start);
+		death_time = (philo->time - philo->t_meal);
+		if (death_time > rules->t_die)
+		{
+			rules->lock_flags.stat = true;
+			philo_msg(philo, "      DIED      ", P_DEAD);
+			fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld/%lld | %lld]\n", \
+			philo->id, philo->t_meal, death_time, rules->t_die);
+			/* DELETE */
+			if (philo->action <= 4 && philo->action >= 0)
+			{
+				pthread_mutex_lock(&philo->msg.lock);
+				if (philo->to_lock)
+					fprintf(stderr, " %lld \t\t\t\t\t\t[%d]{%d} ==> last_meal[%lld] \t last_sleep[%lld]\n", \
+					current_time(rules->t_start), philo->id, philo->action, philo->t_meal, philo->t_sleep);
+				else
+					fprintf(stderr, " %lld \t\t\t\t\t\t[%d]{%d} ==> last_meal[%lld] \t last_sleep[%lld]\n", \
+					current_time(rules->t_start), philo->id, philo->action, philo->t_meal, philo->t_sleep);
+				fprintf(stderr, "\n");
+				pthread_mutex_unlock(&philo->msg.lock);
+			}
+			/*/////////*/
+			res = 1;
+		}
+	}
+	else
+		res = 1;
+	pthread_mutex_unlock(&rules->lock_flags.lock);
+	return (res);
+}
