@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/27 16:00:38 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/30 12:56:09 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ bool		philo_msg(t_philo *philo, char *msg, char *msg_color);
 void		print_msg(t_rules *rules, t_philo *philos);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-bool		ft_usleep(t_rules *rules, t_philo *philo, long long time);
+bool		ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt);
 void		wait_all_philos(t_rules *rules, t_philo *philo);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 bool		died_msg(t_rules *rules, t_philo *philo);

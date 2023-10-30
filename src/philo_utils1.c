@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/27 17:01:09 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/30 12:56:18 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 			else if (philo->action == 2)
 			{
 				philo->t_meal = philo->time;
-				res = ft_usleep(rules, philo, rules->t_eat);
+				res = ft_usleep(rules, philo, rules->t_eat, 1);
 				philo->fork.stat = 0;
 				lock->fork.stat = 0;
 			}
@@ -64,7 +64,7 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 				if (philo->right)
 					pthread_mutex_unlock(&philo->fork.lock);
 				if (philo->time - philo->t_sleep < rules->t_sleep + 3)
-					res = ft_usleep(rules, philo, rules->t_sleep);
+					res = ft_usleep(rules, philo, rules->t_sleep, 2);
 			}
 			else if (philo->action == 4)
 			{
@@ -74,8 +74,6 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 			}
 		}
 	}
-	else
-		res = 0;
 	return (res);
 }
 
@@ -87,7 +85,6 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 		res = philo_actions(philo, philo->d_rules, NULL);
 	else
 	{
-		res = 0;
 		pthread_mutex_lock(&philo->fork.lock);
 		if (philo->action == 0 || philo->action == 1)
 		{
@@ -112,7 +109,7 @@ static void	exe(t_philo *philo)
 	rules = philo->d_rules;
 	i = 0;
 	pthread_mutex_lock(&philo->fork.lock);
-	if (philo->id == rules->n_philos)
+	if (philo->id == rules->n_philos && rules->n_philos % 2 == 1)
 		philo->action = 2;
 	pthread_mutex_unlock(&philo->fork.lock);
 	while (1)

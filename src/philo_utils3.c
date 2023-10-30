@@ -6,31 +6,36 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/27 16:28:26 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/30 13:01:15 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-bool	ft_usleep(t_rules *rules, t_philo *philo, long long time)
+bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 {
-	int			i;
+	int	i;
 
 	i = 0;
 	time *= 10;
 	while (i <= (time))
 	{
-		if(philo->to_lock)
+		if (died_msg(rules, philo))
+			break ;
+		if (philo->to_lock)
 		{
 			if (died_msg(rules, philo->to_lock))
-				return (1);
-		}	
-		if (died_msg(rules, philo))
-			return (1);
+				break ;
+		}
 		usleep(78);
 		i++;
 	}
-	return (0);
+	fprintf(stderr, " %lld\t\t\t\t[%d]FT_USLEEP{%d}\n", \
+	current_time(philo->d_rules->t_start), philo->id, opt);
+	if (i <= time)
+		return (0);
+	else
+		return (1);
 }
 
 void	destroy_mutex(t_philo *philos, t_rules *rules)
@@ -109,10 +114,7 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 			philo->time, color(id), id, color(0), \
 			P_DEAD, "      DIED      ", color(0));
 			philo->msg.stat = true;
-			/* DELETE */
-			if(DEBUG_PHI)
-				print_death_action(philo, rules, death_time);
-			/*/////////*/
+			print_death_action(philo, rules, death_time);
 			res = 1;
 		}
 	}

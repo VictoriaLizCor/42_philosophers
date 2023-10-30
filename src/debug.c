@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 15:20:38 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/27 16:33:26 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/10/30 13:03:10 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ void	print_action(t_philo *philo, t_philo *caller)
 	if (philo->action >= 0 && philo->action <= 4)
 	{
 		pthread_mutex_lock(&philo->msg.lock);
-		if (philo->to_lock)
+		if (philo->to_lock && !died_msg(philo->d_rules, philo))
 			fprintf(stderr, \
 			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
 			current_time(philo->d_rules->t_start), philo->id, \
 			caller->id, philo->action, philo->t_meal, philo->t_sleep);
-		else
+		else if (!died_msg(philo->d_rules, philo))
 			fprintf(stderr, \
 			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
 			current_time(philo->d_rules->t_start), caller->id, \
