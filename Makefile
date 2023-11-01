@@ -116,7 +116,7 @@ ex2:$(NAME)
 	./philo 2 310 200 100
 ex3:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 3 310 200 100
+	./philo 3 600 200 200
 ex4d:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 4 310 200 100

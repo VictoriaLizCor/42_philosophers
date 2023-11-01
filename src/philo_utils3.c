@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/01 13:45:47 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/01 16:50:46 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 
 	i = 0;
 	time *= 10;
+	if (philo->right && opt == 3)
+		pthread_mutex_unlock(&philo->fork.lock);
+	if (philo->time - philo->t_sleep > rules->t_sleep && opt == 3)
+		return (0);
 	while (i <= (time))
 	{
 		if (died_msg(rules, philo))
@@ -26,7 +30,12 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 	current_time(philo->d_rules->t_start), philo->id, opt);
 			return (1);
 		}
-		usleep(80);
+		if (i == time - 1 && opt == 2)
+			fprintf(stderr, " %lld\t\t\t\t[%d]DONE eating\n", \
+			current_time(philo->d_rules->t_start), philo->id);
+		if (philo->to_lock && died_msg(rules, philo->to_lock))
+			return (1);
+		usleep(76);
 		i++;
 	}
 	return (0);
@@ -68,6 +77,7 @@ bool	philo_msg(t_philo *philo, char *msg, char *msg_color)
 	else
 		res = 1;
 	pthread_mutex_unlock(&philo->msg.lock);
+	res = died_msg(philo->d_rules, philo);
 	return (res);
 }
 
