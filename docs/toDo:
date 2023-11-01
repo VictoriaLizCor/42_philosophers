@@ -1,6 +1,6 @@
 Philosophers:
 
-* Unlock after 1 ms of sleeping	[0]
-* Check dead inside ft_usleep	[1]
-* Check n_meal of Philosopher	[0]
-* Change to random array		[0]
+* Check dead inside ft_usleep								[1]
+* Check n_meal of Philosopher								[0]
+* Change to random array									[1]
+* in case of philo == n_philos  avoid eating for previous	[0]

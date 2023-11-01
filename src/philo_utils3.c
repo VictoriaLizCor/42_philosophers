@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/30 13:01:15 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/01 13:45:47 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,15 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 	while (i <= (time))
 	{
 		if (died_msg(rules, philo))
-			break ;
-		if (philo->to_lock)
 		{
-			if (died_msg(rules, philo->to_lock))
-				break ;
+			fprintf(stderr, " %lld\t\t\t\t[%d]FT_USLEEP{%d}\n", \
+	current_time(philo->d_rules->t_start), philo->id, opt);
+			return (1);
 		}
-		usleep(78);
+		usleep(80);
 		i++;
 	}
-	fprintf(stderr, " %lld\t\t\t\t[%d]FT_USLEEP{%d}\n", \
-	current_time(philo->d_rules->t_start), philo->id, opt);
-	if (i <= time)
-		return (0);
-	else
-		return (1);
+	return (0);
 }
 
 void	destroy_mutex(t_philo *philos, t_rules *rules)
@@ -47,6 +41,10 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 	{
 		while (i < rules->n_philos)
 		{
+			if (pthread_mutex_destroy(&philos[i].fork.lock))
+				error_thread(&philos[i], 1);
+			if (pthread_mutex_destroy(&philos[i].msg.lock))
+				error_thread(&philos[i], 1);
 			ft_memset(&philos[i], 0, sizeof(t_philo));
 			i++;
 		}
@@ -119,10 +117,7 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 		}
 	}
 	else
-	{
-		philo->msg.stat = true;
 		res = 1;
-	}
 	pthread_mutex_unlock(&rules->lock_flags.lock);
 	return (res);
 }

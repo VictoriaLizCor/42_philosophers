@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/30 12:56:18 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/01 13:46:48 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,15 @@ static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
 		philo->t_sleep = philo->time;
 	}
 	else if (philo->action == 4 && !philo->to_lock)
+	{
 		res = philo_msg(philo, "is   THINKING   ", P_THINK);
+	}
+	res = died_msg(philo->d_rules, philo);
 	return (res);
 }
 
+				// philo->fork.stat = 0;
+				// lock->fork.stat = 0;
 static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 {
 	bool	res;
@@ -51,20 +56,20 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 			else if (philo->action == 2)
 			{
 				philo->t_meal = philo->time;
-				res = ft_usleep(rules, philo, rules->t_eat, 1);
-				philo->fork.stat = 0;
-				lock->fork.stat = 0;
+				res = ft_usleep(rules, philo, rules->t_eat, 2);
 			}
 			pthread_mutex_unlock(&lock->fork.lock);
 		}
-		else
+		if (died_msg(rules, philo))
+			res = 1;
+		else if (!lock && !res)
 		{
 			if (philo->action == 3)
 			{
 				if (philo->right)
 					pthread_mutex_unlock(&philo->fork.lock);
 				if (philo->time - philo->t_sleep < rules->t_sleep + 3)
-					res = ft_usleep(rules, philo, rules->t_sleep, 2);
+					res = ft_usleep(rules, philo, rules->t_sleep, 3);
 			}
 			else if (philo->action == 4)
 			{
@@ -109,7 +114,8 @@ static void	exe(t_philo *philo)
 	rules = philo->d_rules;
 	i = 0;
 	pthread_mutex_lock(&philo->fork.lock);
-	if (philo->id == rules->n_philos && rules->n_philos % 2 == 1)
+	if (philo->id == rules->n_philos && rules->n_philos % 2 == 1 && \
+		rules->n_philos > 2)
 		philo->action = 2;
 	pthread_mutex_unlock(&philo->fork.lock);
 	while (1)
@@ -117,13 +123,8 @@ static void	exe(t_philo *philo)
 		res = check_locks(philo, philo->right, philo->left);
 		if (res || died_msg(rules, philo))
 		{
-			fprintf(stderr, " %lld\t\t\t\t\t\t[%d]EXIT\n", \
-			current_time(philo->d_rules->t_start), philo->id);
-			pthread_mutex_unlock(&philo->fork.lock);
-			if (pthread_mutex_destroy(&philo->fork.lock))
-				error_thread(philo, 1);
-			if (pthread_mutex_destroy(&philo->msg.lock))
-				error_thread(philo, 1);
+			fprintf(stderr, " %lld\t[%d]{%d}\tEXIT\n", \
+			current_time(philo->d_rules->t_start), philo->id, philo->action);
 			return ;
 		}
 	}
