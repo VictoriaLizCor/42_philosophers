@@ -6,24 +6,21 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/02 14:12:09 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/02 16:28:36 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-static bool	philo_lock_msg(t_philo *philo, t_philo *caller)
+static bool	philo_lock_msg(t_philo *philo, t_philo *caller, bool res)
 {
-	bool	res;
-
-	res = died_msg(philo->rules, philo);
 	if (philo->action == 1 && philo->to_lock)
 	{
 		res = philo_msg(philo, "has taken a fork", P_FORK);
 		if (philo->to_lock->action == 0)
 		{
 			philo->to_lock->action = 3;
-			res = philo_lock_msg(philo->to_lock, philo);
+			res = philo_lock_msg(philo->to_lock, philo, 0);
 		}
 	}
 	else if (philo->action == 2 && philo->to_lock)
@@ -47,7 +44,7 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 	bool	res;
 
 	philo->action++;
-	res = philo_lock_msg(philo, philo);
+	res = philo_lock_msg(philo, philo, 0);
 	if (lock)
 	{
 		if (philo->action == 2)
@@ -73,7 +70,7 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock)
 
 static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
-	int	res;
+	bool	res;
 
 	if (!philo->right)
 		res = philo_actions(philo, philo->rules, NULL);
@@ -107,7 +104,8 @@ static void	exe(t_philo *philo)
 	{
 		pthread_mutex_lock(&philo->fork.lock);
 		if (philo->id == rules->last && rules->n_philos > 2 && \
-			philo->action == 0 && philo->time % sum_eat_sleep <= 100)
+			philo->action == 0 && philo->time % sum_eat_sleep <= 100 && \
+			1)
 			philo->action = 2;
 		pthread_mutex_unlock(&philo->fork.lock);
 		res = check_locks(philo, philo->right, philo->left);
@@ -128,7 +126,8 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	i = 0;
 	gettimeofday(&start, NULL);
 	rules->t_start = ((start.tv_sec * 1000) + (start.tv_usec / 1000));
-	rules->last = philos[rand_array[0]].left->id;
+	if (philos[rand_array[0]].left)
+		rules->last = philos[rand_array[0]].left->id;
 	while (i < rules->n_philos)
 	{
 		res = pthread_create(&philos[rand_array[i]].thread, NULL, \
