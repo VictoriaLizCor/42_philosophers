@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/27 16:35:10 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/02 14:12:59 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	{
 		(*philos + i)->id = i + 1;
 		(*philos + i)->action = 0;
-		(*philos + i)->d_rules = rules;
+		(*philos + i)->rules = rules;
 		(*philos + i)->t_meal = 0;
-		(*philos + i)->t_sleep = 0;
+		(*philos + i)->sleep = 0;
 		(*philos + i)->fork.stat = 0;
 		(*philos + i)->n_to_eat = rules->n_to_eat;
 		(*philos + i)->to_lock = (void *)0;
@@ -89,7 +89,7 @@ static void	begin_hunger_games(char **argv)
 	i = 0;
 	init_rules(&rules, argv);
 	init_philos(&rules, &philos, rules.n_philos);
-	rand_array = random_non_repetive_values(0, rules.n_philos);
+	rand_array = random_non_repetive_values(0, rules.n_philos, rules.n_philos);
 	while (i < rules.n_philos)
 	{
 		rand_array[i] = i;

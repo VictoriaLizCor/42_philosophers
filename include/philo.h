@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/01 13:56:07 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/02 14:01:00 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_rules
 	long long		t_eat;
 	long long		t_sleep;
 	int				n_to_eat;
+	int				last;
 	t_mutex			lock_flags;
 }	t_rules;
 
@@ -52,12 +53,12 @@ typedef struct s_philo
 	int				action;
 	int				n_to_eat;
 	long long		t_meal;
-	long long		t_sleep;
+	long long		sleep;
 	long long		time;
 	pthread_t		thread;
 	t_mutex			fork;
 	t_mutex			msg;
-	t_rules			*d_rules;
+	t_rules			*rules;
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -78,7 +79,7 @@ int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
 void		*ft_memset(void *s, int c, size_t n);
 char		*ft_strchr(const char *s, int c);
-int			*random_non_repetive_values(int min, int size);
+int			*random_non_repetive_values(int min, int max, int size);
 /* philo_utils1.c */
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
@@ -99,6 +100,9 @@ void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo, t_philo *caller);
 void		print_death_action(t_philo *philo, t_rules *rules, long long time);
+
+void		debug_thread_check(t_philo *philo, char *msg);
+void		print_ft_usleep(t_philo *philo, long long time, int opt);
 
 # define P_EAT "\x1B[1;41;33m"
 # define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 10:41:47 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/02 13:43:55 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int	val_exist(long long num, int arr[], int size)
 	return (0);
 }
 
-int	*random_non_repetive_values(int min, int size)
+int	*random_non_repetive_values(int min, int max, int size)
 {
 	int		*array;
 	int		i;
@@ -81,10 +81,10 @@ int	*random_non_repetive_values(int min, int size)
 		{
 			while (1)
 			{
-				random_num = (int)generate_rand_num(min, size - 1);
+				random_num = (int)generate_rand_num(min, max - 1);
 				if (random_num < 0 && random_num < min)
 					random_num *= -1;
-				if (random_num >= min && random_num <= size - 1)
+				if (random_num >= min && random_num <= max - 1)
 					break ;
 			}
 		}

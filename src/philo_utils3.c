@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/01 16:50:46 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/02 11:55:10 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,27 @@
 
 bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 {
-	int	i;
+	int		i;
+	t_philo	philo_tmp;
 
 	i = 0;
-	time *= 10;
 	if (philo->right && opt == 3)
 		pthread_mutex_unlock(&philo->fork.lock);
-	if (philo->time - philo->t_sleep > rules->t_sleep && opt == 3)
-		return (0);
-	while (i <= (time))
+	while (1)
 	{
 		if (died_msg(rules, philo))
+			return (1);
+		print_ft_usleep(philo, time, opt);
+		if (opt == 2 && philo->to_lock)
 		{
-			fprintf(stderr, " %lld\t\t\t\t[%d]FT_USLEEP{%d}\n", \
-	current_time(philo->d_rules->t_start), philo->id, opt);
-			return (1);
+			philo_tmp = *philo->to_lock;
+			if (died_msg(rules, &philo_tmp))
+				return (1);
+			else if (philo->time >= philo->t_meal + time)
+				break ;
 		}
-		if (i == time - 1 && opt == 2)
-			fprintf(stderr, " %lld\t\t\t\t[%d]DONE eating\n", \
-			current_time(philo->d_rules->t_start), philo->id);
-		if (philo->to_lock && died_msg(rules, philo->to_lock))
-			return (1);
+		else if (philo->time >= philo->sleep + time)
+			break ;
 		usleep(76);
 		i++;
 	}
@@ -71,13 +71,13 @@ bool	philo_msg(t_philo *philo, char *msg, char *msg_color)
 	pthread_mutex_lock(&philo->msg.lock);
 	res = 0;
 	i = philo->id;
-	if (!philo->msg.stat && !died_msg(philo->d_rules, philo))
+	if (!died_msg(philo->rules, philo))
 		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
 		philo->time, color(i), i, color(0), msg_color, msg, color(0));
 	else
 		res = 1;
 	pthread_mutex_unlock(&philo->msg.lock);
-	res = died_msg(philo->d_rules, philo);
+	res = died_msg(philo->rules, philo);
 	return (res);
 }
 
