@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/02 16:27:48 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/03 16:53:01 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,10 @@
 
 bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 {
-	int		i;
 	t_philo	philo_tmp;
 
-	i = 0;
-	if (philo->right && opt == 3)
-		pthread_mutex_unlock(&philo->fork.lock);
+	// if (philo->right && opt == 3)
+	// 	pthread_mutex_unlock(&philo->fork.lock);
 	while (1)
 	{
 		if (died_msg(rules, philo))
@@ -31,15 +29,21 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 			if (died_msg(rules, &philo_tmp))
 				return (1);
 			else if (philo->time >= philo->t_meal + time)
+			{
+				// return (philo_lock_msg(philo, philo, 0));
 				break ;
+			}
 		}
 		else if (philo->time >= philo->sleep + time)
-			return (philo_msg(philo, "is   THINKING   ", P_THINK));
+		{
+			// return (philo_msg(philo, "is   THINKING   ", P_THINK));
+			break ;
+		}
 		usleep(100);
-		i++;
 	}
 	return (0);
 }
+
 
 void	destroy_mutex(t_philo *philos, t_rules *rules)
 {

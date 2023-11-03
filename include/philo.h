@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/02 14:01:00 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/03 16:26:45 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void		*ft_memset(void *s, int c, size_t n);
 char		*ft_strchr(const char *s, int c);
 int			*random_non_repetive_values(int min, int max, int size);
 /* philo_utils1.c */
+bool		philo_lock_msg(t_philo *philo, t_philo *caller, bool res);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
