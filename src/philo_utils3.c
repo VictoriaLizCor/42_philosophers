@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/03 16:53:01 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/04 15:24:16 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 				return (1);
 			else if (philo->time >= philo->t_meal + time)
 			{
-				// return (philo_lock_msg(philo, philo, 0));
+				// return (philo_msg(philo, "is   SLEEPING   ", P_SLEEP));
 				break ;
 			}
 		}
@@ -69,15 +69,17 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 
 bool	philo_msg(t_philo *philo, char *msg, char *msg_color)
 {
-	int		i;
-	bool	res;
+	int			i;
+	bool		res;
+	long long	time;
 
 	pthread_mutex_lock(&philo->msg.lock);
 	res = 0;
 	i = philo->id;
+	time = current_time(philo->rules->t_start);
 	if (!died_msg(philo->rules, philo))
 		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
-		philo->time, color(i), i, color(0), msg_color, msg, color(0));
+		time, color(i), i, color(0), msg_color, msg, color(0));
 	else
 		res = 1;
 	pthread_mutex_unlock(&philo->msg.lock);

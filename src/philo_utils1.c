@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/03 17:02:38 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/04 15:35:25 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 bool	philo_lock_msg(t_philo *philo, t_philo *caller, bool res)
 {
 	res = died_msg(philo->rules, philo);
+	print_action(philo, caller);
 	if (philo->action == 1 && philo->to_lock)
 	{
 		res = philo_msg(philo, "has taken a fork", P_FORK);
 		if (philo->to_lock->action == 0)
 		{
-			philo->to_lock->action = 2;
-			res = philo_msg(philo->to_lock, "is   SLEEPING   ", P_SLEEP);
+			philo->to_lock->action = 3;
+			res = philo_lock_msg(philo->to_lock, philo, 0);
+			// res = philo_msg(philo->to_lock, "is   SLEEPING   ", P_SLEEP);
 		}
 		// else
 		// {
@@ -35,17 +37,16 @@ bool	philo_lock_msg(t_philo *philo, t_philo *caller, bool res)
 		res = philo_msg(philo, "is    EATING    ", P_EAT);
 		philo->t_meal = philo->time;
 	}
-	else if (philo->action == 3 && !philo->to_lock)
+	else if (philo->action == 3)
 	{
-		// res = philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
+		res = philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
 		philo->sleep = philo->time;
 	}
-	else if (philo->action == 4 && !philo->to_lock)
+	else if (philo->action == 4)
 	{
 		philo->action = 0;
 		res = philo_msg(philo, "is   THINKING   ", P_THINK);
 	}
-	print_action(philo, caller);
 	return (res);
 }
 
@@ -64,15 +65,11 @@ static bool	philo_actions(t_philo *philo, t_rules *rules, t_philo *lock, bool re
 	{
 		if (philo->right)
 			pthread_mutex_unlock(&philo->fork.lock);
-		// pthread_mutex_unlock(&philo->fork.lock);
 		debug_thread_check(philo, " 3 | 4");
 		if (philo->time - philo->sleep < rules->t_sleep)
 		{
-			res = philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
 			res = ft_usleep(rules, philo, rules->t_sleep, 3);
 		}
-		// else
-		// 	res = philo_msg(philo, "is   THINKING   ", P_THINK);
 		// else if (philo->action == 4)
 		// {
 		// 	philo->action = 0;
@@ -87,12 +84,14 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
 	bool	res;
 
+	res = false;
 	if (!philo->right)
 		res = philo_actions(philo, philo->rules, NULL, 0);
 	else
 	{
 		pthread_mutex_lock(&philo->fork.lock);
-		if (philo->action == 0 || philo->action == 1)
+		debug_thread_check(philo, "CHECK");
+		if (philo->action < 2)
 		{
 			pthread_mutex_lock(&right->fork.lock);
 			philo->to_lock = right;
@@ -123,7 +122,6 @@ static void	exe(t_philo *philo)
 			1)
 		{
 			philo->action = 2;
-			// res = philo_msg(philo, "is   SLEEPING   ", P_SLEEP);
 		}
 		pthread_mutex_unlock(&philo->fork.lock);
 		res = check_locks(philo, philo->right, philo->left);
