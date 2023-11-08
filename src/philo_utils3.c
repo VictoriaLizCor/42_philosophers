@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/08 14:53:00 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/08 16:50:03 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 {
 	t_philo	p_tmp;
-	int		tmp;
+	bool	tmp;
 
 	tmp = 0;
 	while (1)
@@ -30,8 +30,11 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 				return (1);
 			else if (philo->time >= philo->t_meal + time)
 				return (0);
-			else if (tmp++ == 0 && philo->time >= p_tmp.sleep + rules->t_sleep)
-				philo_lock_msg(philo->to_lock, philo, 0, 0);
+			else if (tmp == 0 && p_tmp.time == p_tmp.sleep + rules->t_sleep)
+			{
+				tmp = 1;
+				philo_lock_msg(philo->to_lock, philo, 0, 1);
+			}
 		}
 		else if (philo->time >= philo->sleep + time)
 			return (0);

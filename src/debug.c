@@ -6,12 +6,11 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 15:20:38 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/03 12:04:41 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/08 16:33:44 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
-
 
 void	print_action(t_philo *philo, t_philo *caller)
 {
@@ -50,10 +49,10 @@ void	print_ft_usleep(t_philo *philo, long long time, int opt)
 	if (DEBUG_PHI == 0)
 		return ;
 	if (philo->time >= philo->t_meal + time && opt == 2)
-		fprintf(stderr, " %lld\t\t\t\t[%d]DONE Eating\n", \
+		fprintf(stderr, " %lld\t\t\t\t[%d] DONE Eating\n", \
 		current_time(philo->rules->t_start), philo->id);
 	if (philo->time >= philo->sleep + time && opt == 3)
-		fprintf(stderr, " %lld\t\t\t\t[%d]DONE Sleeping\n", \
+		fprintf(stderr, " %lld\t\t\t\t[%d] DONE Sleeping\n", \
 		current_time(philo->rules->t_start), philo->id);
 }
 

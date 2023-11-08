@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/08 14:39:52 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/08 16:48:29 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ bool	philo_lock_msg(t_philo *philo, t_philo *caller, bool res, bool opt)
 	}
 	else if (philo->action == 4)
 	{
-		res = philo_msg(philo, "is   THINKING   ", P_THINK, opt);
 		philo->action = 0;
+		res = philo_msg(philo, "is   THINKING   ", P_THINK, opt);
 	}
 	return (res);
 }
@@ -111,10 +111,10 @@ static void	exe(t_philo *philo)
 			philo->id % 2 == 1 && \
 			philo->action == 0 && philo->time % sum_eat_sleep <= 100 && \
 			1)
-		{
 			philo->action = 2;
-		}
 		pthread_mutex_unlock(&philo->fork.lock);
+		if (philo->id != 1)
+			usleep(10);
 		res = check_locks(philo, philo->right, philo->left);
 		if (res || died_msg(rules, philo))
 		{
