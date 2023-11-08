@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/04 15:24:16 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/08 14:53:00 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 {
-	t_philo	philo_tmp;
+	t_philo	p_tmp;
+	int		tmp;
 
-	// if (philo->right && opt == 3)
-	// 	pthread_mutex_unlock(&philo->fork.lock);
+	tmp = 0;
 	while (1)
 	{
 		if (died_msg(rules, philo))
@@ -25,25 +25,19 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt)
 		print_ft_usleep(philo, time, opt);
 		if (opt == 2 && philo->to_lock)
 		{
-			philo_tmp = *philo->to_lock;
-			if (died_msg(rules, &philo_tmp))
+			p_tmp = *philo->to_lock;
+			if (died_msg(rules, &p_tmp))
 				return (1);
 			else if (philo->time >= philo->t_meal + time)
-			{
-				// return (philo_msg(philo, "is   SLEEPING   ", P_SLEEP));
-				break ;
-			}
+				return (0);
+			else if (tmp++ == 0 && philo->time >= p_tmp.sleep + rules->t_sleep)
+				philo_lock_msg(philo->to_lock, philo, 0, 0);
 		}
 		else if (philo->time >= philo->sleep + time)
-		{
-			// return (philo_msg(philo, "is   THINKING   ", P_THINK));
-			break ;
-		}
+			return (0);
 		usleep(100);
 	}
-	return (0);
 }
-
 
 void	destroy_mutex(t_philo *philos, t_rules *rules)
 {
@@ -67,23 +61,32 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		error_thread(&rules->lock_flags.stat, 2);
 }
 
-bool	philo_msg(t_philo *philo, char *msg, char *msg_color)
+bool	philo_msg(t_philo *philo, char *msg, char *msg_color, bool opt)
 {
 	int			i;
 	bool		res;
 	long long	time;
+	t_philo		p_tmp;
 
 	pthread_mutex_lock(&philo->msg.lock);
 	res = 0;
 	i = philo->id;
 	time = current_time(philo->rules->t_start);
-	if (!died_msg(philo->rules, philo))
+	if (opt == 1)
+	{
+		p_tmp = *philo;
+		if (!died_msg(philo->rules, &p_tmp))
+			printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
+			time, color(i), i, color(0), msg_color, msg, color(0));
+		else
+			res = 1;
+	}
+	else if (!died_msg(philo->rules, philo))
 		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
 		time, color(i), i, color(0), msg_color, msg, color(0));
 	else
 		res = 1;
 	pthread_mutex_unlock(&philo->msg.lock);
-	res = died_msg(philo->rules, philo);
 	return (res);
 }
 
@@ -127,7 +130,6 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 			printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
 			philo->time, color(id), id, color(0), \
 			P_DEAD, "      DIED      ", color(0));
-			philo->msg.stat = true;
 			print_death_action(philo, rules, death_time);
 			res = 1;
 		}
