@@ -6,23 +6,25 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/10/20 16:27:56 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/09 13:13:36 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-long long	current_time(time_t t_start)
+long long	current_time(t_rules *rules)
 {
 	time_t			ms;
 	time_t			t1;
 	time_t			t2;
 	struct timeval	current;
 
+	pthread_mutex_lock(&rules->lock_time.lock);
 	gettimeofday(&current, NULL);
 	t1 = current.tv_sec * 1000;
 	t2 = current.tv_usec / 1000;
-	ms = (t1 + t2) - t_start;
+	ms = (t1 + t2) - rules->t_start;
+	pthread_mutex_unlock(&rules->lock_time.lock);
 	return (ms);
 }
 

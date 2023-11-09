@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/08 13:11:00 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/09 15:11:25 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_rules
 	long long		t_sleep;
 	int				n_to_eat;
 	int				last;
+	t_mutex			lock_time;
 	t_mutex			lock_flags;
 }	t_rules;
 
@@ -73,7 +74,7 @@ typedef struct s_rutine
 
 /* main_philo.c */
 /* libft.c */
-long long	current_time(time_t t_start);
+long long	current_time(t_rules *rules);
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
@@ -86,11 +87,11 @@ void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
 char		*warn(int idx);
-bool		philo_msg(t_philo *philo, char *msg, char *msg_color, bool opt);
-void		print_msg(t_rules *rules, t_philo *philos);
+bool		odd_philo(t_philo *p);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 bool		ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt);
+bool		philo_msg(t_philo *philo, char *msg, char *msg_color, bool opt);
 void		wait_all_philos(t_rules *rules, t_philo *philo);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 bool		died_msg(t_rules *rules, t_philo *philo);
@@ -104,6 +105,7 @@ void		print_death_action(t_philo *philo, t_rules *rules, long long time);
 
 void		debug_thread_check(t_philo *philo, char *msg);
 void		print_ft_usleep(t_philo *philo, long long time, int opt);
+void		print_msg(t_rules *rules, t_philo *philos);
 
 # define P_EAT "\x1B[1;41;33m"
 # define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"

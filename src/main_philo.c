@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/02 15:29:05 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/09 13:08:06 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->lock_flags.stat = false;
 	// rules->lock_flags.philo_group = 0;
 	if (pthread_mutex_init(&rules->lock_flags.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
+	if (pthread_mutex_init(&rules->lock_time.lock, NULL) != 0)
 		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
 		rules->n_to_eat = ft_atol(argv[5]);
