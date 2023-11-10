@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/09 15:11:25 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/10 12:59:21 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 # include <stdbool.h>
 # include <errno.h>
 
-# ifndef DEBUG_PHI
-#  define DEBUG_PHI 1
+# ifndef D_PHI
+#  define D_PHI 0
 # endif
 
 typedef struct s_mutex
@@ -82,7 +82,7 @@ void		*ft_memset(void *s, int c, size_t n);
 char		*ft_strchr(const char *s, int c);
 int			*random_non_repetive_values(int min, int max, int size);
 /* philo_utils1.c */
-bool		philo_lock_msg(t_philo *philo, t_philo *caller, bool res, bool opt);
+bool		philo_lock_msg(t_philo *philo, t_philo *caller, bool res);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
@@ -90,8 +90,8 @@ char		*warn(int idx);
 bool		odd_philo(t_philo *p);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-bool		ft_usleep(t_rules *rules, t_philo *philo, long long time, int opt);
-bool		philo_msg(t_philo *philo, char *msg, char *msg_color, bool opt);
+bool		ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt);
+bool		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
 void		wait_all_philos(t_rules *rules, t_philo *philo);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 bool		died_msg(t_rules *rules, t_philo *philo);
@@ -104,7 +104,7 @@ void		print_action(t_philo *philo, t_philo *caller);
 void		print_death_action(t_philo *philo, t_rules *rules, long long time);
 
 void		debug_thread_check(t_philo *philo, char *msg);
-void		print_ft_usleep(t_philo *philo, long long time, int opt);
+void		print_ft_usleep(t_philo *philo, int opt);
 void		print_msg(t_rules *rules, t_philo *philos);
 
 # define P_EAT "\x1B[1;41;33m"
@@ -141,89 +141,3 @@ void		print_msg(t_rules *rules, t_philo *philos);
 // // 	CTEST2 "\x1B[0m"
 // 	CNRM2 "\033[0m"
 #endif
-
-/*
-The functions used:
-
-	pthread_mutex_init (&mutex, NULL) – initialization of mutex variable
-	pthread_mutex_lock (&mutex) – attempt to lock a mutex
-	pthread_mutex_unlock (&mutex) – unlock a mutex
-	pthread_create (ptr to thread, NULL, (void*) func, (void*) )
-	pthread_join (ptr to thread, &msg)-This function will make the main 
-	program wait until the called thread is finished executing it’s task.
-	pthread_mutex_destroy (ptr to thread)-
-	pthread_exit(NULL)
-
-Note: while compiling this program use the following:
-[root@Linux philo]# gcc –o dining dining.c -lpthread
-
-Algorithm for process:
-1. Start.
-2. Declare and initialize the thread variables (philosophers) as required.
-3. Declare and initialize the mutex variables (chopsticks) as required.
-4. Create the threads representing philosophers.
-5. Wait until the threads finish execution.
-6. Stop.
-
-Algorithm for thread (philosopher i) function:
-
-	Start.
-	Philosopher i is thinking.
-	Lock the left fork spoon.
-	Lock the right fork spoon.
-	Philosopher i is eating.
-	sleep
-	Release the left fork spoon.
-	Release the right fork spoon.
-	Philosopher i Finished eating.
-	Stop.
-
-should be <= 10000 and >= 60 ms.
-
-[1] number_of_philosophers = forks
-[2] time_to_die (in milliseconds)>  time_to_eat + time_to_sleep.
-[3] time_to_eat (in milliseconds):
-[4] time_to_sleep (in milliseconds):
-[5] number_of_times_each_philosopher_must_eat
-** the simulation stops when a philosopher dies.
-
-◦ timestamp_in_ms X has taken a fork 
-◦ timestamp_in_ms X is eating
-◦ timestamp_in_ms X is sleeping
-◦ timestamp_in_ms X is thinking
-◦ timestamp_in_ms X died
-
-** Each philosopher has a number ranging from 1 to number_of_philosophers.
-** To prevent philosophers from duplicating forks, \
-	you should protect the forks state with a mutex for each of them.
-
---- MANDATORY:
-memset
-printf
-malloc
-free
-write,
-usleep(useconds_t microseconds) = usleep(25 ms * 1000) = usleep(250)
-	-- suspend thread execution for an interval measured in microseconds
-gettimeofday
-pthread_create
-pthread_detach
-pthread_join
-pthread_mutex_init
-pthread_mutex_destroy
-pthread_mutex_lock
-pthread_mutex_unlock
-
-
---- BONUS:
-fork
-kill
-exit
-waitpid
-sem_open
-sem_close
-sem_post
-sem_wait
-sem_unlink
-
-*/

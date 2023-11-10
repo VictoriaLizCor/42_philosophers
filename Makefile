@@ -6,9 +6,9 @@ CC = gcc
 D = 1
 S = 1
 ifeq ($(S), 1)
-D_SAN = -Wall -Wextra -fsanitize=thread
+D_SAN = -Wall -Wextra -fsanitize=thread -D D_PHI=$(D)
 else
-D_SAN = -Wall -Wextra -fsanitize=address
+D_SAN = -Wall -Wextra -fsanitize=address -D D_PHI=$(D)
 endif
 SRCS_DIR = src/
 SRCS =	main_philo.c	\

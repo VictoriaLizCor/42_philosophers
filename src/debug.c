@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 15:20:38 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/09 15:33:12 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/10 14:11:45 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,20 @@
 void	print_action(t_philo *philo, t_philo *caller)
 {
 	t_philo	philo_tmp;
+	int		sum;
 
 	philo_tmp = *philo;
-	if (DEBUG_PHI == 0 && !died_msg(philo_tmp.rules, philo))
+	sum = philo->time % (philo->rules->t_eat + philo->rules->t_sleep);
+	if (D_PHI == 0 && !died_msg(philo_tmp.rules, philo))
 		return ;
 	if (philo_tmp.action >= 0 && philo_tmp.action <= 4)
 	{
-		pthread_mutex_lock(&philo_tmp.msg.lock);
-		if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))
+		if (odd_philo(philo) && !died_msg(philo_tmp.rules, &philo_tmp))
+			fprintf(stderr, \
+			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld] \t {%d}\n", \
+			current_time(philo_tmp.rules), philo_tmp.id, philo_tmp.id, \
+			philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep, sum);
+		else if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))
 			fprintf(stderr, \
 			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
 			current_time(philo_tmp.rules), philo_tmp.id, \
@@ -32,38 +38,37 @@ void	print_action(t_philo *philo, t_philo *caller)
 			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
 			current_time(philo_tmp.rules), caller->id, \
 			philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
-		pthread_mutex_unlock(&philo_tmp.msg.lock);
 	}
 }
 
 void	debug_thread_check(t_philo *philo, char *msg)
 {
-	if (DEBUG_PHI == 0)
+	if (D_PHI == 0)
 		return ;
 	fprintf(stderr, " %lld\t\t\t\t\t\t\t\t\t\t\t\t[%d]{%d} %s\n", \
 	current_time(philo->rules), philo->id, philo->action, msg);
 }
 
-void	print_ft_usleep(t_philo *philo, long long time, int opt)
+void	print_ft_usleep(t_philo *philo, int opt)
 {
 	t_philo		philo_tmp;
 	long long	current;
 
-	if (DEBUG_PHI == 0)
+	if (D_PHI == 0)
 		return ;
 	philo_tmp = *philo;
 	current = current_time(philo->rules);
-	if (opt == 2 && current >= philo_tmp.t_meal + time)
+	if (opt == 2 && current >= philo_tmp.t_meal + philo->rules->t_eat)
 		fprintf(stderr, " %lld\t\t\t\t[%d] DONE Eating\n", \
 		current, philo->id);
-	else if (opt == 3 && current > philo_tmp.sleep + time)
+	else if (opt == 3 && current > philo_tmp.sleep + philo->rules->t_sleep)
 		fprintf(stderr, " %lld\t\t\t\t[%d] DONE Sleeping\n", \
 		current, philo->id);
 }
 
 void	print_death_action(t_philo *philo, t_rules *rules, long long time)
 {
-	if (DEBUG_PHI == 0)
+	if (D_PHI == 0)
 		return ;
 	if (philo->action <= 4 && philo->action >= 0)
 	{
