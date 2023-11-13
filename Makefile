@@ -6,9 +6,9 @@ CC = gcc
 D = 1
 S = 1
 ifeq ($(S), 1)
-D_SAN = -Wall -Wextra -fsanitize=thread -D D_PHI=$(D)
+D_SAN =  -D D_PHI=$(D) -Wall -Wextra -fsanitize=thread #-Werror
 else
-D_SAN = -Wall -Wextra -fsanitize=address -D D_PHI=$(D)
+D_SAN = -D D_PHI=$(D) -Wall -Wextra -fsanitize=address  #-Werror
 endif
 SRCS_DIR = src/
 SRCS =	main_philo.c	\
@@ -42,7 +42,7 @@ $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 ifeq ($(S), 1)
 	@$(CC) -g $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
 else
-	@$(CC) $(FLAGS) $(INCLUDES) -c $< -pthread -o $@
+	@$(CC) $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
 endif
 	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$< $(FG_TEXT)"
 
@@ -126,6 +126,9 @@ ex4:$(NAME)
 ex5:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 5 800 200 200
+ex10:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 10 800 200 200
 ex20:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 20 800 200 200

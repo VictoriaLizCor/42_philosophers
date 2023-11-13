@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/13 15:44:24 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/13 16:24:38 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 		}
 		else if (current_time(rules) > philo->sleep + rules->t_sleep)
 			return (died_msg(rules, philo));
-		usleep(100);
+		usleep(50);
 	}
 }
 

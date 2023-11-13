@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/13 15:31:21 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/13 16:47:58 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,8 @@ static void	exe(t_philo *philo)
 
 	rules = philo->rules;
 	sum = rules->t_eat + rules->t_sleep;
-	if (philo->id % 2 == 0)
-		usleep(50);
+	// if (philo->id % 2 == 0)
+	// 	usleep(50);
 	while (1)
 	{
 		pthread_mutex_lock(&philo->fork.lock);
