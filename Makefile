@@ -30,16 +30,16 @@ $(NAME): $(OBJS) | $(OBJS_DIR)
 	@printf "\n"
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
 	@echo $(GREEN)
-ifeq ($(D), 1)
+ifeq ($(S), 1)
 	$(CC) -g $(D_SAN) $(INCLUDES) $^ -pthread -o $(NAME)
 else
-	$(CC) $(FLAGS) $(INCLUDES) $(OBJS) -pthread -o $(NAME)
+	$(CC) $(D_SAN) $(INCLUDES) $(OBJS) -pthread -o $(NAME)
 endif
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
-ifeq ($(D), 1)
+ifeq ($(S), 1)
 	@$(CC) -g $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
 else
 	@$(CC) $(FLAGS) $(INCLUDES) -c $< -pthread -o $@
@@ -126,6 +126,18 @@ ex4:$(NAME)
 ex5:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 5 800 200 200
+ex20:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 20 800 200 200
+ex50:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 50 800 200 200
+ex100:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 100 800 200 200
+ex200:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 200 800 200 200
 ex5d:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 5 800 200 200 7

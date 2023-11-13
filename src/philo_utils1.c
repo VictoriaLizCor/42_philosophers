@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/10 15:57:35 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/13 15:31:21 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool	philo_lock_msg(t_philo *philo, t_philo *caller, bool res)
 	if (philo->action == 1 && philo->to_lock && !res)
 	{
 		res = philo_msg(philo, "has taken a fork", P_FORK, caller);
-		if (philo->to_lock->action == 0 && philo->time < 5)
+		if (philo->to_lock->action == 0)
 		{
 			philo->to_lock->action = 2;
 			res = philo_lock_msg(philo->to_lock, philo, 0);
@@ -28,12 +28,12 @@ bool	philo_lock_msg(t_philo *philo, t_philo *caller, bool res)
 	else if (philo->action == 2 && philo->to_lock && !res)
 	{
 		res = philo_msg(philo, "is    EATING    ", P_EAT, caller);
-		philo->t_meal = philo->time;
+		philo->t_meal = current_time(philo->rules);
 	}
 	else if (philo->action == 3 && !philo->to_lock && !res)
 	{
 		res = philo_msg(philo, "is   SLEEPING   ", P_SLEEP, caller);
-		philo->sleep = philo->time;
+		philo->sleep = current_time(philo->rules);
 	}
 	else if (philo->action == 4 && !philo->to_lock && !res)
 		res = philo_msg(philo, "is   THINKING   ", P_THINK, caller);
@@ -102,7 +102,7 @@ static void	exe(t_philo *philo)
 	rules = philo->rules;
 	sum = rules->t_eat + rules->t_sleep;
 	if (philo->id % 2 == 0)
-		usleep(100);
+		usleep(50);
 	while (1)
 	{
 		pthread_mutex_lock(&philo->fork.lock);
@@ -127,9 +127,9 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 
 	i = 0;
 	gettimeofday(&start, NULL);
-	rules->t_start = ((start.tv_sec * 1000) + (start.tv_usec / 1000));
 	if (philos[rand_array[0]].left)
 		rules->last = philos[rand_array[0]].left->id;
+	rules->t_start = ((start.tv_sec * 1000) + ((long)start.tv_usec / 1000));
 	while (i < rules->n_philos)
 	{
 		res = pthread_create(&philos[rand_array[i]].thread, NULL, \

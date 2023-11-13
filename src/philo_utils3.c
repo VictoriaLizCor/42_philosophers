@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/10 16:05:07 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/13 15:44:24 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,16 @@ bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 {
 	int			i;
 
-	pthread_mutex_lock(&philo->msg.lock);
+	pthread_mutex_lock(&philo->rules->lock_msg.lock);
 	print_action(philo, cal);
 	i = philo->id;
-	philo->time = current_time(philo->rules);
 	if (!died_msg(philo->rules, philo))
+	{
+		philo->time = current_time(philo->rules);
 		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
 		philo->time, color(i), i, color(0), msg_color, msg, color(0));
-	pthread_mutex_unlock(&philo->msg.lock);
+	}
+	pthread_mutex_unlock(&philo->rules->lock_msg.lock);
 	return (died_msg(philo->rules, philo));
 }
 
@@ -94,8 +96,6 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		{
 			if (pthread_mutex_destroy(&philos[i].fork.lock))
 				error_thread(&philos[i], 1);
-			if (pthread_mutex_destroy(&philos[i].msg.lock))
-				error_thread(&philos[i], 1);
 			ft_memset(&philos[i], 0, sizeof(t_philo));
 			i++;
 		}
@@ -104,6 +104,8 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		error_thread(&rules->lock_flags.stat, 2);
 	if (pthread_mutex_destroy(&rules->lock_time.lock))
 		error_thread(&rules->lock_time.stat, 2);
+	if (pthread_mutex_destroy(&rules->lock_msg.lock))
+	error_thread(&rules->lock_msg.stat, 2);
 }
 
 // void	wait_all_philos(t_rules *rules, t_philo *philo)

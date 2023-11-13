@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/09 13:08:06 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/13 15:43:41 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,6 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->to_lock = (void *)0;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
-		if (pthread_mutex_init(&(*philos + i)->msg.lock, NULL) != 0)
-			printf("%sError in mutex init %s\n", warn(0), color(0));
 		i++;
 	}
 	init_neightbor(*philos, size - 1);
@@ -76,6 +74,8 @@ static void	init_rules(t_rules *rules, char **argv)
 	if (pthread_mutex_init(&rules->lock_flags.lock, NULL) != 0)
 		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (pthread_mutex_init(&rules->lock_time.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
+	if (pthread_mutex_init(&rules->lock_msg.lock, NULL) != 0)
 		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
 		rules->n_to_eat = ft_atol(argv[5]);

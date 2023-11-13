@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/10 12:59:21 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/13 15:42:21 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_rules
 	int				last;
 	t_mutex			lock_time;
 	t_mutex			lock_flags;
+	t_mutex			lock_msg;
 }	t_rules;
 
 typedef struct s_philo
@@ -58,7 +59,6 @@ typedef struct s_philo
 	long long		time;
 	pthread_t		thread;
 	t_mutex			fork;
-	t_mutex			msg;
 	t_rules			*rules;
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
