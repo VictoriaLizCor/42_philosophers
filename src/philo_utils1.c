@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/13 16:47:58 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 15:34:52 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 			philo->action = 0;
 			if (philo->right)
 				pthread_mutex_unlock(&philo->fork.lock);
-			usleep(100);
+			usleep(1000);
 		}
 	}
 	return (res);
@@ -101,8 +101,9 @@ static void	exe(t_philo *philo)
 
 	rules = philo->rules;
 	sum = rules->t_eat + rules->t_sleep;
-	// if (philo->id % 2 == 0)
-	// 	usleep(50);
+	// wait_all(rules, philo, 0, (rules->n_philos / 2 * (rules->n_philos + 1)));
+	if (philo->id % 2 == 0)
+		usleep(rules->t_sleep - current_time(rules) * 1000);
 	while (1)
 	{
 		pthread_mutex_lock(&philo->fork.lock);

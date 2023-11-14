@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/13 15:42:21 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 12:28:15 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,11 @@ typedef struct s_rules
 	long long		t_die;
 	long long		t_eat;
 	long long		t_sleep;
-	int				n_to_eat;
+	int				n_meals;
 	int				last;
 	t_mutex			lock_time;
 	t_mutex			lock_flags;
+	t_mutex			lock_count;
 	t_mutex			lock_msg;
 }	t_rules;
 
@@ -53,7 +54,7 @@ typedef struct s_philo
 {
 	int				id;
 	int				action;
-	int				n_to_eat;
+	int				n_meals;
 	long long		t_meal;
 	long long		sleep;
 	long long		time;
@@ -92,7 +93,7 @@ void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 bool		ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt);
 bool		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
-void		wait_all_philos(t_rules *rules, t_philo *philo);
+void		wait_all(t_rules *rules, t_philo *philo, bool tmp, long size);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 bool		died_msg(t_rules *rules, t_philo *philo);
 /* check_error.c*/

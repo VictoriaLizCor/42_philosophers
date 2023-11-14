@@ -14,6 +14,9 @@ The functions used:
 	pthread_mutex_destroy (ptr to thread)-
 	pthread_exit(NULL)
 
+
+create a function that waits for all threads to be created with simple C and using following functios: pthread_mutex_init, pthread_mutex_lock, pthread_mutex_unlock, pthread_create, pthread_join, pthread_mutex_destroy, pthread_exit without semaphores or pthread_cond_t
+
 Note: while compiling this program use the following:
 [root@Linux philo]# gcc –o dining dining.c -lpthread
 

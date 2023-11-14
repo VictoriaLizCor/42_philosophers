@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 15:20:38 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/13 16:45:56 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 11:52:20 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,14 @@ void	print_ft_usleep(t_philo *philo, int opt)
 		return ;
 	philo_tmp = *philo;
 	pthread_mutex_lock(&philo->rules->lock_msg.lock);
-	current = current_time(philo->rules);
-	if (opt == 2 && current >= philo_tmp.t_meal + philo->rules->t_eat)
-		fprintf(stderr, " %lld\t\t\t[%d] DONE Eating\n", current, philo->id);
-	else if (opt == 3 && current > philo_tmp.sleep + philo->rules->t_sleep)
-		fprintf(stderr, " %lld\t\t\t[%d] DONE Sleeping\n", current, philo->id);
+	if (!died_msg(philo_tmp.rules, philo))
+	{
+		current = current_time(philo->rules);
+		if (opt == 2 && current >= philo_tmp.t_meal + philo->rules->t_eat)
+			fprintf(stderr, " %lld\t\t\t[%d] DONE Eating\n", current, philo->id);
+		else if (opt == 3 && current > philo_tmp.sleep + philo->rules->t_sleep)
+			fprintf(stderr, " %lld\t\t\t[%d] DONE Sleeping\n", current, philo->id);
+	}
 	pthread_mutex_unlock(&philo->rules->lock_msg.lock);
 }
 

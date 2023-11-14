@@ -6,12 +6,14 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/13 14:37:56 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 11:27:16 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
+
+// rules->t_start = ((start.tv_sec * 1000) + ((long)start.tv_usec / 1000));
 long long	current_time(t_rules *rules)
 {
 	time_t			ms;

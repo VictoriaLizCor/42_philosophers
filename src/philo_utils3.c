@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/13 16:24:38 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 15:36:38 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 		}
 		else if (current_time(rules) > philo->sleep + rules->t_sleep)
 			return (died_msg(rules, philo));
-		usleep(50);
+		usleep(100);
 	}
 }
 
@@ -105,26 +105,38 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 	if (pthread_mutex_destroy(&rules->lock_time.lock))
 		error_thread(&rules->lock_time.stat, 2);
 	if (pthread_mutex_destroy(&rules->lock_msg.lock))
-	error_thread(&rules->lock_msg.stat, 2);
+		error_thread(&rules->lock_msg.stat, 2);
+	if (pthread_mutex_destroy(&rules->lock_count.lock))
+		error_thread(&rules->lock_msg.stat, 2);
 }
 
-// void	wait_all_philos(t_rules *rules, t_philo *philo)
+// void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 // {
-// 	static int		flag;
-// 	struct timeval	start;
+// 	static long long		sum;
+// 	struct timeval			start;
 
+// 	while (1)
 // 	{
-// 		pthread_mutex_lock(&rules->lock_flags.lock);
-// 		if (!rules->lock_flags.philo_group)
+// 		pthread_mutex_lock(&rules->lock_count.lock);
+// 		if (!tmp)
 // 		{
-// 			gettimeofday(&start, NULL);
-// 			rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+// 			tmp = 1;
+// 			sum += philo->id;
 // 		}
-// 		rules->lock_flags.philo_group++;
-// 		fprintf(stderr, "\t\t\t\t\t\t\t check[%d]{%d}\n", 
-// 		philo->id, rules->lock_flags.philo_group);
-// 		if (rules->lock_flags.philo_group < rules->n_philos)
-// 			flag ++;
-// 		pthread_mutex_unlock(&rules->lock_flags.lock);
+// 		if (sum == size)
+// 		{
+// 			if (!rules->lock_count.stat)
+// 			{
+// 				gettimeofday(&start, NULL);
+// 				rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+// 				rules->lock_count.stat = 1;
+// 			}
+// 			else
+// 			{
+// 				pthread_mutex_unlock(&rules->lock_count.lock);
+// 				break ;
+// 			}
+// 		}
+// 		pthread_mutex_unlock(&rules->lock_count.lock);
 // 	}
 // }
