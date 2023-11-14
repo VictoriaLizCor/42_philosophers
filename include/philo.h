@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 12:28:15 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 16:40:36 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,17 @@ typedef struct s_mutex
 
 typedef struct s_rules
 {
-	long long		t_start;
-	int				n_philos;
-	long long		t_die;
-	long long		t_eat;
-	long long		t_sleep;
-	int				n_meals;
-	int				last;
-	t_mutex			lock_time;
-	t_mutex			lock_flags;
-	t_mutex			lock_count;
-	t_mutex			lock_msg;
+	long	t_start;
+	long	t_die;
+	long	t_eat;
+	long	t_sleep;
+	int		n_philos;
+	int		n_meals;
+	int		last;
+	t_mutex	lock_time;
+	t_mutex	lock_flags;
+	t_mutex	lock_count;
+	t_mutex	lock_msg;
 }	t_rules;
 
 typedef struct s_philo
@@ -55,9 +55,9 @@ typedef struct s_philo
 	int				id;
 	int				action;
 	int				n_meals;
-	long long		t_meal;
-	long long		sleep;
-	long long		time;
+	long			t_meal;
+	long			sleep;
+	long			time;
 	pthread_t		thread;
 	t_mutex			fork;
 	t_rules			*rules;
@@ -75,7 +75,7 @@ typedef struct s_rutine
 
 /* main_philo.c */
 /* libft.c */
-long long	current_time(t_rules *rules);
+long		current_time(t_rules *rules);
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
@@ -102,7 +102,7 @@ void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo, t_philo *caller);
-void		print_death_action(t_philo *philo, t_rules *rules, long long time);
+void		debug_death(t_philo *philo, t_rules *rules, long time, long death);
 
 void		debug_thread_check(t_philo *philo, char *msg);
 void		print_ft_usleep(t_philo *philo, int opt);

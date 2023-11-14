@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 11:27:16 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 16:38:24 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 
 // rules->t_start = ((start.tv_sec * 1000) + ((long)start.tv_usec / 1000));
-long long	current_time(t_rules *rules)
+long	current_time(t_rules *rules)
 {
 	time_t			ms;
 	time_t			t1;
@@ -24,7 +24,7 @@ long long	current_time(t_rules *rules)
 	pthread_mutex_lock(&rules->lock_time.lock);
 	gettimeofday(&current, NULL);
 	t1 = (long)current.tv_sec * 1000;
-	t2 = (long long)current.tv_usec / 1000;
+	t2 = (long)current.tv_usec / 1000;
 	ms = (t1 + t2) - rules->t_start;
 	if (ms < 0)
 		ms = 0;

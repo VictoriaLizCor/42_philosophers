@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/27 15:20:38 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 11:52:20 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 16:41:02 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,17 @@ void	print_action(t_philo *philo, t_philo *caller)
 	{
 		if (odd_philo(philo) && !died_msg(philo_tmp.rules, &philo_tmp))
 			fprintf(stderr, \
-			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld] \t {%d}\n", \
+			" %ld \t\t\t\t\t\t[%d][%d]{%d} => meal[%ld] \t sleep[%ld] \t {%d}\n", \
 			current_time(philo_tmp.rules), philo_tmp.id, philo_tmp.id, \
 			philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep, sum);
 		else if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))
 			fprintf(stderr, \
-			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
+			" %ld \t\t\t\t\t\t[%d][%d]{%d} => meal[%ld] \t sleep[%ld]\n", \
 			current_time(philo_tmp.rules), philo_tmp.id, \
 			philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
 		else if (!died_msg(philo_tmp.rules, &philo_tmp))
 			fprintf(stderr, \
-			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
+			" %ld \t\t\t\t\t\t[%d][%d]{%d} => meal[%ld] \t sleep[%ld]\n", \
 			current_time(philo_tmp.rules), caller->id, \
 			philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
 	}
@@ -45,14 +45,14 @@ void	debug_thread_check(t_philo *philo, char *msg)
 {
 	if (D_PHI == 0)
 		return ;
-	fprintf(stderr, " %lld\t\t\t\t\t\t\t\t\t\t\t\t[%d]{%d} %s\n", \
+	fprintf(stderr, " %ld\t\t\t\t\t\t\t\t\t\t\t\t[%d]{%d} %s\n", \
 	current_time(philo->rules), philo->id, philo->action, msg);
 }
 
 void	print_ft_usleep(t_philo *philo, int opt)
 {
 	t_philo		philo_tmp;
-	long long	current;
+	long	current;
 
 	if (D_PHI == 0)
 		return ;
@@ -62,26 +62,23 @@ void	print_ft_usleep(t_philo *philo, int opt)
 	{
 		current = current_time(philo->rules);
 		if (opt == 2 && current >= philo_tmp.t_meal + philo->rules->t_eat)
-			fprintf(stderr, " %lld\t\t\t[%d] DONE Eating\n", current, philo->id);
+			fprintf(stderr, " %ld\t\t\t[%d] DONE Eating\n", current, philo->id);
 		else if (opt == 3 && current > philo_tmp.sleep + philo->rules->t_sleep)
-			fprintf(stderr, " %lld\t\t\t[%d] DONE Sleeping\n", current, philo->id);
+			fprintf(stderr, " %ld\t\t\t[%d] DONE Sleeping\n", current, philo->id);
 	}
 	pthread_mutex_unlock(&philo->rules->lock_msg.lock);
 }
 
-void	print_death_action(t_philo *philo, t_rules *rules, long long time)
+void	debug_death(t_philo *philo, t_rules *rules, long time, long death)
 {
-	if (D_PHI == 0)
-		return ;
-	if (philo->action <= 4 && philo->action >= 0)
-	{
-		fprintf(stderr, \
-		"\t\t\t\t\t\t\t*[%d]{%d} => meal[%lld | %lld] \tsleep[%lld| %lld]\n", \
-		philo->id, philo->action, philo->t_meal, \
-		current_time(rules), philo->sleep, current_time(rules));
-	}
-	fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld || %lld / %lld]\n", \
-	philo->id, philo->t_meal, time, rules->t_die);
+	// if (D_PHI == 0)
+	// 	return ;
+	fprintf(stderr, \
+	"\t\t\t\t\t\t\t*[%d]{%d} => meal[%ld | %ld] \tsleep[%ld| %ld]\n", \
+	philo->id, philo->action, philo->t_meal, \
+	time, philo->sleep, time);
+	fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%ld || %ld / %ld]\n", \
+	philo->id, philo->t_meal, death, rules->t_die);
 }
 
 void	print_msg(t_rules *rules, t_philo *tmp)

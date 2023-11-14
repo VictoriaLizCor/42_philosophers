@@ -3,14 +3,14 @@
 #include <sys/time.h>
 #include <string.h> 
 
-long long	generate_rand_num(long long min, long long max)
+long	generate_rand_num(long min, long max)
 {
 	struct timeval	tv;
-	long long		seed;
-	long long		random_num;
+	long		seed;
+	long		random_num;
 
 	gettimeofday(&tv, NULL);
-	seed = (long long)tv.tv_sec * 1000000 + (long long)tv.tv_usec;
+	seed = (long)tv.tv_sec * 1000000 + (long)tv.tv_usec;
 	seed ^= seed << 13;
 	seed ^= seed >> 7;
 	seed ^= seed << 17;
@@ -18,9 +18,9 @@ long long	generate_rand_num(long long min, long long max)
 }
 
 // Function to generate a random number within a given interval
-// long long	rand_pos(long long min, long long max)
+// long	rand_pos(long min, long max)
 // {
-// 	long long		random_num;
+// 	long		random_num;
 
 // 	random_num = 0;
 // 	while (1)
@@ -32,7 +32,7 @@ long long	generate_rand_num(long long min, long long max)
 // 	return (random_num);
 // }
 
-int	val_exist(long long num, int arr[], int size)
+int	val_exist(long num, int arr[], int size)
 {
 	int	i;
 
@@ -93,11 +93,11 @@ int	main(void)
 	max = 10;
 	size = 5;
 	array = random_non_repetive_values(min, max, size);
-	// printf("Random number within interval [%d, %d]: %lld\n", min, max, random_number);
+	// printf("Random number within interval [%d, %d]: %ld\n", min, max, random_number);
 	// while (i++ < 100)
 	// {
 	// 	random_number = generate_rand_num(1, 10);
-	// 	printf("Random number within interval[%d] [%d, %d]: %lld\n", 
+	// 	printf("Random number within interval[%d] [%d, %d]: %ld\n", 
 	// 	i, min, max, random_number);
 	// 	// 	printf("i = %d %% 4=> %d\n", i, i % 4);
 	// }

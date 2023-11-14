@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 15:36:38 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/11/14 16:43:50 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 		}
 		else if (current_time(rules) > philo->sleep + rules->t_sleep)
 			return (died_msg(rules, philo));
-		usleep(100);
+		usleep(50);
 	}
 }
 
@@ -50,7 +50,7 @@ bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 	if (!died_msg(philo->rules, philo))
 	{
 		philo->time = current_time(philo->rules);
-		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
+		printf(" %ld\tphilo %s [%03d] %s %s %s %s\n", \
 		philo->time, color(i), i, color(0), msg_color, msg, color(0));
 	}
 	pthread_mutex_unlock(&philo->rules->lock_msg.lock);
@@ -59,23 +59,23 @@ bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 
 bool	died_msg(t_rules *rules, t_philo *philo)
 {
-	bool		res;
-	long long	death_time;
-	long long	time;
+	bool	res;
+	long	death;
+	long	time;
 
 	res = 0;
 	pthread_mutex_lock(&rules->lock_flags.lock);
 	if (!rules->lock_flags.stat)
 	{
 		time = current_time(philo->rules);
-		death_time = (time - philo->t_meal);
-		if (death_time > rules->t_die)
+		death = (time - philo->t_meal);
+		if (death >= rules->t_die)
 		{
-			rules->lock_flags.stat = 1;
-			printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
+			printf(" %ld\tphilo %s [%03d] %s %s %s %s\n", \
 			time, color(philo->id), philo->id, color(0), \
 			P_DEAD, "      DIED      ", color(0));
-			print_death_action(philo, rules, death_time);
+			debug_death(philo, rules, time, death);
+			rules->lock_flags.stat = 1;
 			res = 1;
 		}
 	}
@@ -110,33 +110,33 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		error_thread(&rules->lock_msg.stat, 2);
 }
 
-// void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
-// {
-// 	static long long		sum;
-// 	struct timeval			start;
+void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
+{
+	static long		sum;
+	struct timeval			start;
 
-// 	while (1)
-// 	{
-// 		pthread_mutex_lock(&rules->lock_count.lock);
-// 		if (!tmp)
-// 		{
-// 			tmp = 1;
-// 			sum += philo->id;
-// 		}
-// 		if (sum == size)
-// 		{
-// 			if (!rules->lock_count.stat)
-// 			{
-// 				gettimeofday(&start, NULL);
-// 				rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
-// 				rules->lock_count.stat = 1;
-// 			}
-// 			else
-// 			{
-// 				pthread_mutex_unlock(&rules->lock_count.lock);
-// 				break ;
-// 			}
-// 		}
-// 		pthread_mutex_unlock(&rules->lock_count.lock);
-// 	}
-// }
+	while (1)
+	{
+		pthread_mutex_lock(&rules->lock_count.lock);
+		if (!tmp)
+		{
+			tmp = 1;
+			sum += philo->id;
+		}
+		if (sum == size)
+		{
+			if (!rules->lock_count.stat)
+			{
+				gettimeofday(&start, NULL);
+				rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+				rules->lock_count.stat = 1;
+			}
+			else
+			{
+				pthread_mutex_unlock(&rules->lock_count.lock);
+				break ;
+			}
+		}
+		pthread_mutex_unlock(&rules->lock_count.lock);
+	}
+}
