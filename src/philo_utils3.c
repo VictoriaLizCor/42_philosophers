@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 16:43:50 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/04 15:41:08 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 		{
 			if (died_msg(rules, philo->to_lock))
 				return (1);
-			else if (odd_philo(philo) && !tmp && \
-			current_time(rules) == philo->to_lock->sleep + rules->t_sleep)
+			else if (current_time(rules) > \
+			philo->to_lock->sleep + rules->t_sleep)
 			{
 				tmp = 1;
 				philo_lock_msg(philo->to_lock, philo, 0);
@@ -34,9 +34,9 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 			else if (current_time(rules) >= philo->t_meal + rules->t_eat)
 				return (died_msg(rules, philo));
 		}
-		else if (current_time(rules) > philo->sleep + rules->t_sleep)
+		else if (philo->g_time(rules) > (philo->sleep + rules->t_sleep))
 			return (died_msg(rules, philo));
-		usleep(50);
+		usleep(100);
 	}
 }
 
@@ -113,7 +113,7 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 {
 	static long		sum;
-	struct timeval			start;
+	struct timeval	start;
 
 	while (1)
 	{
@@ -132,11 +132,9 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 				rules->lock_count.stat = 1;
 			}
 			else
-			{
-				pthread_mutex_unlock(&rules->lock_count.lock);
 				break ;
-			}
 		}
 		pthread_mutex_unlock(&rules->lock_count.lock);
 	}
+	pthread_mutex_unlock(&rules->lock_count.lock);
 }

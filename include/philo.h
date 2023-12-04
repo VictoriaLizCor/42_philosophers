@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 16:40:36 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/04 15:13:07 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #  define D_PHI 0
 # endif
 
+typedef struct s_philo	t_philo;
 typedef struct s_mutex
 {
 	bool			stat;
@@ -50,7 +51,12 @@ typedef struct s_rules
 	t_mutex	lock_msg;
 }	t_rules;
 
-typedef struct s_philo
+typedef struct s_get_time
+{
+	long	(*g_time)(t_philo *);
+}	t_get_time;
+
+struct s_philo
 {
 	int				id;
 	int				action;
@@ -61,10 +67,11 @@ typedef struct s_philo
 	pthread_t		thread;
 	t_mutex			fork;
 	t_rules			*rules;
+	long			(*g_time)(t_rules *);
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
-}	t_philo;
+};
 
 typedef struct s_rutine
 {

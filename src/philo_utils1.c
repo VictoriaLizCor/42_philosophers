@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 16:49:15 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/04 15:46:03 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ bool	philo_lock_msg(t_philo *philo, t_philo *caller, bool res)
 	else if (philo->action == 3 && !philo->to_lock && !res)
 	{
 		res = philo_msg(philo, "is   SLEEPING   ", P_SLEEP, caller);
-		philo->sleep = current_time(philo->rules);
+		philo->sleep = philo->g_time(philo->rules);
 	}
 	else if (philo->action == 4 && !philo->to_lock && !res && \
 	current_time(philo->rules) > philo->sleep + philo->rules->t_sleep)
@@ -59,6 +59,8 @@ static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 				pthread_mutex_unlock(&philo->fork.lock);
 			if (philo->time - philo->sleep < rules->t_sleep)
 				res = ft_usleep(rules, philo, 0, 3);
+			else
+				philo_lock_msg(philo->to_lock, philo, 0);
 		}
 		else if (philo->action == 4)
 		{
@@ -102,7 +104,8 @@ static void	exe(t_philo *philo)
 	bool	res;
 
 	rules = philo->rules;
-	wait_all(rules, philo, 0, (rules->n_philos / 2 * (rules->n_philos + 1)));
+	// if (rules->n_philos > 1)
+	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
 	sum = rules->t_eat + rules->t_sleep;
 	if (philo->id % 2 == 0)
 		usleep((rules->t_sleep / 2 - current_time(rules)) * 1000);

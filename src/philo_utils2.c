@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 16:43:25 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/10 15:46:34 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/04 15:10:46 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ char	*color(int idx)
 		idx = (idx % 16);
 	return (s_color[idx]);
 }
+
 
 char	*warn(int idx)
 {

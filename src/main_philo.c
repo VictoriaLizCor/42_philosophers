@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:22:17 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 12:23:04 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/04 15:11:22 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->fork.stat = 0;
 		(*philos + i)->n_meals = rules->n_meals;
 		(*philos + i)->to_lock = (void *)0;
+		(*philos + i)->g_time = &current_time;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
 		i++;
