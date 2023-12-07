@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/25 11:39:04 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/12/04 15:41:08 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/07 10:13:41 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 		}
 		else if (philo->g_time(rules) > (philo->sleep + rules->t_sleep))
 			return (died_msg(rules, philo));
-		usleep(100);
+		usleep(50);
 	}
 }
 
@@ -128,7 +128,7 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 			if (!rules->lock_count.stat)
 			{
 				gettimeofday(&start, NULL);
-				rules->t_start = (start.tv_sec * 1000) + (start.tv_usec / 1000);
+				rules->t_start = (start.tv_sec * 10000) + (start.tv_usec / 10000);
 				rules->lock_count.stat = 1;
 			}
 			else

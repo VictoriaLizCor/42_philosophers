@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 12:46:39 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/12/04 15:13:07 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/07 11:50:58 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@
 #  define D_PHI 0
 # endif
 
+
 typedef struct s_philo	t_philo;
+
 typedef struct s_mutex
 {
 	bool			stat;
@@ -51,10 +53,14 @@ typedef struct s_rules
 	t_mutex	lock_msg;
 }	t_rules;
 
-typedef struct s_get_time
+struct timeval	get_time(u_int64_t t_start)
 {
-	long	(*g_time)(t_philo *);
-}	t_get_time;
+	struct timeval	current;
+
+	gettimeofday(&current, NULL);
+	return (current);
+}
+
 
 struct s_philo
 {
@@ -65,9 +71,10 @@ struct s_philo
 	long			sleep;
 	long			time;
 	pthread_t		thread;
+	u_int64_t		t_start;
 	t_mutex			fork;
 	t_rules			*rules;
-	long			(*g_time)(t_rules *);
+	int64_t			(*g_time)(t_rules *);
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -82,7 +89,7 @@ typedef struct s_rutine
 
 /* main_philo.c */
 /* libft.c */
-long		current_time(t_rules *rules);
+u_int64_t	current_time(t_rules *rules);
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);

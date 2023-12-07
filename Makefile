@@ -114,6 +114,12 @@ ex1:$(NAME)
 ex2:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 310 200 100
+ex22:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 400 200 100
+ex23:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 401 200 200
 ex3:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 3 800 200 200

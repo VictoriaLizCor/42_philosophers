@@ -6,15 +6,14 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:50:46 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/11/14 16:38:24 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/07 11:48:35 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-
 // rules->t_start = ((start.tv_sec * 1000) + ((long)start.tv_usec / 1000));
-long	current_time(t_rules *rules)
+int64_t	current_time(t_rules *rules)
 {
 	time_t			ms;
 	time_t			t1;
@@ -23,8 +22,8 @@ long	current_time(t_rules *rules)
 
 	pthread_mutex_lock(&rules->lock_time.lock);
 	gettimeofday(&current, NULL);
-	t1 = (long)current.tv_sec * 1000;
-	t2 = (long)current.tv_usec / 1000;
+	t1 = (u_int64_t)current.tv_sec * (u_int64_t)1000;
+	t2 = (u_int64_t)((current.tv_usec % (u_int64_t)1000) * (u_int64_t)1000);
 	ms = (t1 + t2) - rules->t_start;
 	if (ms < 0)
 		ms = 0;
@@ -77,7 +76,7 @@ long int	ft_atol(const char *s)
 		if (ft_isdigit(*s))
 		{
 			num = num * 10 + (*s - '0');
-			if (num / 100000000000000000 > 10)
+			if (num / 1e17 > 10)
 				return (max_values(&num, &sign, *(s + 1)));
 		}
 		else if (num > 0)

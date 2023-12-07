@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/02 14:29:47 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/12/04 15:46:03 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/07 10:10:47 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ bool	philo_lock_msg(t_philo *philo, t_philo *caller, bool res)
 	}
 	else if (philo->action == 2 && philo->to_lock && !res)
 	{
-		usleep(100);
+		// usleep(100);
 		res = philo_msg(philo, "is    EATING    ", P_EAT, caller);
 		philo->t_meal = current_time(philo->rules);
 	}
