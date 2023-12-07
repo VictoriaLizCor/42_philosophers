@@ -14,6 +14,7 @@
 # define PHILO_H
 
 # include <stdio.h>
+# include <stdint.h>
 # include <unistd.h>
 # include <limits.h>
 # include <string.h>
@@ -29,8 +30,8 @@
 #  define D_PHI 0
 # endif
 
-
-typedef struct s_philo	t_philo;
+typedef unsigned long long	t_u64;
+typedef struct s_philo		t_philo;
 
 typedef struct s_mutex
 {
@@ -40,29 +41,30 @@ typedef struct s_mutex
 
 typedef struct s_rules
 {
-	long	t_start;
-	long	t_die;
-	long	t_eat;
-	long	t_sleep;
-	int		n_philos;
-	int		n_meals;
-	int		last;
-	t_mutex	lock_time;
-	t_mutex	lock_flags;
-	t_mutex	lock_count;
-	t_mutex	lock_msg;
+	t_u64		t_start;
+	long		t_die;
+	long		t_eat;
+	long		t_sleep;
+	int			n_philos;
+	int			n_meals;
+	int			last;
+	t_mutex		lock_time;
+	t_mutex		lock_flags;
+	t_mutex		lock_count;
+	t_mutex		lock_msg;
 }	t_rules;
 
-struct timeval	get_time(u_int64_t t_start)
+struct timeval	get_time(void)
 {
-	struct timeval	current;
+	struct timeval	t;
 
-	gettimeofday(&current, NULL);
-	return (current);
+	gettimeofday(&t, NULL);
+	t.tv_sec *= 1e9;
+	t.tv_usec += t.tv_sec;
+	return (t);
 }
 
-
-struct s_philo
+struct	s_philo
 {
 	int				id;
 	int				action;
@@ -71,10 +73,10 @@ struct s_philo
 	long			sleep;
 	long			time;
 	pthread_t		thread;
-	u_int64_t		t_start;
+	time_t			t_start;
 	t_mutex			fork;
 	t_rules			*rules;
-	int64_t			(*g_time)(t_rules *);
+	t_u64			(*g_time)(t_philo *);
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -89,7 +91,7 @@ typedef struct s_rutine
 
 /* main_philo.c */
 /* libft.c */
-u_int64_t	current_time(t_rules *rules);
+t_u64		current_time(t_rules *rules);
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);

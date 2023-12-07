@@ -13,7 +13,7 @@
 #include <philo.h>
 
 // rules->t_start = ((start.tv_sec * 1000) + ((long)start.tv_usec / 1000));
-int64_t	current_time(t_rules *rules)
+uint64_t	current_time(t_rules *rules)
 {
 	time_t			ms;
 	time_t			t1;
@@ -22,8 +22,8 @@ int64_t	current_time(t_rules *rules)
 
 	pthread_mutex_lock(&rules->lock_time.lock);
 	gettimeofday(&current, NULL);
-	t1 = (u_int64_t)current.tv_sec * (u_int64_t)1000;
-	t2 = (u_int64_t)((current.tv_usec % (u_int64_t)1000) * (u_int64_t)1000);
+	t1 = (time_t)current.tv_sec * (time_t)1000;
+	t2 = (time_t)((current.tv_usec % (time_t)1000) * (time_t)1000);
 	ms = (t1 + t2) - rules->t_start;
 	if (ms < 0)
 		ms = 0;

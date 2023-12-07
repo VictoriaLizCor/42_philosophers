@@ -113,7 +113,7 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 {
 	static long		sum;
-	struct timeval	start;
+	struct timeval	t;
 
 	while (1)
 	{
@@ -127,8 +127,7 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 		{
 			if (!rules->lock_count.stat)
 			{
-				gettimeofday(&start, NULL);
-				rules->t_start = (start.tv_sec * 10000) + (start.tv_usec / 10000);
+				rules->t_start = (get_time().tv_usec) / 1000;
 				rules->lock_count.stat = 1;
 			}
 			else
