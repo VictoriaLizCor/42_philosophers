@@ -49,13 +49,14 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	{
 		(*philos + i)->id = i + 1;
 		(*philos + i)->action = 0;
-		(*philos + i)->rules = rules;
 		(*philos + i)->t_meal = 0;
 		(*philos + i)->sleep = 0;
 		(*philos + i)->fork.stat = 0;
 		(*philos + i)->n_meals = rules->n_meals;
 		(*philos + i)->to_lock = (void *)0;
-		(*philos + i)->g_time = &current_time;
+		(*philos + i)->rules = rules;
+		(*philos + i)->g_time = &time_ms;
+		(*philos + i)->t = &r_ms;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
 		i++;
@@ -66,9 +67,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 static void	init_rules(t_rules *rules, char **argv)
 {
 	rules->n_philos = ft_atol(argv[1]);
-	rules->t_die = ft_atol(argv[2]);
-	rules->t_eat = ft_atol(argv[3]);
-	rules->t_sleep = ft_atol(argv[4]);
+	debug_ms(rules, argv);
 	rules->n_meals = 0;
 	rules->lock_flags.stat = false;
 	rules->lock_count.stat = false;

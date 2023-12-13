@@ -41,7 +41,7 @@ char	*ft_strchr(const char *s, int c)
 static long	generate_rand_num(long min, long max)
 {
 	struct timeval	tv;
-	long		seed;
+	long			seed;
 
 	gettimeofday(&tv, NULL);
 	seed = (long)tv.tv_sec * 1000000 + (long)tv.tv_usec;

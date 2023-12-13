@@ -31,7 +31,9 @@
 # endif
 
 typedef unsigned long long	t_u64;
+typedef struct s_rules		t_rules;
 typedef struct s_philo		t_philo;
+typedef t_u64				(*t_get_time)(t_rules *);
 
 typedef struct s_mutex
 {
@@ -39,12 +41,13 @@ typedef struct s_mutex
 	pthread_mutex_t	lock;
 }	t_mutex;
 
-typedef struct s_rules
+
+struct s_rules
 {
 	t_u64		t_start;
-	long		t_die;
-	long		t_eat;
-	long		t_sleep;
+	t_u64		t_die;
+	t_u64		t_eat;
+	t_u64		t_sleep;
 	int			n_philos;
 	int			n_meals;
 	int			last;
@@ -52,34 +55,25 @@ typedef struct s_rules
 	t_mutex		lock_flags;
 	t_mutex		lock_count;
 	t_mutex		lock_msg;
-}	t_rules;
-
-struct timeval	get_time(void)
-{
-	struct timeval	t;
-
-	gettimeofday(&t, NULL);
-	t.tv_sec *= 1e9;
-	t.tv_usec += t.tv_sec;
-	return (t);
-}
+};
 
 struct	s_philo
 {
 	int				id;
 	int				action;
 	int				n_meals;
-	long			t_meal;
-	long			sleep;
-	long			time;
+	t_u64			t_meal;
+	t_u64			sleep;
+	t_u64			time;
 	pthread_t		thread;
 	time_t			t_start;
 	t_mutex			fork;
-	t_rules			*rules;
-	t_u64			(*g_time)(t_philo *);
 	struct s_philo	*to_lock;
 	struct s_philo	*right;
 	struct s_philo	*left;
+	t_rules			*rules;
+	t_u64			(*g_time)(t_philo *);
+	t_get_time		t;
 };
 
 typedef struct s_rutine
@@ -89,9 +83,13 @@ typedef struct s_rutine
 	int			idx;
 }	t_rutine;
 
-/* main_philo.c */
+/* function_pointer.c */
+bool		check_time(t_philo *philo, t_u64 t1, t_u64 t2);
+t_u64		time_ms(t_philo *philo);
+t_u64		r_ms(t_rules *rules);
+t_u64		get_time(void);
+void		debug_ms(t_rules *rules, char **argv);
 /* libft.c */
-t_u64		current_time(t_rules *rules);
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
@@ -99,7 +97,7 @@ void		*ft_memset(void *s, int c, size_t n);
 char		*ft_strchr(const char *s, int c);
 int			*random_non_repetive_values(int min, int max, int size);
 /* philo_utils1.c */
-bool		philo_lock_msg(t_philo *philo, t_philo *caller, bool res);
+bool		lock_msg(t_rules *rules, t_philo *philo, t_philo *cal, bool res);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
@@ -118,7 +116,7 @@ void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo, t_philo *caller);
-void		debug_death(t_philo *philo, t_rules *rules, long time, long death);
+void		debug_death(t_philo *p, t_rules *rules, t_u64 time, t_u64 death);
 
 void		debug_thread_check(t_philo *philo, char *msg);
 void		print_ft_usleep(t_philo *philo, int opt);

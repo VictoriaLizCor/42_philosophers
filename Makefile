@@ -11,15 +11,15 @@ else
 D_SAN = -D D_PHI=$(D) -Wall -Wextra -fsanitize=address  #-Werror
 endif
 SRCS_DIR = src/
-SRCS =	main_philo.c	\
-		philo_utils1.c	\
-		philo_utils2.c	\
-		philo_utils3.c	\
-		check_error.c	\
-		libft_1.c		\
-		libft_2.c		\
-		debug.c			\
-# .c		\
+SRCS =	main_philo.c		\
+		philo_utils1.c		\
+		philo_utils2.c		\
+		philo_utils3.c		\
+		check_error.c		\
+		libft_1.c			\
+		libft_2.c			\
+		function_pointer.c	\
+		debug.c				\
 
 OBJS_DIR = obj/
 OBJS = $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
@@ -30,20 +30,12 @@ $(NAME): $(OBJS) | $(OBJS_DIR)
 	@printf "\n"
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
 	@echo $(GREEN)
-ifeq ($(S), 1)
 	$(CC) -g $(D_SAN) $(INCLUDES) $^ -pthread -o $(NAME)
-else
-	$(CC) $(D_SAN) $(INCLUDES) $(OBJS) -pthread -o $(NAME)
-endif
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
-ifeq ($(S), 1)
 	@$(CC) -g $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
-else
-	@$(CC) $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
-endif
 	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$< $(FG_TEXT)"
 
 $(OBJS_DIR):
@@ -65,16 +57,10 @@ fclean:	clean
 	@printf "\n$(P_NC)"
 
 reval:
-	@make re -C . D=0
+	@make re -C . D=0 S=0
 	@make -C . val
 val:$(NAME)
-	$(eval PHILO=$(shell seq 1 6 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_EAT=$(shell seq 5 10 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_SLEEP=$(shell seq 10 15 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval T_ES1=$(shell echo $$(($(T_EAT) + $(T_SLEEP))) | tr '\n' ' '))
-	$(eval T_ES2=$(shell echo $$(($(T_ES1) + 2)) | tr '\n' ' '))
-	$(eval T_DIE=$(shell seq $(T_ES1) $(T_ES2) | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $(PHILO)$(T_DIE)$(T_EAT)$(T_SLEEP) ))
+	valgrind --tool=helgrind ./philo 2 401 200 200
 resan:
 	@make re -C . D=1
 	@make -C . e1

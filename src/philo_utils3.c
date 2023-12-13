@@ -23,34 +23,36 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 		{
 			if (died_msg(rules, philo->to_lock))
 				return (1);
-			else if (current_time(rules) > \
+			else if (time_ms(philo) > \
 			philo->to_lock->sleep + rules->t_sleep)
 			{
 				tmp = 1;
-				philo_lock_msg(philo->to_lock, philo, 0);
+				lock_msg(rules, philo->to_lock, philo, 0);
 				philo->to_lock->action = 2;
-				philo_lock_msg(philo->to_lock, philo, 0);
+				lock_msg(rules, philo->to_lock, philo, 0);
 			}
-			else if (current_time(rules) >= philo->t_meal + rules->t_eat)
+			else if (time_ms(philo) >= philo->t_meal + rules->t_eat)
 				return (died_msg(rules, philo));
 		}
-		else if (philo->g_time(rules) > (philo->sleep + rules->t_sleep))
+		else if (r_ms(rules) > (philo->sleep + rules->t_sleep))
 			return (died_msg(rules, philo));
-		usleep(50);
+		usleep(100);
 	}
 }
 
 bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 {
 	int			i;
+	t_rules		rules;
 
+	rules = *philo->rules;
 	pthread_mutex_lock(&philo->rules->lock_msg.lock);
 	print_action(philo, cal);
 	i = philo->id;
 	if (!died_msg(philo->rules, philo))
 	{
-		philo->time = current_time(philo->rules);
-		printf(" %ld\tphilo %s [%03d] %s %s %s %s\n", \
+		philo->time = r_ms(&rules);
+		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
 		philo->time, color(i), i, color(0), msg_color, msg, color(0));
 	}
 	pthread_mutex_unlock(&philo->rules->lock_msg.lock);
@@ -60,18 +62,18 @@ bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 bool	died_msg(t_rules *rules, t_philo *philo)
 {
 	bool	res;
-	long	death;
-	long	time;
+	t_u64	death;
+	t_u64	time;
 
 	res = 0;
 	pthread_mutex_lock(&rules->lock_flags.lock);
 	if (!rules->lock_flags.stat)
 	{
-		time = current_time(philo->rules);
+		time = r_ms(rules);
 		death = (time - philo->t_meal);
-		if (death >= rules->t_die)
+		if (death > rules->t_die + 1500)
 		{
-			printf(" %ld\tphilo %s [%03d] %s %s %s %s\n", \
+			printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
 			time, color(philo->id), philo->id, color(0), \
 			P_DEAD, "      DIED      ", color(0));
 			debug_death(philo, rules, time, death);
@@ -113,7 +115,6 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 {
 	static long		sum;
-	struct timeval	t;
 
 	while (1)
 	{
@@ -127,7 +128,7 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 		{
 			if (!rules->lock_count.stat)
 			{
-				rules->t_start = (get_time().tv_usec) / 1000;
+				rules->t_start = (get_time());// / (t_u64)1000;
 				rules->lock_count.stat = 1;
 			}
 			else

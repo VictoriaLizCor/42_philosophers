@@ -12,24 +12,6 @@
 
 #include <philo.h>
 
-// rules->t_start = ((start.tv_sec * 1000) + ((long)start.tv_usec / 1000));
-uint64_t	current_time(t_rules *rules)
-{
-	time_t			ms;
-	time_t			t1;
-	time_t			t2;
-	struct timeval	current;
-
-	pthread_mutex_lock(&rules->lock_time.lock);
-	gettimeofday(&current, NULL);
-	t1 = (time_t)current.tv_sec * (time_t)1000;
-	t2 = (time_t)((current.tv_usec % (time_t)1000) * (time_t)1000);
-	ms = (t1 + t2) - rules->t_start;
-	if (ms < 0)
-		ms = 0;
-	pthread_mutex_unlock(&rules->lock_time.lock);
-	return (ms);
-}
 
 size_t	ft_strlen(const char *str)
 {

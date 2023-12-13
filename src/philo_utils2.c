@@ -12,11 +12,14 @@
 
 #include <philo.h>
 
+
 bool	odd_philo(t_philo *p)
 {
 	bool	res;
+	int		n_philos;
 
-	res = (p->id == p->rules->last && p->id % 2 == 1 && p->rules->n_philos > 2);
+	n_philos = p->rules->n_philos;
+	res = (p->id == p->rules->last && p->id % 2 == 1 && n_philos > 2);
 	return (res);
 }
 
@@ -47,7 +50,6 @@ char	*color(int idx)
 		idx = (idx % 16);
 	return (s_color[idx]);
 }
-
 
 char	*warn(int idx)
 {
