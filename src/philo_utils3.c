@@ -36,7 +36,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 		}
 		else if (r_ms(rules) > (philo->sleep + rules->t_sleep))
 			return (died_msg(rules, philo));
-		usleep(100);
+		usleep(200);
 	}
 }
 
