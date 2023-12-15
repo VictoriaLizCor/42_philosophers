@@ -69,6 +69,7 @@ struct	s_philo
 	time_t			t_start;
 	t_mutex			fork;
 	struct s_philo	*to_lock;
+	struct s_philo	*lock_by;
 	struct s_philo	*right;
 	struct s_philo	*left;
 	t_rules			*rules;

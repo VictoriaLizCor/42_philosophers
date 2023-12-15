@@ -35,7 +35,6 @@ static void	init_neightbor(t_philo *philos, int size)
 	}
 }
 
-// (*philos + i)->fork.lock = PTHREAD_MUTEX_INITIALIZER;;
 static void	init_philos(t_rules *rules, t_philo **philos, int size)
 {
 	int	i;
@@ -54,6 +53,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->fork.stat = 0;
 		(*philos + i)->n_meals = rules->n_meals;
 		(*philos + i)->to_lock = (void *)0;
+		(*philos + i)->lock_by = (void *)0;
 		(*philos + i)->rules = rules;
 		(*philos + i)->g_time = &time_ms;
 		(*philos + i)->t = &r_ms;

@@ -36,7 +36,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 		}
 		else if (r_ms(rules) > (philo->sleep + rules->t_sleep))
 			return (died_msg(rules, philo));
-		usleep(200);
+		usleep(100);
 	}
 }
 
@@ -53,7 +53,7 @@ bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 	{
 		philo->time = r_ms(&rules);
 		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
-		philo->time, color(i), i, color(0), msg_color, msg, color(0));
+		philo->time / 1000, color(i), i, color(0), msg_color, msg, color(0));
 	}
 	pthread_mutex_unlock(&philo->rules->lock_msg.lock);
 	return (died_msg(philo->rules, philo));
@@ -74,7 +74,7 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 		if (death > rules->t_die + 1500)
 		{
 			printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
-			time, color(philo->id), philo->id, color(0), \
+			time / 1000, color(philo->id), philo->id, color(0), \
 			P_DEAD, "      DIED      ", color(0));
 			debug_death(philo, rules, time, death);
 			rules->lock_flags.stat = 1;

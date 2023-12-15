@@ -12,43 +12,62 @@
 
 #include <philo.h>
 
-
 bool	lock_msg( t_rules *rules, t_philo *philo, t_philo *cal, bool res)
 {
+	philo->action++;
 	res = died_msg(philo->rules, philo);
-	if (philo->to_lock && !res)
+	if (philo->action == 1 && philo->to_lock && !res)
 	{
 		res = philo_msg(philo, "has taken a fork", P_FORK, cal);
-		res = lock_msg(rules, philo->to_lock, philo, 0);
+		if (philo->to_lock->action == 0)
+		{
+			philo->to_lock->action = 2;
+			res = lock_msg(rules, philo->to_lock, philo, 0);
+		}
+	}
+	else if (philo->action == 2 && philo->to_lock && !res)
+	{
 		res = philo_msg(philo, "is    EATING    ", P_EAT, cal);
 		philo->t_meal = philo->time;
-		res = ft_usleep(rules, philo, 0, 2);
 	}
-	else if (!philo->to_lock && !res)
+	else if (philo->action == 3 && !philo->to_lock && !res)
 	{
 		res = philo_msg(philo, "is   SLEEPING   ", P_SLEEP, cal);
-		philo->sleep = philo->time;
-		if (time_ms(philo) > philo->sleep + philo->rules->t_sleep)
-			res = philo_msg(philo, "is   THINKING   ", P_THINK, cal);
+		philo->sleep = r_ms(rules);
 	}
+	else if (philo->action == 4 && !philo->to_lock && !res)
+		res = philo_msg(philo, "is   THINKING   ", P_THINK, cal);
 	return (died_msg(philo->rules, philo));
 }
+// else if (philo->action == 4 && !philo->to_lock && !res) \
+&& time_ms(philo) > philo->sleep + philo->rules->t_sleep
 
 static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 {
 	res = lock_msg(rules, philo, philo, 0);
 	if (lock)
 	{
+		if (philo->action == 2)
+			res = ft_usleep(rules, philo, 0, 2);
 		pthread_mutex_unlock(&lock->fork.lock);
 	}
 	else
 	{
-		if (philo->right)
-			pthread_mutex_unlock(&philo->fork.lock);
-		if (rules->t_sleep > philo->time - philo->sleep)
-			res = ft_usleep(rules, philo, 0, 3);
-		else
-			lock_msg(rules, philo, philo, 0);
+		if (philo->action == 3)
+		{
+			if (philo->right)
+				pthread_mutex_unlock(&philo->fork.lock);
+			if (rules->t_sleep > philo->time - philo->sleep)
+				res = ft_usleep(rules, philo, 0, 3);
+			else
+				lock_msg(rules, philo, philo, 0);
+		}
+		else if (philo->action >= 4)
+		{
+			philo->action = 0;
+			if (philo->right)
+				pthread_mutex_unlock(&philo->fork.lock);
+		}
 	}
 	return (res);
 }
@@ -58,6 +77,7 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 	bool	res;
 
 	res = 0;
+	debug_thread_check(philo, "CHECK");
 	if (!philo->right)
 		res = actions(philo, philo->rules, NULL, 0);
 	else
@@ -86,22 +106,23 @@ static void	exe(t_philo *philo)
 	rules = philo->rules;
 	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
 	philo->t_start = rules->t_start;
+	if (!philo->right)
+		philo->action = 2;
 	sum = rules->t_eat + rules->t_sleep;
-	if (philo->id % 2 == 0)
+	if (philo->id % 2 == 0 && (rules->t_sleep / 2) < 100)
 		usleep((rules->t_sleep / 2));
+	if (philo->id % 2 == 0 && (rules->t_sleep / 2) > 100)
+		usleep(100);
 	while (1)
 	{
-		// pthread_mutex_lock(&philo->fork.lock);
-		// if (odd_philo(philo) && !philo->action && philo->time % sum <= 100)
-		// 	philo->action = 2;
-		// pthread_mutex_unlock(&philo->fork.lock);
+		pthread_mutex_lock(&philo->fork.lock);
+		if (odd_philo(philo) && !philo->action && philo->time % sum <= 100)
+			philo->action = 2;
+		pthread_mutex_unlock(&philo->fork.lock);
 		if (!died_msg(rules, philo))
 			res = check_locks(philo, philo->right, philo->left);
 		if (res || died_msg(rules, philo))
-		{
-			// debug_thread_check(philo, " EXIT");
 			return ;
-		}
 	}
 }
 
