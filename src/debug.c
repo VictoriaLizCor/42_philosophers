@@ -26,17 +26,17 @@ void	print_action(t_philo *philo, t_philo *caller)
 		if (odd_philo(philo) && !died_msg(philo_tmp.rules, &philo_tmp))
 			fprintf(stderr, \
 			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld] \t {%d}\n", \
-			time_ms(&philo_tmp), philo_tmp.id, philo_tmp.id, \
+			r_ms(philo_tmp.rules), philo_tmp.id, philo_tmp.id, \
 			philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep, sum);
 		else if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))
 			fprintf(stderr, \
 			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
-			time_ms(&philo_tmp), philo_tmp.id, \
+			r_ms(philo_tmp.rules), philo_tmp.id, \
 			philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
 		else if (!died_msg(philo_tmp.rules, &philo_tmp))
 			fprintf(stderr, \
 			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
-			time_ms(&philo_tmp), caller->id, \
+			r_ms(philo_tmp.rules), caller->id, \
 			philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
 	}
 }
@@ -46,7 +46,7 @@ void	debug_thread_check(t_philo *philo, char *msg)
 	if (D_PHI == 0)
 		return ;
 	fprintf(stderr, " %lld\t\t\t\t\t\t\t\t\t\t\t\t[%d]{%d} %s\n", \
-	time_ms(philo), philo->id, philo->action, msg);
+	r_ms(philo->rules), philo->id, philo->action, msg);
 }
 
 void	print_ft_usleep(t_philo *philo, int opt)

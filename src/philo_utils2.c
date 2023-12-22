@@ -12,7 +12,6 @@
 
 #include <philo.h>
 
-
 bool	odd_philo(t_philo *p)
 {
 	bool	res;

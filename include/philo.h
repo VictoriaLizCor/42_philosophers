@@ -41,7 +41,6 @@ typedef struct s_mutex
 	pthread_mutex_t	lock;
 }	t_mutex;
 
-
 struct s_rules
 {
 	t_u64		t_start;
@@ -108,7 +107,7 @@ void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 bool		ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt);
 bool		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
-void		wait_all(t_rules *rules, t_philo *philo, bool tmp, long size);
+void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 bool		died_msg(t_rules *rules, t_philo *philo);
 /* check_error.c*/

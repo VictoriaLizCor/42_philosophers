@@ -12,6 +12,10 @@
 
 #include <philo.h>
 
+/*
+even: t_eat + t_sleep + 100;
+even: t_eat * 2 + t_sleep + 100;
+*/
 bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 {
 	while (1)
@@ -30,6 +34,7 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt)
 				lock_msg(rules, philo->to_lock, philo, 0);
 				philo->to_lock->action = 2;
 				lock_msg(rules, philo->to_lock, philo, 0);
+				philo->to_lock->sleep = r_ms(rules) + 100;
 			}
 			else if (time_ms(philo) >= philo->t_meal + rules->t_eat)
 				return (died_msg(rules, philo));
@@ -71,7 +76,7 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 	{
 		time = r_ms(rules);
 		death = (time - philo->t_meal);
-		if (death > rules->t_die + 1500)
+		if (death > rules->t_die + 2000)
 		{
 			printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
 			time / 1000, color(philo->id), philo->id, color(0), \
@@ -112,9 +117,9 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		error_thread(&rules->lock_msg.stat, 2);
 }
 
-void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
+void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
 {
-	static long		sum;
+	static int		sum;
 
 	while (1)
 	{
@@ -128,6 +133,7 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 		{
 			if (!rules->lock_count.stat)
 			{
+				fprintf(stderr, "START[ %d ] SUM = %d\n", philo->id, sum);
 				rules->t_start = (get_time());// / (t_u64)1000;
 				rules->lock_count.stat = 1;
 			}
@@ -136,5 +142,6 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, long size)
 		}
 		pthread_mutex_unlock(&rules->lock_count.lock);
 	}
+	fprintf(stderr, "PHILO[ %d ]\n", philo->id);
 	pthread_mutex_unlock(&rules->lock_count.lock);
 }

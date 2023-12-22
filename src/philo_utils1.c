@@ -23,6 +23,7 @@ bool	lock_msg( t_rules *rules, t_philo *philo, t_philo *cal, bool res)
 		{
 			philo->to_lock->action = 2;
 			res = lock_msg(rules, philo->to_lock, philo, 0);
+			philo->to_lock->sleep = r_ms(rules) + 100;
 		}
 	}
 	else if (philo->action == 2 && philo->to_lock && !res)
@@ -33,34 +34,37 @@ bool	lock_msg( t_rules *rules, t_philo *philo, t_philo *cal, bool res)
 	else if (philo->action == 3 && !philo->to_lock && !res)
 	{
 		res = philo_msg(philo, "is   SLEEPING   ", P_SLEEP, cal);
-		philo->sleep = r_ms(rules);
+		// if (!philo->right)
+			philo->sleep = r_ms(rules);
 	}
 	else if (philo->action == 4 && !philo->to_lock && !res)
 		res = philo_msg(philo, "is   THINKING   ", P_THINK, cal);
 	return (died_msg(philo->rules, philo));
 }
-// else if (philo->action == 4 && !philo->to_lock && !res) \
-&& time_ms(philo) > philo->sleep + philo->rules->t_sleep
+// else if (philo->action == 4 && !philo->to_lock && !res) 
+// && time_ms(philo) > philo->sleep + philo->rules->t_sleep
 
 static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 {
-	res = lock_msg(rules, philo, philo, 0);
+	// res = lock_msg(rules, philo, philo, 0);
 	if (lock)
 	{
-		if (philo->action == 2)
+		if (!lock_msg(rules, philo, philo, 0) && philo->action == 2)
 			res = ft_usleep(rules, philo, 0, 2);
 		pthread_mutex_unlock(&lock->fork.lock);
 	}
 	else
 	{
-		if (philo->action == 3)
+		if (!lock_msg(rules, philo, philo, 0) && philo->action == 3)
 		{
 			if (philo->right)
 				pthread_mutex_unlock(&philo->fork.lock);
-			if (rules->t_sleep > philo->time - philo->sleep)
+			fprintf(stderr, "%lld > %lld\tTOSLEEP\n", rules->t_sleep , r_ms(rules) - philo->sleep);
+			if (rules->t_sleep > r_ms(rules) - philo->sleep)
 				res = ft_usleep(rules, philo, 0, 3);
 			else
-				lock_msg(rules, philo, philo, 0);
+				res = lock_msg(rules, philo, philo, 0);
+			
 		}
 		else if (philo->action >= 4)
 		{
@@ -69,7 +73,7 @@ static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 				pthread_mutex_unlock(&philo->fork.lock);
 		}
 	}
-	return (res);
+	return (res || died_msg(philo->rules, philo));
 }
 
 static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
