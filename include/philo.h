@@ -30,10 +30,10 @@
 #  define D_PHI 0
 # endif
 
-typedef unsigned long long	t_u64;
-typedef struct s_rules		t_rules;
-typedef struct s_philo		t_philo;
-typedef t_u64				(*t_get_time)(t_rules *);
+typedef long long		t_ll;
+typedef struct s_rules	t_rules;
+typedef struct s_philo	t_philo;
+typedef t_ll			(*t_get_time)(t_rules *);
 
 typedef struct s_mutex
 {
@@ -43,17 +43,17 @@ typedef struct s_mutex
 
 struct s_rules
 {
-	t_u64		t_start;
-	t_u64		t_die;
-	t_u64		t_eat;
-	t_u64		t_sleep;
-	int			n_philos;
-	int			n_meals;
-	int			last;
-	t_mutex		lock_time;
-	t_mutex		lock_flags;
-	t_mutex		lock_count;
-	t_mutex		lock_msg;
+	t_ll			t_start;
+	t_ll			t_die;
+	t_ll			t_eat;
+	t_ll			t_sleep;
+	int				n_philos;
+	int				n_meals;
+	int				last;
+	t_mutex			lock_time;
+	t_mutex			lock_flags;
+	t_mutex			lock_count;
+	t_mutex			lock_msg;
 };
 
 struct	s_philo
@@ -61,9 +61,9 @@ struct	s_philo
 	int				id;
 	int				action;
 	int				n_meals;
-	t_u64			t_meal;
-	t_u64			sleep;
-	t_u64			time;
+	t_ll			t_meal;
+	t_ll			sleep;
+	t_ll			time;
 	pthread_t		thread;
 	time_t			t_start;
 	t_mutex			fork;
@@ -72,22 +72,16 @@ struct	s_philo
 	struct s_philo	*right;
 	struct s_philo	*left;
 	t_rules			*rules;
-	t_u64			(*g_time)(t_philo *);
+	t_ll			(*g_time)(t_philo *);
 	t_get_time		t;
 };
 
-typedef struct s_rutine
-{
-	t_rules		*rules;
-	t_philo		*philos;
-	int			idx;
-}	t_rutine;
 
 /* function_pointer.c */
-bool		check_time(t_philo *philo, t_u64 t1, t_u64 t2);
-t_u64		time_ms(t_philo *philo);
-t_u64		r_ms(t_rules *rules);
-t_u64		get_time(void);
+bool		check_time(t_philo *philo, t_ll t1, t_ll t2);
+t_ll		time_ms(t_philo *philo);
+t_ll		r_ms(t_rules *rules);
+t_ll		get_time(void);
 void		debug_ms(t_rules *rules, char **argv);
 /* libft.c */
 size_t		ft_strlen(const char *str);
@@ -105,7 +99,7 @@ char		*warn(int idx);
 bool		odd_philo(t_philo *p);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-bool		ft_usleep(t_rules *rules, t_philo *philo, bool	tmp, int opt);
+bool		ft_usleep(t_rules *rules, t_philo *philo, int opt);
 bool		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
 void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
@@ -116,7 +110,7 @@ void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo, t_philo *caller);
-void		debug_death(t_philo *p, t_rules *rules, t_u64 time, t_u64 death);
+void		debug_death(t_philo *p, t_rules *rules, t_ll time, t_ll death);
 
 void		debug_thread_check(t_philo *philo, char *msg);
 void		print_ft_usleep(t_philo *philo, int opt);

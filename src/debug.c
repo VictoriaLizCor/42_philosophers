@@ -52,7 +52,7 @@ void	debug_thread_check(t_philo *philo, char *msg)
 void	print_ft_usleep(t_philo *philo, int opt)
 {
 	t_philo		philo_tmp;
-	t_u64		current;
+	t_ll		current;
 
 	if (D_PHI == 0)
 		return ;
@@ -69,7 +69,7 @@ void	print_ft_usleep(t_philo *philo, int opt)
 	pthread_mutex_unlock(&philo->rules->lock_msg.lock);
 }
 
-void	debug_death(t_philo *philo, t_rules *rules, t_u64 time, t_u64 death)
+void	debug_death(t_philo *philo, t_rules *rules, t_ll time, t_ll death)
 {
 	// if (D_PHI == 0)
 	// {
@@ -78,7 +78,7 @@ void	debug_death(t_philo *philo, t_rules *rules, t_u64 time, t_u64 death)
 	// 	philo->id, philo->action, philo->t_meal, \
 	// 	time, philo->sleep, time);
 	// 	fprintf(stderr, "\t\t\t\t\t\t\t*[%d] ==> [%lld || %lld / %lld]\n", \
-	// 	philo->id, philo->t_meal, death, rules->t_die / (t_u64)1000);
+	// 	philo->id, philo->t_meal, death, rules->t_die / (t_ll)1000);
 	// }
 	// else
 	{
