@@ -50,6 +50,7 @@ struct s_rules
 	int				n_philos;
 	int				n_meals;
 	int				last;
+	int				p_start;
 	t_mutex			lock_time;
 	t_mutex			lock_flags;
 	t_mutex			lock_count;
@@ -82,7 +83,6 @@ bool		check_time(t_philo *philo, t_ll t1, t_ll t2);
 t_ll		time_ms(t_philo *philo);
 t_ll		r_ms(t_rules *rules);
 t_ll		get_time(void);
-void		debug_ms(t_rules *rules, char **argv);
 /* libft.c */
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
@@ -99,7 +99,7 @@ char		*warn(int idx);
 bool		odd_philo(t_philo *p);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-bool		ft_usleep(t_rules *rules, t_philo *philo, int opt);
+bool		ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt);
 bool		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
 void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
 void		destroy_mutex(t_philo *philo, t_rules *rules);

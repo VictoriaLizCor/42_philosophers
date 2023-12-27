@@ -109,6 +109,9 @@ ex23:$(NAME)
 ex3:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 3 800 200 200
+ex31:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 3 900 300 100
 ex4d:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 4 310 200 100

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/12/27 11:44:34 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/27 16:01:15 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,20 +56,4 @@ bool	check_time(t_philo *philo, t_ll t1, t_ll t2)
 
 	res = time_ms(philo) > t1 + (t2);
 	return (res);
-}
-
-void	debug_ms(t_rules *rules, char **argv)
-{
-	// if (D_PHI == 0)
-	// {
-	// 	rules->t_die = (t_ll)ft_atol(argv[2]);
-	// 	rules->t_eat = (t_ll)ft_atol(argv[3]);
-	// 	rules->t_sleep = (t_ll)ft_atol(argv[4]);
-	// }
-	// else
-	{
-		rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000;
-		rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
-		rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
-	}
 }

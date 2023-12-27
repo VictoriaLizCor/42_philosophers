@@ -67,7 +67,9 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 static void	init_rules(t_rules *rules, char **argv)
 {
 	rules->n_philos = ft_atol(argv[1]);
-	debug_ms(rules, argv);
+	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000;
+	rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
+	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
 	rules->n_meals = 0;
 	rules->lock_flags.stat = false;
 	rules->lock_count.stat = false;

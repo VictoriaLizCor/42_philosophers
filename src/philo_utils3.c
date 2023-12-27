@@ -16,18 +16,12 @@
 even: t_eat + t_sleep + 100;
 even: t_eat * 2 + t_sleep + 100;
 */
-bool	ft_usleep(t_rules *rules, t_philo *philo, int opt)
+bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt)
 {
-	t_ll	tmp;
-	t_ll	cnt;
-
-	cnt = 1;
-	if (opt == 2)
-		tmp = rules->t_eat / rules->t_sleep;
 	while (1)
 	{
 		if (died_msg(rules, philo))
-			return (1);
+			return (1); 
 		print_ft_usleep(philo, opt);
 		if (opt == 2 && philo->to_lock)
 		{
@@ -35,17 +29,13 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, int opt)
 				return (1);
 			else if (time_ms(philo) >= philo->t_meal + rules->t_eat)
 				return (died_msg(rules, philo));
-			else if (cnt * (philo->to_lock->sleep + rules->t_sleep) < time_ms(philo))
+			else if (cnt * philo->to_lock->sleep + rules->t_sleep < r_ms(rules))
 			{
-				fprintf(stderr, "%lld [%lld] {%d}\n", time_ms(philo), \
-				(cnt * (philo->to_lock->sleep + rules->t_sleep)), \
-				(philo->to_lock->sleep + rules->t_sleep) < time_ms(philo));
-				fprintf(stderr, " [%lld][%lld] | %lld --> %lld \n", \
-				cnt, tmp,time_ms(philo) / (rules->t_sleep * cnt), \
-				time_ms(philo) % (rules->t_sleep * cnt));
+				fprintf(stderr, "[%d]%d -> 2\n", philo->id, philo->to_lock->id);
 				philo_msg(philo->to_lock, "is   THINKING   ", P_THINK, philo);
-				usleep(50);
+				usleep(100);
 				philo_msg(philo->to_lock, "is   SLEEPING   ", P_SLEEP, philo);
+				philo->to_lock->action = 3;
 				cnt++;
 			}
 		}
@@ -54,9 +44,12 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, int opt)
 		usleep(100);
 	}
 }
-// tmp = time_ms(philo);
-// fprintf(stderr, " [%d] %llu | %llu ---> %lld > %lld\tTOSLEEP\n", 
-// philo->id, tmp, philo->sleep + rules->t_sleep, tmp, philo->sleep + rules->t_sleep);
+// fprintf(stderr, "%lld [%lld] {%d}\n", time_ms(philo),
+// (cnt * (philo->to_lock->sleep + rules->t_sleep)), 
+// (philo->to_lock->sleep + rules->t_sleep) < time_ms(philo));
+// fprintf(stderr, " [%lld][%lld] | %lld --> %lld \n",
+// cnt, tmp,time_ms(philo) / (rules->t_sleep * cnt), 
+// time_ms(philo) % (rules->t_sleep * cnt));
 
 bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 {
@@ -128,6 +121,9 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		error_thread(&rules->lock_msg.stat, 2);
 }
 
+/*
+philo->p_start tell if process starts with odd or even id
+*/
 void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
 {
 	static int		sum;
@@ -144,8 +140,9 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
 		{
 			if (!rules->lock_count.stat)
 			{
-				fprintf(stderr, "START[ %d ] SUM = %d\n", philo->id, sum);
 				rules->t_start = get_time(); // / (t_ll)1000;
+				if (philo->id % 2)
+					rules->p_start = philo->id % 2;
 				rules->lock_count.stat = 1;
 			}
 			else
@@ -153,6 +150,8 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
 		}
 		pthread_mutex_unlock(&rules->lock_count.lock);
 	}
-	fprintf(stderr, "PHILO[ %d ]\n", philo->id);
+	fprintf(stderr, "rule[ %d ]\n", rules->p_start);
+	if (philo->id % 2 != rules->p_start)
+		philo->action = 2;
 	pthread_mutex_unlock(&rules->lock_count.lock);
 }

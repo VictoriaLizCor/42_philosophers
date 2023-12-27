@@ -25,7 +25,7 @@ void	print_action(t_philo *philo, t_philo *caller)
 	{
 		if (odd_philo(philo) && !died_msg(philo_tmp.rules, &philo_tmp))
 			fprintf(stderr, \
-			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld] \t {%d}\n", \
+			" %lld \t\t\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld] ---> {%d}\n", \
 			r_ms(philo_tmp.rules), philo_tmp.id, philo_tmp.id, \
 			philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep, sum);
 		else if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))

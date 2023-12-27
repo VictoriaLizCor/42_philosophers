@@ -19,10 +19,9 @@ bool	lock_msg( t_rules *rules, t_philo *philo, t_philo *cal, bool res)
 	if (philo->action == 1 && philo->to_lock && !res)
 	{
 		res = philo_msg(philo, "has taken a fork", P_FORK, cal);
-		if (philo->to_lock->action == 0)
+		if (philo->to_lock->action == 2)
 		{
-			philo->to_lock->action = 2;
-			res = lock_msg(rules, philo->to_lock, philo, 0);
+			philo_msg(philo->to_lock, "is   SLEEPING   ", P_SLEEP, philo);
 			philo->to_lock->sleep = r_ms(rules) + 100;
 		}
 	}
@@ -47,7 +46,7 @@ static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 	if (lock)
 	{
 		if (!lock_msg(rules, philo, philo, 0) && philo->action == 2)
-			res = ft_usleep(rules, philo, 2);
+			res = ft_usleep(rules, philo, 1, 2);
 		pthread_mutex_unlock(&lock->fork.lock);
 	}
 	else
@@ -58,10 +57,9 @@ static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 			if (philo->right)
 				pthread_mutex_unlock(&philo->fork.lock);
 			tmp = r_ms(rules);
-			fprintf(stderr, " [%d] %llu | %llu ---> %lld > %lld\tTOSLEEP\n", \
-			philo->id, tmp, philo->sleep, rules->t_sleep, tmp - philo->sleep);
+
 			if (rules->t_sleep > r_ms(rules) - philo->sleep)
-				res = ft_usleep(rules, philo, 3);
+				res = ft_usleep(rules, philo, 1, 3);
 			else
 				res = lock_msg(rules, philo, philo, 0);
 		}
@@ -74,7 +72,8 @@ static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 	}
 	return (res || died_msg(philo->rules, philo));
 }
-
+// fprintf(stderr, " [%d] %llu | %llu ---> %lld > %lld\tTOSLEEP\n", 
+// philo->id, tmp, philo->sleep, rules->t_sleep, tmp - philo->sleep);
 static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
 	bool	res;
@@ -109,12 +108,10 @@ static void	exe(t_philo *philo)
 	rules = philo->rules;
 	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
 	philo->t_start = rules->t_start;
-	if (!philo->right)
-		philo->action = 2;
 	sum = rules->t_eat + rules->t_sleep;
-	if (philo->id % 2 == 0 && (rules->t_sleep / 2) < 100)
-		usleep((rules->t_sleep / 2));
-	if (philo->id % 2 == 0 && (rules->t_sleep / 2) > 100)
+	if (philo->id % 2 == 0 && ((rules->t_sleep / 1000) / 2) < 100)
+		usleep(((rules->t_sleep / 1000) / 2));
+	if (philo->id % 2 == 0 && ((rules->t_sleep / 1000) / 2) > 100)
 		usleep(100);
 	while (1)
 	{
@@ -135,7 +132,8 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	int			res;
 
 	i = 0;
-	fprintf(stderr, " t_eat[%lld] | t_sleep[%lld]\n", rules->t_eat, rules->t_sleep);
+	fprintf(stderr, " t_eat[%lld] | t_sleep[%lld]\n", \
+	rules->t_eat, rules->t_sleep);
 	if (philos[rand_array[0]].left)
 		rules->last = philos[rand_array[0]].left->id;
 	else
