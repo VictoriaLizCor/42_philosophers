@@ -149,18 +149,14 @@ top:$(NAME)
 t1:
 	cc test/threads.c -pthread -o test/t1
 	./test/t1
+# finish standard input with Ctl+D
 git:	fclean
-	@echo $(GREEN)
-	git add ./
-	git commit -m "$m"
-	@echo $(YELLOW)
-	git push
-git_test:	fclean
-	@echo $(GREEN)
-	git add ./
-	git commit -F -
-	@echo $(YELLOW)
-	git push
+		@echo $(CYAN)
+		git add ./
+		@echo $(GREEN)
+		git commit -F -
+		@echo $(YELLOW)
+		git push
 re: fclean all
 
 define PHILO
