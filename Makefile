@@ -153,8 +153,8 @@ t1:
 git:	fclean
 		@echo $(CYAN)
 		git add ./
-		@echo $(GREEN)
-		git commit -F -
+		@echo $(CYAN)
+		$(shell @echo $(GREEN) && git commit -F -)
 		@echo $(YELLOW)
 		git push
 re: fclean all
