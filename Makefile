@@ -155,7 +155,12 @@ git:	fclean
 	git commit -m "$m"
 	@echo $(YELLOW)
 	git push
-# gcc -o c dining.c -pthread
+git_test:	fclean
+	@echo $(GREEN)
+	git add ./
+	git commit -F -
+	@echo $(YELLOW)
+	git push
 re: fclean all
 
 define PHILO

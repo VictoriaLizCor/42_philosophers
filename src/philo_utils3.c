@@ -128,6 +128,7 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 }
 
 /*
+a
 philo->p_start tell if process starts with odd or even id
 */
 void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
