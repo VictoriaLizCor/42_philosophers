@@ -154,7 +154,7 @@ git:	fclean
 		@echo $(CYAN)
 		git add ./
 		@echo $(CYAN)
-		$(shell @echo $(GREEN) && git commit -F -)
+		@echo $(GREEN) && git commit -F -
 		@echo $(YELLOW)
 		git push
 re: fclean all
