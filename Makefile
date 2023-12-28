@@ -151,11 +151,17 @@ t1:
 	./test/t1
 # finish standard input with Ctl+D
 git:	fclean
-		@echo $(CYAN)
-		git add ./
+		@echo $(CYAN) && git add ./
 		@echo $(GREEN) && git commit -F -
-		@echo $(YELLOW)
-		git push
+		@echo $(YELLOW) && git push
+# use mode: make git m="msg" #
+# git:	fclean
+# 	@echo $(GREEN)
+# 	git add ./
+# 	git commit -m "$m"
+# 	@echo $(YELLOW)
+# 	git push
+# git log --pretty="%C(Yellow)%h  %C(reset)%ad (%C(Green)%cr%C(reset)) %C(Cyan)%an: %C(reset)%s" --date=short
 re: fclean all
 
 define PHILO

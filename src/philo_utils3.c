@@ -30,14 +30,10 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt)
 			else if (time_ms(philo) >= philo->t_meal + rules->t_eat)
 				return (died_msg(rules, philo));
 			else if (rules->t_sleep > \
-			r_ms(rules) - philo->to_lock->sleep + rules->t_sleep)
+				r_ms(rules) - philo->to_lock->sleep + rules->t_sleep)
 			{
 				fprintf(stderr, "%lld [%lld] {%d}\n", time_ms(philo), \
 				(cnt * (philo->to_lock->sleep + rules->t_sleep)), philo->id);
-				// fprintf(stderr, " [%lld]| %lld --> %lld \n",
-				// cnt, time_ms(philo) / (rules->t_sleep * cnt), 
-				// time_ms(philo) % (rules->t_sleep * cnt));
-				// fprintf(stderr, "[%d]%d -> 2\n", philo->id, philo->to_lock->id);
 				philo_msg(philo->to_lock, "is   THINKING   ", P_THINK, philo);
 				usleep(100);
 				philo_msg(philo->to_lock, "is   SLEEPING   ", P_SLEEP, philo);
@@ -134,22 +130,20 @@ philo->p_start tell if process starts with odd or even id
 */
 void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
 {
-	static int		sum;
+	static int	sum;
 
 	while (1)
 	{
 		pthread_mutex_lock(&rules->lock_count.lock);
-		if (!tmp)
-		{
-			tmp = 1;
+		if (!tmp++)
 			sum += philo->id;
-		}
 		if (sum == size)
 		{
 			if (!rules->lock_count.stat)
 			{
 				rules->t_start = get_time();
-				fprintf(stderr, "[%d]{%d}\n", philo->id, philo->id % 2);
+				rules->pair = !(philo->id % 2);
+				fprintf(stderr, "LAST[%d]{%d}\n\n", philo->id, rules->pair);
 				rules->lock_count.stat = 1;
 			}
 			else
@@ -157,5 +151,10 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
 		}
 		pthread_mutex_unlock(&rules->lock_count.lock);
 	}
+	if (rules->pair && !(philo->id % 2))
+		philo->action = 0;
+	else if (rules->pair && (philo->id % 2))
+		philo->action = 2;
+	fprintf(stderr, "{%d} action[ %d ]\n", philo->id, philo->action);
 	pthread_mutex_unlock(&rules->lock_count.lock);
 }

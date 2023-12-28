@@ -49,6 +49,7 @@ struct s_rules
 	t_ll			t_sleep;
 	int				n_philos;
 	int				n_meals;
+	bool			pair;
 	t_mutex			lock_time;
 	t_mutex			lock_flags;
 	t_mutex			lock_count;
