@@ -70,6 +70,7 @@ static bool	actions(t_philo *philo, t_rules *rules, t_philo *lock, bool res)
 }
 // fprintf(stderr, " [%d] %llu | %llu ---> %lld > %lld\tTOSLEEP\n", 
 // philo->id, tmp, philo->sleep, rules->t_sleep, tmp - philo->sleep);
+
 static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
 	bool	res;
@@ -103,23 +104,23 @@ static void	exe(t_philo *philo)
 
 	rules = philo->rules;
 	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
-	// philo->t_start = rules->t_start;
-	// sum = rules->t_eat + rules->t_sleep;
-	// if (philo->id % 2 == 0 && ((rules->t_sleep / 1000) / 2) < 100)
-	// 	usleep(((rules->t_sleep / 1000) / 2));
-	// if (philo->id % 2 == 0 && ((rules->t_sleep / 1000) / 2) > 100)
-	// 	usleep(100);
-	// while (1)
-	// {
-	// 	pthread_mutex_lock(&philo->fork.lock);
-	// 	if (odd_philo(philo) && !philo->action && philo->time % sum <= 100)
-	// 		philo->action = 2;
-	// 	pthread_mutex_unlock(&philo->fork.lock);
-	// 	if (!died_msg(rules, philo))
-	// 		res = check_locks(philo, philo->right, philo->left);
-	// 	if (res || died_msg(rules, philo))
-	// 		return ;
-	// }
+	philo->t_start = rules->t_start;
+	sum = rules->t_eat + rules->t_sleep;
+	if (philo->id % 2 == 0 && ((rules->t_sleep / 1000) / 2) < 100)
+		usleep(((rules->t_sleep / 1000) / 2));
+	if (philo->id % 2 == 0 && ((rules->t_sleep / 1000) / 2) > 100)
+		usleep(100);
+	while (1)
+	{
+		pthread_mutex_lock(&philo->fork.lock);
+		if (odd_philo(philo) && !philo->action && philo->time % sum <= 100)
+			philo->action = 2;
+		pthread_mutex_unlock(&philo->fork.lock);
+		if (!died_msg(rules, philo))
+			res = check_locks(philo, philo->right, philo->left);
+		if (res || died_msg(rules, philo))
+			return ;
+	}
 }
 
 void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)

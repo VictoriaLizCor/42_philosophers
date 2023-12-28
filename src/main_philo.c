@@ -47,13 +47,13 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	while (i < size)
 	{
 		(*philos + i)->id = i + 1;
-		(*philos + i)->action = 0;
-		(*philos + i)->t_meal = 0;
-		(*philos + i)->sleep = 0;
-		(*philos + i)->fork.stat = 0;
+		if (rules->n_philos % 2 && rules->n_philos == (*philos + i)->id)
+			(*philos + i)->action = 2;
+		else if (!((*philos + i)->id % 2))
+			(*philos + i)->action = 2;
+		else
+			(*philos + i)->action = 0;
 		(*philos + i)->n_meals = rules->n_meals;
-		(*philos + i)->to_lock = (void *)0;
-		(*philos + i)->lock_by = (void *)0;
 		(*philos + i)->rules = rules;
 		(*philos + i)->g_time = &time_ms;
 		(*philos + i)->t = &r_ms;

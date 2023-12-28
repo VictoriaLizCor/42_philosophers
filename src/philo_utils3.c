@@ -29,20 +29,19 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt)
 				return (1);
 			else if (time_ms(philo) >= philo->t_meal + rules->t_eat)
 				return (died_msg(rules, philo));
-			else if (cnt * philo->to_lock->sleep + rules->t_sleep < r_ms(rules))
+			else if (rules->t_sleep > \
+			r_ms(rules) - philo->to_lock->sleep + rules->t_sleep)
 			{
-				fprintf(stderr, "%lld [%lld] {%d}\n", time_ms(philo),
-				(cnt * (philo->to_lock->sleep + rules->t_sleep)), 
-				(philo->to_lock->sleep + rules->t_sleep) < time_ms(philo));
-				fprintf(stderr, " [%lld]| %lld --> %lld \n",
-				cnt, time_ms(philo) / (rules->t_sleep * cnt), 
-				time_ms(philo) % (rules->t_sleep * cnt));
-				fprintf(stderr, "[%d]%d -> 2\n", philo->id, philo->to_lock->id);
+				fprintf(stderr, "%lld [%lld] {%d}\n", time_ms(philo), \
+				(cnt * (philo->to_lock->sleep + rules->t_sleep)), philo->id);
+				// fprintf(stderr, " [%lld]| %lld --> %lld \n",
+				// cnt, time_ms(philo) / (rules->t_sleep * cnt), 
+				// time_ms(philo) % (rules->t_sleep * cnt));
+				// fprintf(stderr, "[%d]%d -> 2\n", philo->id, philo->to_lock->id);
 				philo_msg(philo->to_lock, "is   THINKING   ", P_THINK, philo);
 				usleep(100);
 				philo_msg(philo->to_lock, "is   SLEEPING   ", P_SLEEP, philo);
 				philo->to_lock->action = 3;
-				cnt++;
 			}
 		}
 		else if (time_ms(philo) > (philo->sleep + rules->t_sleep))
@@ -50,6 +49,8 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt)
 		usleep(100);
 	}
 }
+// fprintf(stderr, "%lld [%lld] {%d}\n", time_ms(philo), \
+// (cnt * (philo->to_lock->sleep + rules->t_sleep)), philo->id);
 // fprintf(stderr, "%lld [%lld] {%d}\n", time_ms(philo),
 // (cnt * (philo->to_lock->sleep + rules->t_sleep)), 
 // (philo->to_lock->sleep + rules->t_sleep) < time_ms(philo));
@@ -156,11 +157,5 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
 		}
 		pthread_mutex_unlock(&rules->lock_count.lock);
 	}
-	if (rules->n_philos % 2 && rules->n_philos == philo->id)
-		philo->action = 2;
-	else if (!(philo->id % 2))
-		philo->action = 2;
-	fprintf(stderr, "{%d} rule[ %d ]\n", \
-	philo->id, philo->action);
 	pthread_mutex_unlock(&rules->lock_count.lock);
 }
