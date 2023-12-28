@@ -49,8 +49,6 @@ struct s_rules
 	t_ll			t_sleep;
 	int				n_philos;
 	int				n_meals;
-	int				last;
-	int				p_start;
 	t_mutex			lock_time;
 	t_mutex			lock_flags;
 	t_mutex			lock_count;
@@ -76,7 +74,6 @@ struct	s_philo
 	t_ll			(*g_time)(t_philo *);
 	t_get_time		t;
 };
-
 
 /* function_pointer.c */
 bool		check_time(t_philo *philo, t_ll t1, t_ll t2);

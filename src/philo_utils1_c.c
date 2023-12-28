@@ -113,10 +113,6 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	int			res;
 
 	i = 0;
-	if (philos[rand_array[0]].left)
-		rules->last = philos[rand_array[0]].left->id;
-	else
-		rules->last = 1;
 	while (i < rules->n_philos)
 	{
 		res = pthread_create(&philos[rand_array[i]].thread, NULL, \

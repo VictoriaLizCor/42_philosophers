@@ -18,7 +18,7 @@ bool	odd_philo(t_philo *p)
 	int		n_philos;
 
 	n_philos = p->rules->n_philos;
-	res = (p->id == p->rules->last && p->id % 2 == 1 && n_philos > 2);
+	res = (p->id == n_philos && p->id % 2 && n_philos > 2);
 	return (res);
 }
 

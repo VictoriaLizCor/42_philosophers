@@ -98,7 +98,7 @@ static void	begin_hunger_games(char **argv)
 	rand_array = random_non_repetive_values(0, rules.n_philos, rules.n_philos);
 	while (i < rules.n_philos)
 	{
-		rand_array[i] = i;
+		// rand_array[i] = i;
 		fprintf(stderr, "%d ", rand_array[i++] + 1);
 	}
 	fprintf(stderr, "\n");
