@@ -66,7 +66,7 @@ printf
 malloc
 free
 write,
-usleep(useconds_t microseconds) = usleep(25 ms * 1000) = usleep(250)
+usleep(useconds_t microseconds) = usleep(25 ms * 1000) = usleep(25000)
 	-- suspend thread execution for an interval measured in microseconds
 gettimeofday
 pthread_create

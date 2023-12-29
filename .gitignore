@@ -42,7 +42,7 @@
 *.idb
 *.pdb
 
-# Kernel Module Compile Results
+# Kernel Module Compile hasDiedults
 *.mod*
 *.cmd
 .tmp_versions/

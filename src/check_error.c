@@ -30,7 +30,8 @@ void	error_thread(void *data, int type)
 {
 	int	id;
 
-	id = ((t_philo *)data)->id;
+	if (data)
+		id = ((t_philo *)data)->id;
 	if (type == 0)
 		ft_error(id, "on Thread function", NULL, 1);
 	else if (type == 1)

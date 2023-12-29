@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/12/27 16:01:15 by lilizarr         ###   ########.fr       */
+/*   Updated: 2023/12/29 12:28:19 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ t_ll	r_ms(t_rules *rules)
 
 bool	check_time(t_philo *philo, t_ll t1, t_ll t2)
 {
-	bool	res;
+	bool	died;
 	t_ll	current;
 
-	res = time_ms(philo) > t1 + (t2);
-	return (res);
+	died = time_ms(philo) > t1 + (t2);
+	return (died);
 }

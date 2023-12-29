@@ -54,6 +54,7 @@ struct s_rules
 	t_mutex			lock_flags;
 	t_mutex			lock_count;
 	t_mutex			lock_msg;
+	t_mutex			lock_start;
 };
 
 struct	s_philo
@@ -85,11 +86,10 @@ t_ll		get_time(void);
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
-void		*ft_memset(void *s, int c, size_t n);
 char		*ft_strchr(const char *s, int c);
 int			*random_non_repetive_values(int min, int max, int size);
 /* philo_utils1.c */
-bool		lock_msg(t_rules *rules, t_philo *philo, t_philo *cal, bool res);
+bool		lock_msg(t_rules *rules, t_philo *philo, t_philo *cal, bool death);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);

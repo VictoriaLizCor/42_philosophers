@@ -12,19 +12,6 @@
 
 #include <philo.h>
 
-void	*ft_memset(void *s, int c, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n)
-	{
-		((char *)s)[i] = c;
-		i++;
-	}
-	return (s);
-}
-
 char	*ft_strchr(const char *s, int c)
 {
 	while (*s)
@@ -72,7 +59,7 @@ int	*random_non_repetive_values(int min, int max, int size)
 	int		random_num;
 
 	array = (int *)malloc(size * sizeof(int));
-	ft_memset(array, min - 1, sizeof(int) * (size));
+	memset(array, min - 1, sizeof(int) * (size));
 	i = 0;
 	random_num = min - 1;
 	while (i < size)

@@ -14,12 +14,12 @@
 
 bool	odd_philo(t_philo *p)
 {
-	bool	res;
+	bool	died;
 	int		n_philos;
 
 	n_philos = p->rules->n_philos;
-	res = (p->id == n_philos && p->id % 2 && n_philos > 2);
-	return (res);
+	died = (p->id == n_philos && p->id % 2 && n_philos > 2);
+	return (died);
 }
 
 char	*color(int idx)

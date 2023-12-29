@@ -43,7 +43,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	*philos = (t_philo *)malloc(sizeof(t_philo) * (size));
 	if (!philos)
 		philos = NULL;
-	ft_memset(*philos, 0, sizeof(t_philo) * (size));
+	memset(*philos, 0, sizeof(t_philo) * (size));
 	while (i < size)
 	{
 		(*philos + i)->id = i + 1;
@@ -81,6 +81,8 @@ static void	init_rules(t_rules *rules, char **argv)
 		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (pthread_mutex_init(&rules->lock_count.lock, NULL) != 0)
 		printf("%sError in mutex init %s\n", warn(0), color(0));
+	if (pthread_mutex_init(&rules->lock_start.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
 		rules->n_meals = ft_atol(argv[5]);
 }
@@ -107,7 +109,7 @@ static void	begin_hunger_games(char **argv)
 	if (philos)
 	{
 		destroy_mutex(philos, &rules);
-		ft_memset(philos, 0, sizeof(t_philo) * rules.n_philos);
+		memset(philos, 0, sizeof(t_philo) * rules.n_philos);
 		free(philos);
 	}
 }
