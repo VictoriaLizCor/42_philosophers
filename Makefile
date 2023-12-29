@@ -155,7 +155,7 @@ t1:
 # finish standard input with Ctl+D
 git:	fclean
 		@echo $(CYAN) && git add ./
-		@echo $(GREEN) && git commit -F - $(shell <<EOF)
+		@echo $(GREEN) && git commit -F - $(shell cat <<EOF)
 		@echo $(YELLOW) && git push
 # use mode: make git m="msg" #
 # git:	fclean
