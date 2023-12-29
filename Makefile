@@ -153,9 +153,10 @@ t1:
 	cc test/threads.c -pthread -o test/t1
 	./test/t1
 # finish standard input with Ctl+D
+#git commit -F -<<EOF
 git:	fclean
 		@echo $(CYAN) && git add ./
-		@echo $(GREEN) && git commit -F - $(shell cat <<EOF)
+		@echo $(GREEN) && MSG=$(shell cat <<-EOF) | git commit -m  $MSG
 		@echo $(YELLOW) && git push
 # use mode: make git m="msg" #
 # git:	fclean
