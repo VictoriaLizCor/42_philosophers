@@ -71,7 +71,7 @@ static bool	action(t_philo *philo, t_rules *rules, t_philo *lock, bool died)
 	}
 	return (died || died_msg(philo->rules, philo));
 }
-// fprintf(stderr, " [%d] %llu | %llu ---> %lld > %lld\tTOSLEEP\n", 
+// fprintf(stderr, " [%d] %llu | %llu ---> %lld > %lld\tTOSLEEP\n",
 // philo->id, tmp, philo->sleep, rules->t_sleep, tmp - philo->sleep);
 
 static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
