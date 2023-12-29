@@ -156,7 +156,7 @@ t1:
 #git commit -F -<<EOF
 git:	fclean
 		@echo $(CYAN) && git add ./
-		@echo $(GREEN) && git commit -F -
+		@echo $(GREEN) && git commit -e
 		@echo $(YELLOW) && git push
 # use mode: make git m="msg" #
 # git:	fclean
