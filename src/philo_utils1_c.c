@@ -62,9 +62,8 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 		died = action(philo, philo->rules, NULL, 0);
 	else
 	{
-		pthread_mutex_lock(&philo->fork.lock);
 		pthread_mutex_lock(&right->fork.lock);
-		if (!philo->lock_by)
+		if (philo->right)
 		{
 			philo->to_lock = right;
 			right->lock_by = philo;
@@ -87,10 +86,11 @@ static void	exe(t_philo *philo)
 
 	rules = philo->rules;
 	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
-	philo->t_start = rules->t_start;
 	sum = rules->t_eat + rules->t_sleep;
-	if (philo->id % 2 == 0)
-		usleep((rules->t_sleep / 2));
+	if (philo->action == 2 && (rules->t_sleep / 2000) <= 100)
+		usleep(rules->t_sleep / 2000);
+	if (philo->action == 2 && (rules->t_sleep / 2000) > 100)
+		usleep(200);
 	while (1)
 	{
 		// pthread_mutex_lock(&philo->fork.lock);

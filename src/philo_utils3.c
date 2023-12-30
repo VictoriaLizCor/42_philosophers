@@ -29,9 +29,12 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt)
 				return (1);
 			else if (time_ms(philo) >= philo->t_meal + rules->t_eat)
 				return (died_msg(rules, philo));
-			else if (r_ms(rules) > \
-			cnt * (philo->sleep + rules->t_sleep) + philo->t_meal)
+			else if (r_ms(rules) / 1000 < (cnt * (philo->to_lock->sleep)))
 			{
+				fprintf(stderr, "%lld [%lld] %lld [%lld] {%d}\n", \
+				r_ms(rules), (cnt * (philo->to_lock->sleep)), \
+				r_ms(rules) / 10000, (cnt * (philo->to_lock->sleep) / 1000), \
+				philo->id);
 				philo_msg(philo->to_lock, "is   THINKING  X", P_THINK, philo);
 				philo_msg(philo->to_lock, "is   SLEEPING  X", P_SLEEP, philo);
 				cnt++;
@@ -154,5 +157,7 @@ void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
 		philo->action = 0;
 	else if (rules->pair && (philo->id % 2))
 		philo->action = 2;
+	philo->t_start = rules->t_start;
+	fprintf(stderr, "{%d} action[ %d ]\n", philo->id, philo->action);
 	pthread_mutex_unlock(&rules->lock_count.lock);
 }
