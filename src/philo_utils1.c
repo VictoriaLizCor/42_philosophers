@@ -19,6 +19,7 @@ bool	lock_msg( t_rules *rules, t_philo *philo, t_philo *cal, bool died)
 	if (philo->action == 1 && philo->to_lock && !died)
 	{
 		died = philo_msg(philo, "has taken a fork", P_FORK, cal);
+		// fprintf(stderr, "\n\n TIMING %lld \n\n", r_ms(rules));
 		if (philo->to_lock->action == 2)
 		{
 			lock_msg(rules, philo->to_lock, philo, 0);
@@ -84,14 +85,18 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 	else
 	{
 		pthread_mutex_lock(&philo->fork.lock);
+		// if (philo->action == 0)
+		// 	pthread_mutex_unlock(&right->fork.lock);
 		if (philo->action < 2)
 		{
 			pthread_mutex_lock(&right->fork.lock);
+			right->lock_by = philo;
 			philo->to_lock = right;
 			debug_thread_check(philo, "LOCk");
 			died = action(philo, philo->rules, right, 0);
 			philo->to_lock = NULL;
 			pthread_mutex_unlock(&philo->fork.lock);
+			right->lock_by = NULL;
 		}
 		else
 			died = action(philo, philo->rules, NULL, 0);
@@ -103,15 +108,21 @@ static void	exe(t_philo *philo)
 {
 	t_rules	*rules;
 	int		sum;
+	int		wait;
 	bool	died;
 
+	wait = 0;
 	rules = philo->rules;
 	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
 	sum = rules->t_eat + rules->t_sleep;
-	if (rules->pair && !(philo->id % 2) && (rules->t_sleep / 2000) <= 1000)
-		usleep(rules->t_sleep / 2000);
-	if (rules->pair && !(philo->id % 2) && (rules->t_sleep / 2000) > 1000)
-		usleep(100);
+	if (philo->action && philo->rules->n_philos != 1) 
+		wait = WAIT_TIME;
+	usleep(WAIT_TIME);
+	// fprintf(stderr, "id->%d |  waits %d\n\n", philo->id, wait);
+	// if (!philo->action && philo->right)
+	// {
+	// 	pthread_mutex_lock(&philo->right->fork.lock);
+	// }
 	while (1)
 	{
 		// pthread_mutex_lock(&philo->fork.lock);
@@ -131,7 +142,7 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	int			died;
 
 	i = 0;
-	fprintf(stderr, " t_eat[%lld] | t_sleep[%lld]\t", \
+	fprintf(stderr, " t_eat[%lld] | t_sleep[%lld]\n", \
 	rules->t_eat, rules->t_sleep);
 	while (i < rules->n_philos)
 	{
