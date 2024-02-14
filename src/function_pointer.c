@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2023/12/30 11:18:04 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/02/14 14:23:23 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_ll	time_ms(t_philo *philo)
 
 	rules = philo->rules;
 	pthread_mutex_lock(&rules->lock_time.lock);
-	t = (get_time());
+	t = get_time();
 	ms = (t) - philo->t_start;
 	pthread_mutex_unlock(&rules->lock_time.lock);
 	return (ms);

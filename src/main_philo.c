@@ -47,12 +47,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	while (i < size)
 	{
 		(*philos + i)->id = i + 1;
-		if (rules->n_philos % 2 && rules->n_philos == (*philos + i)->id)
-			(*philos + i)->action = 2;
-		else if (!((*philos + i)->id % 2))
-			(*philos + i)->action = 2;
-		else
-			(*philos + i)->action = 0;
+		(*philos + i)->action = 0;
 		(*philos + i)->n_meals = rules->n_meals;
 		(*philos + i)->rules = rules;
 		(*philos + i)->g_time = &time_ms;

@@ -30,7 +30,7 @@
 #  define D_PHI 0
 # endif
 
-# define WAIT_TIME 250
+# define WAIT_TIME 200
 
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
