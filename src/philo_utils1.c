@@ -78,12 +78,13 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
 	bool	died;
 
-	died = 0;
+	died = died_msg(philo->rules, philo);
 	debug_thread_check(philo, "CHECK");
 	if (!philo->right)
 		died = action(philo, philo->rules, NULL, 0);
 	else
 	{
+		debug_thread_check(philo, "LOCk");
 		pthread_mutex_lock(&philo->fork.lock);
 		// if (philo->action == 0)
 		// 	pthread_mutex_unlock(&right->fork.lock);
@@ -92,7 +93,6 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 			pthread_mutex_lock(&right->fork.lock);
 			right->lock_by = philo;
 			philo->to_lock = right;
-			debug_thread_check(philo, "LOCk");
 			died = action(philo, philo->rules, right, 0);
 			philo->to_lock = NULL;
 			pthread_mutex_unlock(&philo->fork.lock);

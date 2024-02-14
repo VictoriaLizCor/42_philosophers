@@ -29,11 +29,11 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt)
 				return (1);
 			else if (time_ms(philo) >= philo->t_meal + rules->t_eat)
 				return (died_msg(rules, philo));
-			else if (r_ms(rules) / 10000 < (cnt * (philo->to_lock->sleep) / 1000))
+			else if (r_ms(rules) / 1000 >= (cnt * (rules->t_sleep) / 1000))
 			{
 				fprintf(stderr, "%lld [%lld] %lld [%lld] {%d}\n", \
-				r_ms(rules), (cnt * (philo->to_lock->sleep)), \
-				r_ms(rules) / 1000, (cnt * (philo->to_lock->sleep)), \
+				r_ms(rules), (cnt * (rules->t_sleep) / 1000), \
+				r_ms(rules) / 1000, (cnt * (philo->to_lock->sleep / 1000)), \
 				philo->id);
 				philo_msg(philo->to_lock, "is   THINKING  X", P_THINK, philo);
 				philo_msg(philo->to_lock, "is   SLEEPING  X", P_SLEEP, philo);
