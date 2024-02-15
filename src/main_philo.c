@@ -50,8 +50,8 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->action = 0;
 		(*philos + i)->n_meals = rules->n_meals;
 		(*philos + i)->rules = rules;
-		(*philos + i)->g_time = &time_ms;
-		(*philos + i)->t = &r_ms;
+		// (*philos + i)->g_time = &time_ms;
+		// (*philos + i)->t = &r_ms;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
 		i++;

@@ -100,9 +100,12 @@ ex1:$(NAME)
 ex2:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 310 200 100
-ex22:$(NAME)
+ex21:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 410 200 100
+ex22:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 410 200 200
 ex23:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 401 300 100
@@ -114,13 +117,16 @@ ex31:$(NAME)
 	./philo 3 900 300 100
 ex4:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 4 410 200 200
+	./philo 4 310 200 100
 ex41:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 4 410 200 100
+ex42:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 4 410 200 200
 ex43:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 4 310 200 100
+	./philo 4 401 300 100
 ex5:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 5 800 200 200

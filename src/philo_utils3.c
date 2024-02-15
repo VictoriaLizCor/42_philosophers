@@ -16,14 +16,14 @@
 even: t_eat + t_sleep + 100;
 even: t_eat * 2 + t_sleep + 100;
 */
-bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt)
+bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, t_ll time)
 {
 	while (1)
 	{
 		if (died_msg(rules, philo))
 			return (1); 
-		print_ft_usleep(philo, opt);
-		if (opt == 2 && philo->to_lock)
+		print_ft_usleep(philo, time);
+		if (time == -1)
 		{
 			if (died_msg(rules, philo->to_lock))
 				return (1);
@@ -31,16 +31,23 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt)
 				return (died_msg(rules, philo));
 			else if (cnt * rules->t_sleep < r_ms(rules) - philo->to_lock->sleep)
 			{
+				fprintf(stderr, " %lld \t\t\t%lld [%lld] %lld [%lld]\n", \
+				r_ms(rules), \
+				r_ms(rules), r_ms(rules) - rules->t_sleep, \
+				cnt * rules->t_sleep, r_ms(rules) - philo->to_lock->sleep);
+				lock_msg(philo->to_lock, philo, 0);
+			}
+			if (cnt * rules->t_sleep < r_ms(rules) - philo->to_lock->sleep)
+			{
 				fprintf(stderr, "\t\t\t%lld [%lld] %lld [%lld] {%d}\n", \
-				cnt * rules->t_sleep, r_ms(rules) - philo->to_lock->sleep, \
-				r_ms(rules) / 1000, (philo->to_lock->sleep / 1000), philo->id);
-				lock_msg(rules, philo->to_lock, philo, 0);
+				r_ms(rules), r_ms(rules) - rules->t_sleep, \
+				cnt * rules->t_sleep, r_ms(rules) - philo->to_lock->sleep, philo->id);
 				philo->to_lock->action = 2;
-				lock_msg(rules, philo->to_lock, philo, 0);
+				lock_msg(philo->to_lock, philo, 0);
 				cnt++;
 			}
 		}
-		else if (r_ms(rules) > (philo->sleep + rules->t_sleep))
+		else if (rules->t_sleep < r_ms(rules) - time)
 			return (died_msg(rules, philo));
 		usleep(100);
 	}

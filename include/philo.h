@@ -35,7 +35,7 @@
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
 typedef struct s_philo	t_philo;
-typedef t_ll			(*t_get_time)(t_rules *);
+// typedef t_ll			(*t_get_time)(t_rules *);
 
 typedef struct s_mutex
 {
@@ -75,8 +75,8 @@ struct	s_philo
 	struct s_philo	*right;
 	struct s_philo	*left;
 	t_rules			*rules;
-	t_ll			(*g_time)(t_philo *);
-	t_get_time		t;
+	// t_ll			(*g_time)(t_philo *);
+	// t_get_time		t;
 };
 
 /* function_pointer.c */
@@ -91,7 +91,7 @@ long int	ft_atol(const char *s);
 char		*ft_strchr(const char *s, int c);
 int			*random_non_repetive_values(int min, int max, int size);
 /* philo_utils1.c */
-bool		lock_msg(t_rules *rules, t_philo *philo, t_philo *cal, bool death);
+bool		lock_msg(t_philo *philo, t_philo *cal, bool death);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
@@ -99,7 +99,7 @@ char		*warn(int idx);
 bool		odd_philo(t_philo *p);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-bool		ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, int opt);
+bool		ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, t_ll time);
 bool		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
 void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
