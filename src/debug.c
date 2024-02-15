@@ -45,9 +45,9 @@ void	debug_thread_check(t_philo *philo, char *msg)
 {
 	// if (D_PHI == 0)
 	// 	return ;
-	fprintf(stderr, " %lld [%lld]\t\t\t\t\t\t\t\t\t\t\t\t (%u) %s[%d]{%d}\n", \
+	fprintf(stderr, " %lld [%lld]\t\t\t\t\t\t\t\t\t\t\t (%u) %s[%d]\n", \
 	r_ms(philo->rules) / 1000, r_ms(philo->rules), \
-	(unsigned int)pthread_self(), msg, philo->id, philo->action);
+	(unsigned int)pthread_self(), msg, philo->id);
 }
 
 void	print_ft_usleep(t_philo *philo, int opt)
@@ -62,11 +62,10 @@ void	print_ft_usleep(t_philo *philo, int opt)
 	if (!died_msg(philo_tmp.rules, philo))
 	{
 		current = time_ms(philo);
-		if (opt == -1 && current > philo_tmp.t_meal + philo->rules->t_eat)
-		// if (opt == -1 && philo->rules->t_eat < current - philo_tmp.t_meal)
+		if (opt == -1 && philo->rules->t_eat < current - philo_tmp.t_meal)
 			fprintf(stderr, " %lld [%lld]\t\t\t[%d] DONE Eating\n", \
 			current / 1000, current, philo->id);
-		else if (opt >= 0 && current > philo_tmp.sleep + philo->rules->t_sleep)
+		else if (opt >= 0 && philo->rules->t_sleep < current - philo_tmp.sleep)
 			fprintf(stderr, " %lld [%lld]\t\t\t[%d] DONE Sleeping\n", \
 			current / 1000, current, philo->id);
 	}

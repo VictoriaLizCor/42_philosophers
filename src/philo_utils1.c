@@ -18,23 +18,23 @@ bool	lock_msg(t_philo *philo, t_philo *cal, bool died)
 	died = died_msg(philo->rules, philo);
 	if (philo->action == 1 && philo->to_lock && !died)
 	{
-		died = philo_msg(philo, "has taken a fork", P_FORK, cal);
-		philo->to_lock->action = 2;
+		philo_msg(philo, "has taken a fork", P_FORK, cal);
+		// philo->to_lock->action = 2;
 		lock_msg(philo->to_lock, philo, 0);
-		// philo->to_lock->sleep = r_ms(rules);
 	}
 	else if (philo->action == 2 && philo->to_lock && !died)
 	{
-		died = philo_msg(philo, "is    EATING    ", P_EAT, cal);
+		philo_msg(philo, "is    EATING    ", P_EAT, cal);
 		philo->t_meal = r_ms(philo->rules);
 	}
 	else if (philo->action == 3 && !philo->to_lock && !died)
 	{
-		died = philo_msg(philo, "is   SLEEPING   ", P_SLEEP, cal);
+		// if (philo->rules->t_sleep < r_ms(philo->rules) - philo->sleep)
+			philo_msg(philo, "is   SLEEPING   ", P_SLEEP, cal);
 		philo->sleep = r_ms(philo->rules);
 	}
 	else if (philo->action == 4 && !philo->to_lock && !died)
-		died = philo_msg(philo, "is   THINKING   ", P_THINK, cal);
+		philo_msg(philo, "is   THINKING   ", P_THINK, cal);
 	return (died || died_msg(philo->rules, philo));
 }
 // else if (philo->action == 4 && !philo->to_lock && !died) 
@@ -54,13 +54,10 @@ static bool	action(t_philo *philo, t_rules *rules, t_philo *lock, bool died)
 	{
 		if (philo->action == 3)
 		{
-			// philo->sleep = r_ms(rules);
 			if (philo->right)
 				pthread_mutex_unlock(&philo->fork.lock);
-			// if (rules->t_sleep > r_ms(rules) - philo->sleep)
+			if (rules->t_sleep > r_ms(rules) - philo->sleep)
 				died = ft_usleep(rules, philo, 1, philo->sleep);
-			// else
-			// 	died = lock_msg(philo, philo, 0);
 		}
 		else if (philo->action >= 4)
 		{
@@ -114,10 +111,9 @@ static void	exe(t_philo *philo)
 	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
 	sum = rules->t_eat + rules->t_sleep;
 	if (philo->id % 2 == philo->rules->pair && philo->rules->n_philos != 1)
-	{
 		wait = 300;
-		// philo->sleep = r_ms(rules);
-	}
+	else
+		philo->action = 0;
 	usleep(wait);
 	while (1)
 	{
@@ -135,8 +131,6 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	int			died;
 
 	i = 0;
-	fprintf(stderr, " t_eat[%lld] | t_sleep[%lld]\n", \
-	rules->t_eat, rules->t_sleep);
 	while (i < rules->n_philos)
 	{
 		died = pthread_create(&philos[rand_array[i]].thread, NULL, \
@@ -153,3 +147,6 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 		i++;
 	}
 }
+
+// fprintf(stderr, " t_eat[%lld] | t_sleep[%lld]\n", 
+// rules->t_eat, rules->t_sleep);
