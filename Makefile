@@ -64,6 +64,11 @@ val:$(NAME)
 resan:
 	@make re -C . D=1
 	@make -C . e1
+e0:$(NAME)
+	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 600 300 100))
+	@echo ./philo n die eat sleep
+	./philo $(NUM)
 e1:$(NAME)
 	$(eval PHILO=$(shell seq 6 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_EAT=$(shell seq 100 300 | sort -R | tail -n 1 | tr '\n' ' '))
@@ -132,7 +137,10 @@ ex5:$(NAME)
 	./philo 5 800 200 200
 ex10:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 10 800 200 200
+	./philo 10 600 300 100
+ex101:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 10 410 300 100
 ex20:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 20 800 200 200

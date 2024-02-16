@@ -23,32 +23,11 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, int cnt, t_ll time)
 				return (1);
 			else if (t_mu_s(rules) > rules->t_eat + philo->t_meal)
 				return (died_msg(rules, philo));
-			if (cnt < rules->t_eat / rules->t_sleep && \
-			t_mu_s(rules) > philo->t_meal + cnt * rules->t_sleep)
-			// rules->t_sleep >= t_mu_s(rules) - rules->t_eat - cnt * rules->t_sleep)
+			if (t_mu_s(rules) > philo->t_meal + cnt * rules->t_sleep)
 			{
-				fprintf(stderr, "\t\t\t\t\t\t%lld [%d / %lld] (%lld) {%lld} \n", t_mu_s(rules), \
-				cnt, rules->t_eat / rules->t_sleep, philo->t_meal + rules->t_eat, \
-				t_mu_s(rules) - rules->t_sleep);
-				// if (rules->t_sleep > t_mu_s(rules) - philo->to_lock->sleep)
-				// {
-				// 	fprintf(stderr, "\t\t\t%lld {%lld} {%lld} (tms-r_sleep){%lld}{%lld} \t[%d] | %d\n", \
-				// 	t_mu_s(rules), rules->t_sleep, cnt * rules->t_sleep, \
-				// 	t_mu_s(rules) - rules->t_sleep, t_mu_s(rules) - philo->to_lock->sleep, \
-				// 	philo->to_lock->id, cnt);
-				// 	// if (philo->to_lock->action == 3)
-						lock_msg(philo->to_lock, philo, 0);
-				// }
-				// if (rules->t_sleep > t_mu_s(rules) -philo->to_lock->sleep)
-				// {
-				// 	fprintf(stderr, "\t\t\t%lld {%lld} {%lld} (tms-r_sleep){%lld}{%lld} \t[%d] | %d\n", \
-				// 	t_mu_s(rules), rules->t_sleep, cnt * rules->t_sleep, \
-				// 	t_mu_s(rules) - rules->t_sleep, t_mu_s(rules) - philo->to_lock->sleep, \
-				// 	philo->to_lock->id, cnt);
-					philo->to_lock->action = 2;
-					lock_msg(philo->to_lock, philo, 0);
-				// }
-				
+				lock_msg(philo->to_lock, philo, 0);
+				philo->to_lock->action = 2;
+				lock_msg(philo->to_lock, philo, 0);
 				cnt++;
 			}
 		}
