@@ -43,8 +43,8 @@ void	print_action(t_philo *philo, t_philo *caller)
 
 void	debug_thread_check(t_philo *philo, char *msg)
 {
-	// if (D_PHI == 0)
-	// 	return ;
+	if (D_PHI == 0)
+		return ;
 	fprintf(stderr, " %lld [%lld]\t\t\t\t\t\t\t\t\t\t\t (%u) %s[%d]\n", \
 	r_ms(philo->rules) / 1000, r_ms(philo->rules), \
 	(unsigned int)pthread_self(), msg, philo->id);

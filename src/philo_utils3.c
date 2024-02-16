@@ -12,10 +12,6 @@
 
 #include <philo.h>
 
-/*
-even: t_eat + t_sleep + 100;
-even: t_eat * 2 + t_sleep + 100;
-*/
 bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, t_ll time)
 {
 	while (1)
@@ -29,23 +25,26 @@ bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, t_ll time)
 				return (1);
 			else if (rules->t_eat < r_ms(rules) - philo->t_meal)
 				return (died_msg(rules, philo));
-			else if (cnt * rules->t_sleep < r_ms(rules) - philo->to_lock->sleep)
+			else if (rules->t_sleep < r_ms(rules) - philo->to_lock->sleep)
 			{
-				fprintf(stderr, " %lld \t\t\t%lld [%lld] %lld [%lld]\n", \
-				r_ms(rules), \
-				r_ms(rules), r_ms(rules) - rules->t_sleep, \
-				cnt * rules->t_sleep, r_ms(rules) - philo->to_lock->sleep);
+				fprintf(stderr, " %lld \t\t%lld {%lld} {%lld} \t [%lld] [%lld] {%d}\n", \
+				r_ms(rules), r_ms(rules), rules->t_sleep, cnt * rules->t_sleep, \
+				r_ms(rules) - rules->t_sleep, r_ms(rules) - philo->to_lock->sleep, \
+				philo->to_lock->id);
 				lock_msg(philo->to_lock, philo, 0);
 			}
-			if (cnt * rules->t_sleep < r_ms(rules) - philo->to_lock->sleep)
+			if (rules->t_sleep < r_ms(rules) - philo->to_lock->sleep)
 			{
-				fprintf(stderr, " %lld \t\t\t%lld [%lld] %lld [%lld] {%d}\n", \
-				r_ms(rules), r_ms(rules) - cnt * rules->t_sleep, \
-				cnt * rules->t_sleep, r_ms(rules) - philo->to_lock->sleep, philo->id);
+				fprintf(stderr, " %lld \t\t%lld {%lld} {%lld} \t [%lld] [%lld] {%d}\n", \
+				r_ms(rules), r_ms(rules), rules->t_sleep, cnt * rules->t_sleep, \
+				r_ms(rules) - rules->t_sleep, r_ms(rules) - philo->to_lock->sleep, \
+				philo->to_lock->id);
 				philo->to_lock->action = 2;
 				lock_msg(philo->to_lock, philo, 0);
-				cnt++;
+				
 			}
+			if (cnt * rules->t_sleep < r_ms(rules) - rules->t_sleep)
+				cnt++;
 		}
 		else if (rules->t_sleep < r_ms(rules) - time)
 			return (died_msg(rules, philo));
@@ -100,7 +99,7 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 			died = true;
 		}
 	}
-	else
+	else\
 		died = true;
 	pthread_mutex_unlock(&rules->lock_flags.lock);
 	return (died);
