@@ -12,53 +12,59 @@
 
 #include <philo.h>
 
-bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll cnt, t_ll time)
+bool	ft_usleep(t_rules *rules, t_philo *philo, int cnt, t_ll time)
 {
 	while (1)
 	{
-		if (died_msg(rules, philo))
-			return (1); 
 		print_ft_usleep(philo, time);
-		if (time == -1)
+		if (!died_msg(rules, philo) && time == -1)
 		{
 			if (died_msg(rules, philo->to_lock))
 				return (1);
-			else if (rules->t_eat < r_ms(rules) - philo->t_meal)
+			else if (rules->t_eat < t_mu_s(rules) - philo->t_meal)
 				return (died_msg(rules, philo));
-			else if (rules->t_sleep < r_ms(rules) - philo->to_lock->sleep)
+			if (cnt < rules->t_eat / rules->t_sleep && \
+			rules->t_sleep > t_mu_s(rules) - cnt * rules->t_sleep)
 			{
-				fprintf(stderr, " %lld \t\t%lld {%lld} {%lld} \t [%lld] [%lld] {%d}\n", \
-				r_ms(rules), r_ms(rules), rules->t_sleep, cnt * rules->t_sleep, \
-				r_ms(rules) - rules->t_sleep, r_ms(rules) - philo->to_lock->sleep, \
-				philo->to_lock->id);
-				lock_msg(philo->to_lock, philo, 0);
-			}
-			if (rules->t_sleep < r_ms(rules) - philo->to_lock->sleep)
-			{
-				fprintf(stderr, " %lld \t\t%lld {%lld} {%lld} \t [%lld] [%lld] {%d}\n", \
-				r_ms(rules), r_ms(rules), rules->t_sleep, cnt * rules->t_sleep, \
-				r_ms(rules) - rules->t_sleep, r_ms(rules) - philo->to_lock->sleep, \
-				philo->to_lock->id);
-				philo->to_lock->action = 2;
-				lock_msg(philo->to_lock, philo, 0);
+				fprintf(stderr, "\t\t\t\t\t\t%lld [%d / %lld] (%lld) {%lld} \n", rules->t_sleep, \
+				cnt, rules->t_eat / rules->t_sleep, cnt * rules->t_sleep, t_mu_s(rules) - rules->t_sleep);
+				// if (cnt * rules->t_sleep < t_mu_s(rules) - philo->to_lock->sleep)
+				// {
+				// 	fprintf(stderr, "\t\t\t%lld {%lld} {%lld} (tms-r_sleep){%lld}{%lld} \t[%d] | %d\n", \
+				// 	t_mu_s(rules), rules->t_sleep, cnt * rules->t_sleep, \
+				// 	t_mu_s(rules) - rules->t_sleep, t_mu_s(rules) - philo->to_lock->sleep, \
+				// 	philo->to_lock->id, cnt);
+				// 	// if (philo->to_lock->action == 3)
+						lock_msg(philo->to_lock, philo, 0);
+				// }
+				// if (cnt * rules->t_sleep < t_mu_s(rules) -philo->to_lock->sleep)
+				// {
+				// 	fprintf(stderr, "\t\t\t%lld {%lld} {%lld} (tms-r_sleep){%lld}{%lld} \t[%d] | %d\n", \
+				// 	t_mu_s(rules), rules->t_sleep, cnt * rules->t_sleep, \
+				// 	t_mu_s(rules) - rules->t_sleep, t_mu_s(rules) - philo->to_lock->sleep, \
+				// 	philo->to_lock->id, cnt);
+					philo->to_lock->action = 2;
+					lock_msg(philo->to_lock, philo, 0);
+				// }
 				
-			}
-			if (cnt * rules->t_sleep < r_ms(rules) - rules->t_sleep)
 				cnt++;
+			}
 		}
-		else if (rules->t_sleep < r_ms(rules) - time)
+		else if (rules->t_sleep < t_mu_s(rules) - time)
 			return (died_msg(rules, philo));
 		usleep(100);
 	}
 }
+// if (cnt < rules->t_eat / rules->t_sleep && \
+// 			rules->t_sleep > philo->t_meal - cnt * rules->t_sleep)
 // fprintf(stderr, "\t\t\t%lld [%lld] %lld [%lld] {%d}\n", \
-// cnt * rules->t_sleep , r_ms(rules) - philo->to_lock->sleep, \
-// r_ms(rules) / 1000, (cnt * (philo->to_lock->sleep / 1000)), \
+// cnt * rules->t_sleep , t_mu_s(rules) - philo->to_lock->sleep, \
+// t_mu_s(rules) / 1000, (cnt * (philo->to_lock->sleep / 1000)), \
 // philo->id);
 // philo_msg(philo->to_lock, "is   THINKING  X", P_THINK, philo);
 // philo_msg(philo->to_lock, "is   SLEEPING  X", P_SLEEP, philo);
 // time_ms(philo) / 1000 > (cnt * (rules->t_sleep) / 1000)
-// r_ms(rules) > time + cnt * rules->t_sleep
+// t_mu_s(rules) > time + cnt * rules->t_sleep
 
 bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 {
@@ -69,8 +75,8 @@ bool	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 	i = philo->id;
 	if (!died_msg(philo->rules, philo))
 	{
-		philo->time = r_ms(philo->rules);
-		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
+		philo->time = t_mu_s(philo->rules);
+		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n\n", \
 		philo->time / 1000, color(i), i, color(0), msg_color, msg, color(0));
 	}
 	pthread_mutex_unlock(&philo->rules->lock_msg.lock);
@@ -87,7 +93,7 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 	pthread_mutex_lock(&rules->lock_flags.lock);
 	if (!rules->lock_flags.stat)
 	{
-		currentTime = r_ms(rules);
+		currentTime = t_mu_s(rules);
 		last_meal = currentTime - philo->t_meal;
 		if (rules->t_die < last_meal)
 		{

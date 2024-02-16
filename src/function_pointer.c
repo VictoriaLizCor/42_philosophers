@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/02/14 14:23:23 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/02/16 11:20:55 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ t_ll	time_ms(t_philo *philo)
 	return (ms);
 }
 
-t_ll	r_ms(t_rules *rules)
+t_ll	t_mu_s(t_rules *rules)
 {
 	t_ll	ms;
 	t_ll	t;

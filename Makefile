@@ -108,7 +108,7 @@ ex22:$(NAME)
 	./philo 2 410 200 200
 ex23:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 2 401 300 100
+	./philo 2 610 300 100
 ex3:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 3 800 200 200
@@ -126,7 +126,7 @@ ex42:$(NAME)
 	./philo 4 410 200 200
 ex43:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 4 401 300 100
+	./philo 4 410 300 100
 ex5:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 5 800 200 200
@@ -147,7 +147,7 @@ ex200:$(NAME)
 	./philo 200 800 200 200
 ex5d:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 5 800 200 200 7
+	./philo 5 800 200 200
 top:$(NAME)
 	top -opid -stats command,pid,threads,cpu,state,mem,kshrd
 # 	while $(shell ps | awk '/philo/ && !/awk/ {print $$1}') ; do \
