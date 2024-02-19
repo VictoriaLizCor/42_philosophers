@@ -81,7 +81,7 @@ pthread_mutex_unlock
 --- BONUS:
 fork
 kill
-exit
+exitma
 waitpid
 sem_open
 sem_close
@@ -90,3 +90,20 @@ sem_wait
 sem_unlink
 
 */
+
+<!-- <ul>
+<li>Do not test with more than 200 philosophers.</li>
+<li>Do not test with time_to_die or time_to_eat or time_to_sleep set
+	to values lower than 60 ms.</li>
+<li>Test 1 800 200 200. The philosopher should not eat and should die.</li>
+<li>Test 5 800 200 200. No philosopher should die.</li>
+<li>Test 5 800 200 200 7. No philosopher should die and the simulation
+	should stop when every philosopher has eaten at least 7 times.</li>
+<li>Test 4 410 200 200. No philosopher should die.</li>
+<li>Test 4 310 200 100. One philosopher should die.</li>
+<li>Test with 2 philosophers and check the different times: a death
+	delayed by more than 10 ms is unacceptable.</li>
+<li>Test with any values of your choice to verify all the requirements.
+	Ensure philosophers die at the right time, that they don't steal
+	forks, and so forth.</li>
+</ul> -->

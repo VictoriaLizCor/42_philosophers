@@ -2,7 +2,7 @@ NAME = philo
 FLAGS = -Wall -Wextra #-Werror
 #D_SAN = -Wall -Wextra -fsanitize=thread
 INCLUDES += -I include/
-CC = gcc
+CC = cc
 D = 1
 S = 1
 ifeq ($(S), 1)
@@ -23,7 +23,7 @@ SRCS =	main_philo.c		\
 
 OBJS_DIR = obj/
 OBJS = $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
-
+# $(addprefix $(SRCS_DIR), $(SRCS))
 all: $(NAME)
 $(NAME): $(OBJS) | $(OBJS_DIR)
 	@printf "$(LF)\n🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀$(FG_TEXT)\n"
@@ -64,9 +64,14 @@ val:$(NAME)
 resan:
 	@make re -C . D=1
 	@make -C . e1
-e0:$(NAME)
+e01:$(NAME)
 	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 600 300 100))
+	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 400 200 100))
+	@echo ./philo n die eat sleep
+	./philo $(NUM)
+e02:$(NAME)
+	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 200))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 e1:$(NAME)
@@ -101,13 +106,19 @@ err:$(NAME)
 ex1:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 1 210 100 100
+ex11:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 1 800 200 200
 #dead
 ex2:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 310 200 100
 ex21:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 2 410 200 100
+	./philo 2 400 200 100
+ex2_1:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 401 200 100
 ex22:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 410 200 200
@@ -125,7 +136,10 @@ ex4:$(NAME)
 	./philo 4 310 200 100
 ex41:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 4 410 200 100
+	./philo 4 400 200 100
+ex4_1:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 4 401 200 100
 ex42:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 4 410 200 200

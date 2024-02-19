@@ -31,6 +31,7 @@
 # endif
 
 # define WAIT_TIME 200
+# define T_DIED_EXTRA 500
 
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
@@ -99,7 +100,7 @@ char		*warn(int idx);
 bool		odd_philo(t_philo *p);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-bool		ft_usleep(t_rules *rules, t_philo *philo, int cnt, t_ll time);
+bool		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 bool		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
 void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
@@ -110,10 +111,10 @@ void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo, t_philo *caller);
-void		debug_death(t_philo *p, t_rules *rules, t_ll time, t_ll death);
+void		debug_death(t_philo *p, t_rules *rules, t_ll time, t_ll check_meal);
 
 void		debug_thread_check(t_philo *philo, char *msg);
-void		print_ft_usleep(t_philo *philo, int opt);
+void		print_ft_usleep(t_philo *philo, t_ll time, t_ll tmp);
 void		print_msg(t_rules *rules, t_philo *philos);
 
 # define P_EAT "\x1B[1;41;33m"

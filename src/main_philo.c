@@ -50,8 +50,6 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->action = 2;
 		(*philos + i)->n_meals = rules->n_meals;
 		(*philos + i)->rules = rules;
-		// (*philos + i)->g_time = &time_ms;
-		// (*philos + i)->t = &t_mu_s;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			printf("%sError in mutex init %s\n", warn(0), color(0));
 		i++;
@@ -62,7 +60,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 static void	init_rules(t_rules *rules, char **argv)
 {
 	rules->n_philos = ft_atol(argv[1]);
-	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000;
+	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000 + T_DIED_EXTRA;
 	rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
 	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
 	rules->n_meals = 0;
@@ -93,12 +91,12 @@ static void	begin_hunger_games(char **argv)
 	init_rules(&rules, argv);
 	init_philos(&rules, &philos, rules.n_philos);
 	rand_array = random_non_repetive_values(0, rules.n_philos, rules.n_philos);
-	while (i < rules.n_philos)
+	if (D_PHI != 0)
 	{
-		// rand_array[i] = i;
-		fprintf(stderr, "%d ", rand_array[i++] + 1);
+		while (i < rules.n_philos)
+			fprintf(stderr, "%d ", rand_array[i++] + 1);
+		fprintf(stderr, "\n");
 	}
-	fprintf(stderr, "\n");
 	start_threads(philos, &rules, rand_array);
 	free(rand_array);
 	if (philos)
