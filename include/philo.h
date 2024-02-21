@@ -31,7 +31,7 @@
 # endif
 
 # define WAIT_TIME 200
-# define T_DIED_EXTRA 500
+# define T_DIED_EXTRA 1000
 
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
@@ -113,7 +113,7 @@ void		check_arguments(char **argv, int *error);
 void		print_action(t_philo *philo, t_philo *caller);
 void		debug_death(t_philo *p, t_rules *rules, t_ll time, t_ll check_meal);
 
-void		debug_thread_check(t_philo *philo, char *msg);
+void		debug_thread_check(t_philo *philo, char *msg, bool block);
 void		print_ft_usleep(t_philo *philo, t_ll time, t_ll tmp);
 void		print_msg(t_rules *rules, t_philo *philos);
 

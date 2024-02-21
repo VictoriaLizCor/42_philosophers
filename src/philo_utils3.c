@@ -12,26 +12,29 @@
 
 #include <philo.h>
 
-bool	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp)
+bool ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 {
 	while (1)
 	{
-		print_ft_usleep(philo, time, tmp);
-		if (!died_msg(rules, philo) && time == -1)
+		print_ft_usleep(philo, time, limit);
+		if (time == -1)
 		{
 			if (died_msg(rules, philo->to_lock))
 				return (1);
 			else if (t_mu_s(rules) > rules->t_eat + philo->t_meal)
 				return (died_msg(rules, philo));
-			// if (t_mu_s(rules) > philo->t_meal +  tmp * rules->t_sleep)
-			// {
-			// 	lock_msg(philo->to_lock, philo, 0);
-			// 	philo->to_lock->action = 2;
-			// 	lock_msg(philo->to_lock, philo, 0);
-			// 	tmp++;
-			// }
+			if (t_mu_s(rules) > philo->t_meal + limit * rules->t_sleep)
+			{
+				// philo_msg(philo->to_lock, "is   THINKING  X", P_THINK, philo);
+				// usleep(50);
+				// philo_msg(philo->to_lock, "is   SLEEPING  X", P_SLEEP, philo);
+				lock_msg(philo->to_lock, philo, 0);
+				philo->to_lock->action = 2;
+				lock_msg(philo->to_lock, philo, 0);
+				limit++;
+			}
 		}
-		else if ( tmp < t_mu_s(rules) - time)
+		else if (limit < t_mu_s(rules) - time || died_msg(rules, philo))
 			return (died_msg(rules, philo));
 		usleep(100);
 	}
@@ -130,14 +133,14 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 a
 philo->pair tell if process starts with odd or even id
 */
-void	wait_all(t_rules *rules, t_philo *philo, bool tmp, int size)
+void	wait_all(t_rules *rules, t_philo *philo, bool limit, int size)
 {
 	static int	sum;
 
 	while (1)
 	{
 		pthread_mutex_lock(&rules->lock_count.lock);
-		if (!tmp++)
+		if (!limit++)
 			sum += philo->id;
 		if (sum == size && !rules->lock_count.stat)
 		{
