@@ -56,9 +56,12 @@ fclean:	clean
 	@echo $(TRASH_BANNER)
 	@printf "\n$(P_NC)"
 
+d1:
+	@make re -C . D=1 S=0
+d0:
+	@make re -C . D=0 S=0
 reval:
 	@make re -C . D=0 S=0
-	@make -C . val
 val:$(NAME)
 	valgrind --tool=helgrind ./philo 2 401 200 200
 resan:
@@ -66,11 +69,11 @@ resan:
 	@make -C . e1
 e01:$(NAME)
 	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 400 200 100))
+	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 e02:$(NAME)
-	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 5 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 200))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
@@ -125,6 +128,12 @@ ex22:$(NAME)
 ex23:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 610 300 100
+ex24:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 800 100 200
+ex25:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 400 100 101
 ex3:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 3 800 200 200

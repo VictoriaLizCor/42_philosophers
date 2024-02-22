@@ -63,6 +63,7 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000 + T_DIED_EXTRA;
 	rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
 	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
+	rules->t_aux = rules->t_eat;
 	rules->n_meals = 0;
 	rules->lock_flags.stat = false;
 	rules->lock_count.stat = false;
@@ -130,4 +131,3 @@ int	main(int argc, char **argv, char **env)
 		printf("%si.e.: 2: ./philo 7 98 23 54 3%s\n", warn(1), color(0));
 	}
 }
-

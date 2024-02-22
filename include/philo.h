@@ -30,7 +30,7 @@
 #  define D_PHI 0
 # endif
 
-# define WAIT_TIME 200
+# define EXTRA_TIME 500
 # define T_DIED_EXTRA 1000
 
 typedef long long		t_ll;
@@ -50,6 +50,7 @@ struct s_rules
 	t_ll			t_die;
 	t_ll			t_eat;
 	t_ll			t_sleep;
+	t_ll			t_aux;
 	int				n_philos;
 	int				n_meals;
 	bool			pair;
@@ -76,9 +77,9 @@ struct	s_philo
 	struct s_philo	*right;
 	struct s_philo	*left;
 	t_rules			*rules;
-	// t_ll			(*g_time)(t_philo *);
-	// t_get_time		t;
 };
+// t_ll			(*g_time)(t_philo *);
+// t_get_time		t;
 
 /* function_pointer.c */
 bool		check_time(t_philo *philo, t_ll t1, t_ll t2);
@@ -92,7 +93,7 @@ long int	ft_atol(const char *s);
 char		*ft_strchr(const char *s, int c);
 int			*random_non_repetive_values(int min, int max, int size);
 /* philo_utils1.c */
-bool		lock_msg(t_philo *philo, t_philo *cal, bool death);
+void		lock_msg(t_philo *philo, t_philo *cal);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
@@ -100,8 +101,8 @@ char		*warn(int idx);
 bool		odd_philo(t_philo *p);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
-bool		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
-bool		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
+void		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
+void		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
 void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 bool		died_msg(t_rules *rules, t_philo *philo);
