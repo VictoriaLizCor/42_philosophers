@@ -24,7 +24,7 @@ void	lock_msg(t_philo *philo, t_philo *cal)
 	else if (philo->action == 2 && philo->to_lock)
 	{
 		philo_msg(philo, "is    EATING    ", P_EAT, cal);
-		philo->t_meal = t_mu_s(philo->rules);
+		philo->t_meal = t_mu_s(philo->rules) - philo->rules->t_eat / 2;
 	}
 	else if (philo->action == 3)
 	{
@@ -129,6 +129,7 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	int			died;
 
 	i = 0;
+	fprintf(stderr, "eat[%lld] | sleep[%lld]\n", rules->t_eat, rules->t_sleep);
 	while (i < rules->n_philos)
 	{
 		died = pthread_create(&philos[rand_array[i]].thread, NULL, \
@@ -145,5 +146,3 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 		i++;
 	}
 }
-// fprintf(stderr, " t_eat[%lld] | t_sleep[%lld]\n", 
-// rules->t_eat, rules->t_sleep);

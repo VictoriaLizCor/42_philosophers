@@ -67,12 +67,12 @@ val:$(NAME)
 resan:
 	@make re -C . D=1
 	@make -C . e1
-e01:$(NAME)
+r1:$(NAME)
 	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
-e02:$(NAME)
+r2:$(NAME)
 	$(eval PHILO=$(shell seq 5 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 200))
 	@echo ./philo n die eat sleep

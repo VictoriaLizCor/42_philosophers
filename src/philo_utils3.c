@@ -24,7 +24,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 		if (time == -1)
 		{
 			if (died_msg(rules, philo->to_lock) || \
-				rules->t_eat + 100 < t_mu_s(rules) - philo->t_meal)
+				rules->t_eat < t_mu_s(rules) - philo->t_meal)
 				return ;
 			else if (t_mu_s(rules) > philo->t_meal + limit * rules->t_sleep)
 			{
@@ -77,22 +77,22 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 {
 	bool	died;
 	t_ll	check_meal;
-	t_ll	currentTime;
+	t_ll	current_time;
 
 	died = false;
 	pthread_mutex_lock(&rules->lock_flags.lock);
 	if (!rules->lock_flags.stat)
 	{
-		currentTime = t_mu_s(rules);
-		check_meal = currentTime - philo->t_meal;
+		current_time = t_mu_s(rules);
+		check_meal = current_time - philo->t_meal;
 		if (rules->t_die < check_meal)
 		{
 			rules->lock_flags.stat = 1;
 			died = true;
 			printf(" %lld\tphilo %s [%03d] %s %s %s %s\n", \
-			currentTime / 1000, color(philo->id), philo->id, color(0), \
+			current_time / 1000, color(philo->id), philo->id, color(0), \
 			P_DEAD, "      DIED      ", color(0));
-			debug_death(philo, rules, currentTime, check_meal);
+			debug_death(philo, rules, current_time, check_meal);
 		}
 	}
 	else

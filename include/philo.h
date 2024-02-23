@@ -31,7 +31,7 @@
 # endif
 
 # define EXTRA_TIME 500
-# define T_DIED_EXTRA 1000
+# define T_DIED_EXTRA 0
 
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;

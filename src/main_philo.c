@@ -110,24 +110,27 @@ static void	begin_hunger_games(char **argv)
 
 int	main(int argc, char **argv, char **env)
 {
-	int			error;
+	int	error;
 
 	env++;
+	error = 0;
 	if (argc == 5 || argc == 6)
 	{
 		check_arguments(argv, &error);
-		if (error)
-			return (printf("%d\n", error));
-		begin_hunger_games(argv);
+		if (!error)
+			begin_hunger_games(argv);
 	}
 	else
 	{
-		printf("%sError: Invalid input %s\n", warn(0), color(0));
-		printf("Valid:\n" \
-		"./philo number_of_philosophers t_to_die(ms) " \
-		"t_to_eat(ms) t_to_sleep(ms) " \
-		"[number_of_times_each_philosopher_must_eat]\n");
-		printf("%si.e.: 1: ./philo 7 98 23 54%s\n", warn(1), color(0));
-		printf("%si.e.: 2: ./philo 7 98 23 54 3%s\n", warn(1), color(0));
+		ft_error(0, " Invalid input", NULL, 1);
+		ft_error(0, "Valid", \
+		"\n ./philo philosophers die(ms) eat(ms) sleep(ms) must_eat", 0);
+		ft_error(-1, "i.e.", "\n\t./philo 5 401 200 100", -1);
+		ft_error(-2, "i.e.", "\n\t./philo 5 401 200 100 4", -1);
+		error++;
 	}
+	printf("\n");
+	if (error)
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }

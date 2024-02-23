@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/02/16 11:20:55 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/02/23 12:02:57 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,11 @@ t_ll	get_time(void)
 {
 	struct timeval	t;
 
-	gettimeofday(&t, NULL);
+	if (gettimeofday(&t, NULL) == -1)
+	{
+		ft_error(0, NULL, " GETTIMEOFDAY(2)\n", 1);
+		return (0);
+	}
 	t.tv_sec *= 1e6;
 	t.tv_usec += t.tv_sec;
 	return ((t_ll)t.tv_usec);
@@ -43,7 +47,7 @@ t_ll	t_mu_s(t_rules *rules)
 	t_ll	t;
 
 	pthread_mutex_lock(&rules->lock_time.lock);
-	t = (get_time());
+	t = get_time();
 	ms = (t) - rules->t_start;
 	pthread_mutex_unlock(&rules->lock_time.lock);
 	return (ms);

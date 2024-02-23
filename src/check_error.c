@@ -15,9 +15,17 @@
 void	ft_error(int id, char *str1, char *str2, int exit_error)
 {
 	if (exit_error > 0)
-		printf("%sError!: ", warn(0));
-	if (str1)
-		printf("%s from thread: %d", str1, id);
+		printf("%sError: ", warn(0));
+	else if (exit_error == 0)
+		printf("%s", color(0));
+	else
+		printf("%s", warn(1));
+	if (id > 0 && str1)
+		printf("%s from Thread: [%d]", str1, id);
+	else if (id == 0 && str1)
+		printf("%s", str1);
+	else
+		printf("%s [%d]", str1, id * -1);
 	if (str2)
 	{
 		printf(" : ");
@@ -43,54 +51,41 @@ void	error_thread(void *data, int type)
 	}
 }
 
-static void	check_values(int size, char **argv, int *error)
+static void	check_values(char cpy, int ac, char **argv, int *err)
 {
-	int	ac;
+	static bool	check;
 
-	ac = 1;
-	while (ac < size)
+	if (cpy != 0 || (ft_atol(argv[ac]) <= 0 || ft_atol(argv[ac]) > INT_MAX))
+		*err += 1;
+	if (*err == 1 && check == 0)
 	{
-		if (ft_atol(argv[ac]) <= 0 || ft_atol(argv[ac]) > INT_MAX)
-		{
-			printf("%sValid values (0, INT_MAX]%s\n", warn(0), color(0));
-			*error += 1;
-			break ;
-		}
-		ac++;
+		ft_error(0, " Invalid input values", NULL, 1);
+		check = true;
 	}
-	if (ft_atol(argv[2]) <= ft_atol(argv[3]) + ft_atol(argv[4]))
-	{
-		printf("%sError!: time_to_die > time_to_eat + time_to_sleep %s\n", \
-		warn(0), color(0));
-		*error += 1;
-	}
+	if ((*err >= 1 && cpy != 0) || \
+	(ft_atol(argv[ac]) <= 0 || ft_atol(argv[ac]) > INT_MAX))
+		ft_error(-1 * ac, argv[ac], "Valid values (0, INT_MAX]", 1);
 }
 
-void	check_arguments(char **argv, int *error)
+void	check_arguments(char **argv, int *err)
 {
 	char	*copy;
 	int		ac;
 
 	ac = 1;
-	*error = 0;
 	while (argv[ac])
 	{
-		if (!ft_strlen(argv[ac]))
-		{
-			printf("%sError!: arg[%d] : Invalid input value%s\n", \
-			warn(0), ac, color(0));
-		}
 		copy = argv[ac];
 		if (ft_strchr("+", *copy) || ft_isdigit(*copy))
 			copy++;
 		while (*copy && ft_isdigit(*copy))
 			copy++;
-		if (!ft_isdigit(*copy) && *copy != 0 && *error == 0)
-		{
-			printf("%sError!: Invalid input value%s\n", warn(0), color(0));
-			*error += 1;
-		}
+		check_values(*copy, ac, argv, err);
 		ac++;
 	}
-	check_values(ac, argv, &*error);
+	if (*err == 0 && ft_atol(argv[2]) <= ft_atol(argv[3]) + ft_atol(argv[4]))
+	{
+		ft_error(0, "time_to_die > time_to_eat + time_to_sleep", NULL, 1);
+		++*err;
+	}
 }
