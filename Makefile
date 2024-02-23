@@ -22,10 +22,11 @@ SRCS =	main_philo.c		\
 		debug.c				\
 
 OBJS_DIR = obj/
+# OBJS = $(patsubst %.c,$(OBJDIR)%.o, $(addprefix $(SRCS_DIR),$(SRCS)))
 OBJS = $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
 # $(addprefix $(SRCS_DIR), $(SRCS))
 all: $(NAME)
-$(NAME): $(OBJS) | $(OBJS_DIR)
+$(NAME): $(OBJS)
 	@printf "$(LF)\n🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀$(FG_TEXT)\n"
 	@printf "\n"
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
@@ -34,16 +35,18 @@ $(NAME): $(OBJS) | $(OBJS_DIR)
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
-$(OBJS_DIR)%.o : $(SRCS_DIR)%.c
+# $(OBJS): $(OBJDIR)/%.o: %.c | $(objdirs)
+#     $(CC) -c $< -o $@
+
+$(OBJS): $(OBJS_DIR)%.o : $(SRCS_DIR)%.c | $(OBJS_DIR)
 	@$(CC) -g $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
 	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$< $(FG_TEXT)"
 
 $(OBJS_DIR):
 	@mkdir -p $@
-
 clean:
 	@echo $(RED)
-	@rm -rf $(OBJS)
+	@rm -rf $(OBJS_DIR)
 ifeq ($(D), 1)
 	@rm -rf philo.dSYM
 endif

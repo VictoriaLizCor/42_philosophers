@@ -117,6 +117,9 @@ int	main(int argc, char **argv, char **env)
 	if (argc == 5 || argc == 6)
 	{
 		check_arguments(argv, &error);
+		printf("ERRORs: %d\n", error);
+		printf("ft_atol:%ld\n", ft_atol(argv[4]));
+		printf("%ld\n", ft_atol("2147483647"));
 		if (!error)
 			begin_hunger_games(argv);
 	}

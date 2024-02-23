@@ -55,15 +55,14 @@ static void	check_values(char cpy, int ac, char **argv, int *err)
 {
 	static bool	check;
 
-	if (cpy != 0 || (ft_atol(argv[ac]) <= 0 || ft_atol(argv[ac]) > INT_MAX))
+	if (cpy != 0 || (ft_atol(argv[ac]) < 1 || ft_atol(argv[ac]) > INT_MAX))
 		*err += 1;
 	if (*err == 1 && check == 0)
 	{
 		ft_error(0, " Invalid input values", NULL, 1);
 		check = true;
 	}
-	if ((*err >= 1 && cpy != 0) || \
-	(ft_atol(argv[ac]) <= 0 || ft_atol(argv[ac]) > INT_MAX))
+	if ((*err >= 1) || (!ft_atol(argv[ac]) || ft_atol(argv[ac]) > INT_MAX))
 		ft_error(-1 * ac, argv[ac], "Valid values (0, INT_MAX]", 1);
 }
 
