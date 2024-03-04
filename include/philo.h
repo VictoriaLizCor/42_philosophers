@@ -68,6 +68,7 @@ struct	s_philo
 	int				n_meals;
 	t_ll			t_meal;
 	t_ll			sleep;
+	t_ll			think;
 	t_ll			time;
 	pthread_t		thread;
 	time_t			t_start;

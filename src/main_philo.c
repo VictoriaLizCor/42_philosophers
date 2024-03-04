@@ -117,20 +117,16 @@ int	main(int argc, char **argv, char **env)
 	if (argc == 5 || argc == 6)
 	{
 		check_arguments(argv, &error);
-		printf("ERRORs: %d\n", error);
-		printf("ft_atol:%ld\n", ft_atol(argv[4]));
-		printf("%ld\n", ft_atol("2147483647"));
 		if (!error)
 			begin_hunger_games(argv);
 	}
 	else
 	{
-		ft_error(0, " Invalid input", NULL, 1);
+		ft_error(0, " Invalid input", NULL, ++error);
 		ft_error(0, "Valid", \
 		"\n ./philo philosophers die(ms) eat(ms) sleep(ms) must_eat", 0);
-		ft_error(-1, "i.e.", "\n\t./philo 5 401 200 100", -1);
-		ft_error(-2, "i.e.", "\n\t./philo 5 401 200 100 4", -1);
-		error++;
+		ft_error(0, "i.e. 1", "\n\t./philo 5 400 200 100", -1);
+		ft_error(0, "i.e. 2", "\n\t./philo 5 400 200 100 4", -1);
 	}
 	printf("\n");
 	if (error)

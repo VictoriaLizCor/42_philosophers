@@ -15,7 +15,7 @@
 void	ft_error(int id, char *str1, char *str2, int exit_error)
 {
 	if (exit_error > 0)
-		printf("%sError: ", warn(0));
+		printf("%sERROR: ", warn(0));
 	else if (exit_error == 0)
 		printf("%s", color(0));
 	else
@@ -25,10 +25,10 @@ void	ft_error(int id, char *str1, char *str2, int exit_error)
 	else if (id == 0 && str1)
 		printf("%s", str1);
 	else
-		printf("%s [%d]", str1, id * -1);
+		printf("*[%d] '%s'", id * -1, str1);
 	if (str2)
 	{
-		printf(" : ");
+		printf(": ");
 		printf("%s", str2);
 	}
 	printf("%s\n", color(0));
@@ -51,19 +51,25 @@ void	error_thread(void *data, int type)
 	}
 }
 
-static void	check_values(char cpy, int ac, char **argv, int *err)
+// 2147483647
+static void	check_values(char *cpy, int ac, char **argv, int *err)
 {
 	static bool	check;
 
-	if (cpy != 0 || (ft_atol(argv[ac]) < 1 || ft_atol(argv[ac]) > INT_MAX))
+	if ((*cpy == 0 && \
+	(ft_atol(argv[ac]) < 1 || ft_atol(argv[ac]) > INT_MAX)) || *cpy != 0)
 		*err += 1;
 	if (*err == 1 && check == 0)
 	{
-		ft_error(0, " Invalid input values", NULL, 1);
+		ft_error(0, "Invalid input values", NULL, 1);
 		check = true;
+		ft_error(0, "Valid values", " [1, 2147483647]", -1);
+		ft_error(0, "Valid", \
+		"\n ./philo [1]philosophers [2]die [3]eat [4]sleep [5]must_eat", 0);
 	}
-	if ((*err >= 1) || (!ft_atol(argv[ac]) || ft_atol(argv[ac]) > INT_MAX))
-		ft_error(-1 * ac, argv[ac], "Valid values (0, INT_MAX]", 1);
+	if ((*cpy == 0 && \
+	(ft_atol(argv[ac]) < 1 || ft_atol(argv[ac]) > INT_MAX)) || *cpy != 0)
+		ft_error(-1 * ac, argv[ac], NULL, 1);
 }
 
 void	check_arguments(char **argv, int *err)
@@ -79,12 +85,18 @@ void	check_arguments(char **argv, int *err)
 			copy++;
 		while (*copy && ft_isdigit(*copy))
 			copy++;
-		check_values(*copy, ac, argv, err);
+		check_values(copy, ac, argv, err);
 		ac++;
 	}
 	if (*err == 0 && ft_atol(argv[2]) <= ft_atol(argv[3]) + ft_atol(argv[4]))
 	{
-		ft_error(0, "time_to_die > time_to_eat + time_to_sleep", NULL, 1);
+		ft_error(0, "Invalid input values", NULL, 1);
+		ft_error(0, "Valid", \
+		"\n ./philo [1]philosophers [2]die [3]eat [4]sleep [5]must_eat", 0);
+		ft_error(0, "[2]time_to_die > [3]time_to_eat + [4]time_to_sleep", \
+		NULL, 1);
+		ft_error(0, "i.e. 1", "\n\t./philo 5 400 200 100", -1);
+		ft_error(0, "i.e. 2", "\n\t./philo 5 400 200 100 4", -1);
 		++*err;
 	}
 }
