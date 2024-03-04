@@ -94,6 +94,12 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 	return (died_msg(philo->rules, philo));
 }
 
+/*
+if time_eat >= time_sleep
+	
+if time_eat < time_sleep
+
+*/
 static void	exe(t_philo *philo)
 {
 	t_rules	*rules;

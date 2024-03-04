@@ -78,6 +78,7 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 	return (died);
 }
 
+
 static void	exe(t_philo *philo)
 {
 	t_rules	*rules;

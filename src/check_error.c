@@ -51,7 +51,6 @@ void	error_thread(void *data, int type)
 	}
 }
 
-// 2147483647
 static void	check_values(char *cpy, int ac, char **argv, int *err)
 {
 	static bool	check;
