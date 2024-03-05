@@ -48,20 +48,19 @@ void	debug_thread_check(t_philo *philo, char *msg, bool unlock)
 	if (unlock)
 	{
 		fprintf(stderr, \
-		" %03lld [%lld]\t\t\t\t\t\t\t\t[%lld][%lld][%d] %s -> [%d]\n", \
+		" %03lld [%lld]\t\t\t\t\t\t\t\t[%lld][%lld] %s -> [%d]\n", \
 		t_mu_s(philo->rules) / 1000, t_mu_s(philo->rules), \
 		t_mu_s(philo->rules) / philo->rules->t_eat, \
-		(t_mu_s(philo->rules) / philo->rules->t_eat) % 2, \
-		philo->id % 2 == philo->rules->pair, msg, philo->id);
+		(t_mu_s(philo->rules) / philo->rules->t_eat) % 2, msg, philo->id);
 	}
 	else
 	{
 		fprintf(stderr, \
-		" %03lld [%lld]\t\t\t\t\t\t\t\t[%lld][%lld][%d] %s -> [%d]{%d}\n", \
+		" %03lld [%lld]\t\t\t\t\t\t\t\t[%lld][%lld] %s -> [%d]{%d}\n", \
 		t_mu_s(philo->rules) / 1000, t_mu_s(philo->rules), \
 		t_mu_s(philo->rules) / philo->rules->t_aux, \
 		(t_mu_s(philo->rules) / philo->rules->t_aux) % 2, \
-		philo->id % 2 == philo->rules->pair, msg, philo->id, philo->action);
+		msg, philo->id, philo->action);
 	}
 }
 

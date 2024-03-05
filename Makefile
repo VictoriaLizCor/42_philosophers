@@ -80,6 +80,11 @@ r2:$(NAME)
 	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 200))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
+r21:$(NAME)
+	$(eval PHILO=$(shell seq 5 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 410 200 200))
+	@echo ./philo n die eat sleep
+	./philo $(NUM)
 e1:$(NAME)
 	$(eval PHILO=$(shell seq 6 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_EAT=$(shell seq 100 300 | sort -R | tail -n 1 | tr '\n' ' '))
@@ -167,6 +172,15 @@ ex10:$(NAME)
 ex101:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 10 410 300 100
+	@echo ./philo 10 410 300 100
+ex102:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 10 410 200 200
+	@echo ./philo 10 410 200 200
+ex_11:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 11 600 300 100
+
 ex20:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 20 800 200 200

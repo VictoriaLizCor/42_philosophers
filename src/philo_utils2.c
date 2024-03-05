@@ -50,6 +50,25 @@ char	*color(int idx)
 	return (s_color[idx]);
 }
 
+void	init_sync(t_rules *rules, t_philo *philo, int i)
+{
+	t_philo		*next;
+
+	if (rules->t_sleep > rules->t_eat)
+		rules->t_aux = rules->t_sleep;
+	rules->last = philo->left;
+	next = philo;
+	fprintf(stderr, "\t\t\tLAST[%d]{%d}\n", philo->id, rules->last->id);
+	while (i < rules->n_philos)
+	{
+		if (i % 2 == 1)
+			next->action = 0;
+		i++;
+		next = next->right;
+	}
+	rules->t_start = get_time();
+}
+
 char	*warn(int idx)
 {
 	char	**s_color;

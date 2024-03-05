@@ -60,7 +60,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 static void	init_rules(t_rules *rules, char **argv)
 {
 	rules->n_philos = ft_atol(argv[1]);
-	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000 + T_DIED_EXTRA;
+	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000;
 	rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
 	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
 	rules->t_aux = rules->t_eat;
@@ -92,12 +92,10 @@ static void	begin_hunger_games(char **argv)
 	init_rules(&rules, argv);
 	init_philos(&rules, &philos, rules.n_philos);
 	rand_array = random_non_repetive_values(0, rules.n_philos, rules.n_philos);
-	if (D_PHI != 0)
-	{
-		while (i < rules.n_philos)
-			fprintf(stderr, "%d ", rand_array[i++] + 1);
-		fprintf(stderr, "\n");
-	}
+	while (i < rules.n_philos)
+		fprintf(stderr, "%d ", rand_array[i++] + 1);
+	usleep(50);
+	fprintf(stderr, "\n");
 	start_threads(philos, &rules, rand_array);
 	free(rand_array);
 	if (philos)

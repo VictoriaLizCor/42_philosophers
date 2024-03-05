@@ -53,12 +53,12 @@ struct s_rules
 	t_ll			t_aux;
 	int				n_philos;
 	int				n_meals;
-	bool			pair;
 	t_mutex			lock_time;
 	t_mutex			lock_flags;
 	t_mutex			lock_count;
 	t_mutex			lock_msg;
 	t_mutex			lock_start;
+	struct s_philo	*last;
 };
 
 struct	s_philo
@@ -100,6 +100,7 @@ void		start_threads(t_philo *philos, t_rules *rules, int *array);
 char		*color(int idx);
 char		*warn(int idx);
 bool		odd_philo(t_philo *p);
+void		init_sync(t_rules *rules, t_philo *philo, int i);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 void		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
