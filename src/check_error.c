@@ -47,7 +47,7 @@ void	error_thread(void *data, int type)
 	else if (type == 2)
 	{
 		id = 0;
-		ft_error(id, "on Mutex function ", NULL, 1);
+		ft_error(id, "on Mutex destroy function ", NULL, 1);
 	}
 }
 

@@ -58,8 +58,8 @@ void	debug_thread_check(t_philo *philo, char *msg, bool unlock)
 		fprintf(stderr, \
 		" %03lld [%lld]\t\t\t\t\t\t\t\t[%lld][%lld] %s -> [%d]{%d}\n", \
 		t_mu_s(philo->rules) / 1000, t_mu_s(philo->rules), \
-		t_mu_s(philo->rules) / philo->rules->t_aux, \
-		(t_mu_s(philo->rules) / philo->rules->t_aux) % 2, \
+		t_mu_s(philo->rules) / philo->t_aux, \
+		(t_mu_s(philo->rules) / philo->t_aux) % 2, \
 		msg, philo->id, philo->action);
 	}
 }

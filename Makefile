@@ -177,6 +177,10 @@ ex102:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 10 410 200 200
 	@echo ./philo 10 410 200 200
+ex103:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 10 410 300 100
+	@echo ./philo 10 410 300 100
 ex_11:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 11 600 300 100

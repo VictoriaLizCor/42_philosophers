@@ -31,12 +31,22 @@
 # endif
 
 # define EXTRA_TIME 500
-# define T_DIED_EXTRA 0
+# define T_DIED_EXTRA 500
 
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
 typedef struct s_philo	t_philo;
 // typedef t_ll			(*t_get_time)(t_rules *);
+
+typedef enum e_mutexes
+{
+	DEAD,
+	TIME,
+	MSG,
+	COUNT,
+	START,
+	N_MUTEX
+}	t_mutexes;
 
 typedef struct s_mutex
 {
@@ -50,7 +60,6 @@ struct s_rules
 	t_ll			t_die;
 	t_ll			t_eat;
 	t_ll			t_sleep;
-	t_ll			t_aux;
 	int				n_philos;
 	int				n_meals;
 	t_mutex			lock_time;
@@ -58,6 +67,7 @@ struct s_rules
 	t_mutex			lock_count;
 	t_mutex			lock_msg;
 	t_mutex			lock_start;
+	t_mutex			**lock;
 	struct s_philo	*last;
 };
 
@@ -70,6 +80,8 @@ struct	s_philo
 	t_ll			sleep;
 	t_ll			think;
 	t_ll			time;
+	t_ll			t_aux;
+	t_ll			t_extra;
 	pthread_t		thread;
 	time_t			t_start;
 	t_mutex			fork;
