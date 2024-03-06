@@ -61,26 +61,26 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 
 static void	init_rules(t_rules *rules, char **argv)
 {
-	int		i;
+	int	i;
 
 	i = 0;
-	// rules->lock = (t_mutex *)malloc (sizeof(t_mutex) * ((size_t)N_MUTEX));
-	// memset(rules, 0, sizeof(t_rules));
-	rules->lock = (t_mutex **)malloc(sizeof(t_mutex *) * (size_t)N_MUTEX);
-	if (!rules->lock)
-		rules->lock = NULL;
-	rules->n_philos = (int)ft_atol(argv[1]);
+	rules->n_philos = ft_atol(argv[1]);
 	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000;
 	rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
 	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
-	while (i < N_MUTEX)
-	{
-		rules->lock[i] = malloc(sizeof(t_mutex));
-		rules->lock[i]->stat = false;
-		if (pthread_mutex_init(&rules->lock[i]->lock, NULL) != 0)
-			printf("%sError in mutex init %s\n", warn(0), color(0));
-		i++;
-	}
+	rules->n_meals = 0;
+	rules->lock_flags.stat = false;
+	rules->lock_count.stat = false;
+	if (pthread_mutex_init(&rules->lock_flags.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
+	if (pthread_mutex_init(&rules->lock_time.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
+	if (pthread_mutex_init(&rules->lock_msg.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
+	if (pthread_mutex_init(&rules->lock_count.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
+	if (pthread_mutex_init(&rules->lock_start.lock, NULL) != 0)
+		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
 		rules->n_meals = ft_atol(argv[5]);
 }

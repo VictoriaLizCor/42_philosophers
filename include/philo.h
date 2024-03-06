@@ -67,7 +67,7 @@ struct s_rules
 	t_mutex			lock_count;
 	t_mutex			lock_msg;
 	t_mutex			lock_start;
-	t_mutex			**lock;
+	// t_mutex			lock[N_MUTEX];
 	struct s_philo	*last;
 };
 
