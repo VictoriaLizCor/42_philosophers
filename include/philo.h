@@ -62,12 +62,8 @@ struct s_rules
 	t_ll			t_sleep;
 	int				n_philos;
 	int				n_meals;
-	t_mutex			lock_time;
-	t_mutex			lock_flags;
-	t_mutex			lock_count;
-	t_mutex			lock_msg;
-	t_mutex			lock_start;
-	// t_mutex			lock[N_MUTEX];
+	t_mutex			**lock;
+	int				*error;
 	struct s_philo	*last;
 };
 
@@ -95,15 +91,16 @@ struct	s_philo
 // t_get_time		t;
 
 /* function_pointer.c */
-bool		check_time(t_philo *philo, t_ll t1, t_ll t2);
 t_ll		time_ms(t_philo *philo);
 t_ll		t_mu_s(t_rules *rules);
 t_ll		get_time(void);
-/* libft.c */
+void		init_neightbor(t_philo *philos, int size);
+/* libft1.c */
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
 char		*ft_strchr(const char *s, int c);
+/* libft2.c */
 int			*random_non_repetive_values(int min, int max, int size);
 /* philo_utils1.c */
 void		lock_msg(t_philo *philo, t_philo *cal);

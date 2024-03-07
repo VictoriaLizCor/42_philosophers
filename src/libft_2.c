@@ -12,19 +12,6 @@
 
 #include <philo.h>
 
-char	*ft_strchr(const char *s, int c)
-{
-	while (*s)
-	{
-		if (*s == (char)c)
-			return ((char *)s);
-		s++;
-	}
-	if (!(*s) && !c)
-		return ((char *)s);
-	return (NULL);
-}
-
 static long	generate_rand_num(long min, long max)
 {
 	struct timeval	tv;

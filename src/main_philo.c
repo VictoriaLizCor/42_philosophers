@@ -12,29 +12,6 @@
 
 #include <philo.h>
 
-static void	init_neightbor(t_philo *philos, int size)
-{
-	int	i;
-
-	i = 0;
-	if (!size)
-	{
-		philos[i].left = (void *)0;
-		philos[i].right = (void *)0;
-		return ;
-	}
-	while (i <= size)
-	{
-		if (i == 0)
-			philo_neightbor(philos, i, size, i + 1);
-		else if (i != size)
-			philo_neightbor(philos, i, i - 1, i + 1);
-		else if (i == size)
-			philo_neightbor(philos, i, i - 1, 0);
-		i++;
-	}
-}
-
 static void	init_philos(t_rules *rules, t_philo **philos, int size)
 {
 	int	i;
@@ -53,55 +30,68 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos + i)->t_aux = rules->t_eat;
 		(*philos + i)->t_extra = T_DIED_EXTRA;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
-			printf("%sError in mutex init %s\n", warn(0), color(0));
+			ft_error(0, "in Mutex init", NULL, 1);
 		i++;
 	}
 	init_neightbor(*philos, size - 1);
 }
 
-static void	init_rules(t_rules *rules, char **argv)
+static void	init_rules_mutexes(t_rules *rules)
 {
 	int	i;
 
 	i = 0;
+	rules->lock = (t_mutex **)malloc(sizeof(t_mutex *) * (size_t)N_MUTEX);
+	if (!rules->lock)
+		(*rules->error)++;
+	while (i < N_MUTEX && !*rules->error)
+	{
+		rules->lock[i] = (t_mutex *)malloc(sizeof(t_mutex));
+		if (!rules->lock[i])
+			(*rules->error)++;
+		memset(&rules->lock[i]->stat, 0, sizeof(bool));
+		if (pthread_mutex_init(&rules->lock[i]->lock, NULL) != 0)
+			(*rules->error)++;
+		i++;
+	}
+	if (*rules->error)
+		ft_error(0, "in Mutex array", NULL, 1);
+}
+
+static void	init_rules(t_rules *rules, char **argv)
+{
 	rules->n_philos = ft_atol(argv[1]);
 	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000;
 	rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
 	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
-	rules->n_meals = 0;
-	rules->lock_flags.stat = false;
-	rules->lock_count.stat = false;
-	if (pthread_mutex_init(&rules->lock_flags.lock, NULL) != 0)
-		printf("%sError in mutex init %s\n", warn(0), color(0));
-	if (pthread_mutex_init(&rules->lock_time.lock, NULL) != 0)
-		printf("%sError in mutex init %s\n", warn(0), color(0));
-	if (pthread_mutex_init(&rules->lock_msg.lock, NULL) != 0)
-		printf("%sError in mutex init %s\n", warn(0), color(0));
-	if (pthread_mutex_init(&rules->lock_count.lock, NULL) != 0)
-		printf("%sError in mutex init %s\n", warn(0), color(0));
-	if (pthread_mutex_init(&rules->lock_start.lock, NULL) != 0)
-		printf("%sError in mutex init %s\n", warn(0), color(0));
 	if (argv[5])
 		rules->n_meals = ft_atol(argv[5]);
+	rules->n_meals = 0;
+	init_rules_mutexes(rules);
 }
 
-static void	begin_hunger_games(char **argv)
+static void	begin_hunger_games(char **argv, int *error)
 {
 	t_rules			rules;
 	t_philo			*philos;
-	int				*rand_array;
+	int				*ran_val;
 	int				i;
 
 	i = 0;
+	ran_val = NULL;
+	rules.error = error;
 	init_rules(&rules, argv);
 	init_philos(&rules, &philos, rules.n_philos);
-	rand_array = random_non_repetive_values(0, rules.n_philos, rules.n_philos);
-	while (i < rules.n_philos)
-		fprintf(stderr, "%d ", rand_array[i++] + 1);
-	usleep(50);
-	fprintf(stderr, "\n");
-	start_threads(philos, &rules, rand_array);
-	free(rand_array);
+	if (!*rules.error)
+	{
+		ran_val = random_non_repetive_values(0, rules.n_philos, rules.n_philos);
+		while (i < rules.n_philos)
+			fprintf(stderr, "%d ", ran_val[i++] + 1);
+		usleep(50);
+		fprintf(stderr, "\n");
+		start_threads(philos, &rules, ran_val);
+	}
+	free(ran_val);
 	destroy_mutex(philos, &rules);
 	memset(philos, 0, sizeof(t_philo) * rules.n_philos);
 	free(philos);
@@ -117,7 +107,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		check_arguments(argv, &error);
 		if (!error)
-			begin_hunger_games(argv);
+			begin_hunger_games(argv, &error);
 	}
 	else
 	{

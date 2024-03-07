@@ -15,6 +15,7 @@
 void	lock_msg(t_philo *philo, t_philo *cal)
 {
 	philo->action++;
+	philo->time = t_mu_s(philo->rules);
 	if (philo->action == 1 && philo->to_lock)
 	{
 		philo_msg(philo, "has taken a fork", P_FORK, cal);
@@ -107,47 +108,38 @@ static void	exe(t_philo *philo)
 
 	rules = philo->rules;
 	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
-	if (philo->action == 2)
-		ft_usleep(rules, philo, 0, philo->t_aux + 1.5e3);
+	ft_usleep(rules, philo, 0, philo->think + 1.5e3);
 	while (1)
 	{
 		if (check_locks(philo, philo->right, philo->left))
 			return ;
 	}
 }
-// sum = t_mu_s(rules) / rules->t_aux;
-// if (philo->id % 2 == philo->rules->pair != (sum) % 2 && 
-// t_mu_s(rules) > sum * rules->t_eat && philo->right)
-// {
-// 	debug_thread_check(philo, "SLEEP", 1);
-// 	died = ft_usleep(rules, philo, sum * rules->t_aux + 100, rules->t_aux);
-// }
-// if (t_mu_s(rules) > sum * rules->t_eat)
-// {
-// 	debug_thread_check(philo, "SLEEP", 1);
-// 	died = ft_usleep(rules, philo, sum * 1e5, rules->t_eat);
-// }
 
 void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
 	int			i;
-	int			died;
 
 	i = 0;
-	fprintf(stderr, "eat[%lld] | sleep[%lld]\n", rules->t_eat, rules->t_sleep);
 	while (i < rules->n_philos)
 	{
-		died = pthread_create(&philos[rand_array[i]].thread, NULL, \
-		(void *)exe, &philos[rand_array[i]]);
-		if (died)
+		if (pthread_create(&philos[rand_array[i]].thread, NULL, \
+		(void *)exe, &philos[rand_array[i]]))
+		{
+			rules->error++;
 			error_thread(&philos[rand_array[i]], 0);
+			return ;
+		}
 		i++;
 	}
 	i = 0;
 	while (i < rules->n_philos)
 	{
 		if (pthread_join(philos[rand_array[i]].thread, NULL))
+		{
+			rules->error++;
 			return ;
+		}
 		i++;
 	}
 }

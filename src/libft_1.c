@@ -12,7 +12,6 @@
 
 #include <philo.h>
 
-
 size_t	ft_strlen(const char *str)
 {
 	size_t	cnt;
@@ -28,6 +27,19 @@ int	ft_isdigit(int ch)
 	if (ch >= '0' && ch <= '9')
 		return (1);
 	return (0);
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s)
+	{
+		if (*s == (char)c)
+			return ((char *)s);
+		s++;
+	}
+	if (!(*s) && !c)
+		return ((char *)s);
+	return (NULL);
 }
 
 static long	max_values(long int *num, int *sign, char c)

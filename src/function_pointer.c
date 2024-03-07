@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/02/23 12:02:57 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/07 13:00:03 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ t_ll	time_ms(t_philo *philo)
 	t_rules	*rules;
 
 	rules = philo->rules;
-	pthread_mutex_lock(&rules->lock_time.lock);
+	pthread_mutex_lock(&rules->lock[TIME]->lock);
 	t = get_time();
 	ms = (t) - philo->t_start;
-	pthread_mutex_unlock(&rules->lock_time.lock);
+	pthread_mutex_unlock(&rules->lock[TIME]->lock);
 	return (ms);
 }
 
@@ -46,18 +46,32 @@ t_ll	t_mu_s(t_rules *rules)
 	t_ll	ms;
 	t_ll	t;
 
-	pthread_mutex_lock(&rules->lock_time.lock);
+	pthread_mutex_lock(&rules->lock[TIME]->lock);
 	t = get_time();
 	ms = (t) - rules->t_start;
-	pthread_mutex_unlock(&rules->lock_time.lock);
+	pthread_mutex_unlock(&rules->lock[TIME]->lock);
 	return (ms);
 }
 
-bool	check_time(t_philo *philo, t_ll t1, t_ll t2)
+void	init_neightbor(t_philo *philos, int size)
 {
-	bool	died;
-	t_ll	current;
+	int	i;
 
-	died = time_ms(philo) > t1 + (t2);
-	return (died);
+	i = 0;
+	if (!size)
+	{
+		philos[i].left = (void *)0;
+		philos[i].right = (void *)0;
+		return ;
+	}
+	while (i <= size)
+	{
+		if (i == 0)
+			philo_neightbor(philos, i, size, i + 1);
+		else if (i != size)
+			philo_neightbor(philos, i, i - 1, i + 1);
+		else if (i == size)
+			philo_neightbor(philos, i, i - 1, 0);
+		i++;
+	}
 }

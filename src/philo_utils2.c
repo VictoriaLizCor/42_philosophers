@@ -63,6 +63,8 @@ void	init_sync(t_rules *rules, t_philo *philo, int i)
 		{
 			if (i % 2 == 1)
 				next->action = 0;
+			else
+				next->think = philo->t_aux;
 			i++;
 			next = next->right;
 		}
