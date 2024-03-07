@@ -12,6 +12,29 @@
 
 #include <philo.h>
 
+void	init_sync(t_rules *rules, t_philo *philo, int i)
+{
+	t_philo		*next;
+
+	if (rules->n_philos > 1)
+	{
+		rules->last = philo->left;
+		next = philo;
+		fprintf(stderr, "\t\t\tStart with[%d] \n\t\t\tLast [%d]\n", \
+		philo->id, rules->last->id);
+		while (i < rules->n_philos)
+		{
+			if (i % 2 == 1)
+				next->action = 0;
+			else
+				next->wait = philo->t_aux;
+			i++;
+			next = next->right;
+		}
+	}
+	rules->t_start = get_time();
+}
+
 bool	odd_philo(t_philo *p)
 {
 	bool	died;
@@ -48,28 +71,6 @@ char	*color(int idx)
 	if (idx > 16)
 		idx = (idx % 16);
 	return (s_color[idx]);
-}
-
-void	init_sync(t_rules *rules, t_philo *philo, int i)
-{
-	t_philo		*next;
-
-	if (rules->n_philos > 1)
-	{
-		rules->last = philo->left;
-		next = philo;
-		fprintf(stderr, "\t\t\tLAST[%d]{%d}\n", philo->id, rules->last->id);
-		while (i < rules->n_philos)
-		{
-			if (i % 2 == 1)
-				next->action = 0;
-			else
-				next->think = philo->t_aux;
-			i++;
-			next = next->right;
-		}
-	}
-	rules->t_start = get_time();
 }
 
 char	*warn(int idx)

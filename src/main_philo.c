@@ -64,9 +64,9 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000;
 	rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
 	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
-	if (argv[5])
-		rules->n_meals = ft_atol(argv[5]);
 	rules->n_meals = 0;
+	if (argv[5])
+		rules->n_meals = (t_ll)ft_atol(argv[5]);
 	init_rules_mutexes(rules);
 }
 
@@ -84,17 +84,19 @@ static void	begin_hunger_games(char **argv, int *error)
 	init_philos(&rules, &philos, rules.n_philos);
 	if (!*rules.error)
 	{
-		ran_val = random_non_repetive_values(0, rules.n_philos, rules.n_philos);
+		ran_val = random_values(0, rules.n_philos, rules.n_philos);
 		while (i < rules.n_philos)
 			fprintf(stderr, "%d ", ran_val[i++] + 1);
-		usleep(50);
 		fprintf(stderr, "\n");
 		start_threads(philos, &rules, ran_val);
+		free(ran_val);
 	}
-	free(ran_val);
 	destroy_mutex(philos, &rules);
-	memset(philos, 0, sizeof(t_philo) * rules.n_philos);
-	free(philos);
+	if (philos)
+	{
+		memset(philos, 0, sizeof(t_philo) * rules.n_philos);
+		free(philos);
+	}
 }
 
 int	main(int argc, char **argv, char **env)

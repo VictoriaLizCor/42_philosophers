@@ -18,7 +18,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 		debug_thread_check(philo, "\t\t EAT", 0);
 	else
 		debug_thread_check(philo, "\t\t SLEEP", 1);
-	while (2)
+	while (1)
 	{
 		print_ft_usleep(philo, time, limit);
 		if (died_msg(rules, philo))
@@ -30,10 +30,9 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 				return ;
 			else if (t_mu_s(rules) > philo->t_meal + limit * rules->t_sleep)
 			{
-				// lock_msg(philo->to_lock, philo);
-				// usleep(50);
-				// philo->to_lock->action = 2;
-				// lock_msg(philo->to_lock, philo);
+				lock_msg(philo->to_lock, philo);
+				philo->to_lock->action = 2;
+				lock_msg(philo->to_lock, philo);
 				limit++;
 			}
 		}
@@ -42,33 +41,17 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 		usleep(100);
 	}
 }
-// philo_msg(philo->to_lock, "is   THINKING  X", P_THINK, philo);
-// usleep(50);
-// philo_msg(philo->to_lock, "is   SLEEPING  X", P_SLEEP, philo);
-// philo->sleep = t_mu_s(philo->rules);
-// philo->to_lock->action = 3;
-// if (cnt < rules->t_eat / rules->t_sleep && 
-// 			rules->t_sleep > philo->t_meal - cnt * rules->t_sleep)
-// fprintf(stderr, "\t\t\t%lld [%lld] %lld [%lld] {%d}\n", 
-// cnt * rules->t_sleep , t_mu_s(rules) - philo->to_lock->sleep, 
-// t_mu_s(rules) / 1000, (cnt * (philo->to_lock->sleep / 1000)), 
-// philo->id);
-// philo_msg(philo->to_lock, "is   THINKING  X", P_THINK, philo);
-// philo_msg(philo->to_lock, "is   SLEEPING  X", P_SLEEP, philo);
-// time_ms(philo) / 1000 > (cnt * (rules->t_sleep) / 1000)
-// t_mu_s(rules) > time + cnt * rules->t_sleep
 
 void	philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal)
 {
 	int	i;
 
-	if (died_msg(philo->rules, philo))
-		return ;
 	pthread_mutex_lock(&philo->rules->lock[MSG]->lock);
 	print_action(philo, cal); 
 	i = philo->id;
-	printf(" %lld\tphilo %s [%03d] %s %s %s %s\n\n", \
-	philo->time / 1000, color(i), i, color(0), msg_color, msg, color(0));
+	if (!died_msg(philo->rules, philo) || !meal_done(philo->rules, philo))
+		printf(" %lld\tphilo %s [%03d] %s %s %s %s\n\n", \
+		philo->time / 1000, color(i), i, color(0), msg_color, msg, color(0));
 	pthread_mutex_unlock(&philo->rules->lock[MSG]->lock);
 }
 
@@ -94,10 +77,25 @@ bool	died_msg(t_rules *rules, t_philo *philo)
 			debug_death(philo, rules, current_time, check_meal);
 		}
 	}
-	else
-		died = true;
+	died = rules->lock[DEAD]->stat;
 	pthread_mutex_unlock(&rules->lock[DEAD]->lock);
 	return (died);
+}
+
+bool	meal_done(t_rules *rules, t_philo *philo)
+{
+	bool	done;
+
+	done = false;
+	pthread_mutex_lock(&rules->lock[MEAL]->lock);
+	if (rules->n_meals && philo->n_meals <= 0)
+	{
+		done = true;
+		rules->lock[MEAL]->stat = 1;
+	}
+	done = rules->lock[MEAL]->stat;
+	pthread_mutex_unlock(&rules->lock[MEAL]->lock);
+	return (done);
 }
 
 void	destroy_mutex(t_philo *philos, t_rules *rules)
@@ -122,37 +120,9 @@ void	destroy_mutex(t_philo *philos, t_rules *rules)
 		{
 			if (pthread_mutex_destroy(&rules->lock[i]->lock))
 				error_thread(NULL, 2);
-			if (rules->lock[i])
-				free(rules->lock[i]);
+			free(rules->lock[i]);
 		}
 		i++;
 	}
 	free(rules->lock);
-}
-
-/*
-philo->pair tell if process starts with odd or even id
-*/
-void	wait_all(t_rules *rules, t_philo *philo, bool limit, int size)
-{
-	static int	sum;
-
-	while (1)
-	{
-		pthread_mutex_lock(&rules->lock[COUNT]->lock);
-		if (!limit++)
-			sum += philo->id;
-		if (!rules->lock[COUNT]->stat && sum == size)
-		{
-			rules->lock[COUNT]->stat = true;
-			init_sync(rules, philo, 1);
-		}
-		if (rules->lock[COUNT]->stat)
-			break ;
-		pthread_mutex_unlock(&rules->lock[COUNT]->lock);
-	}
-	if (rules->t_sleep > rules->t_eat)
-		philo->t_aux = rules->t_sleep;
-	philo->t_start = rules->t_start;
-	pthread_mutex_unlock(&rules->lock[COUNT]->lock);
 }

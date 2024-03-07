@@ -25,7 +25,10 @@ void	lock_msg(t_philo *philo, t_philo *cal)
 	else if (philo->action == 2 && philo->to_lock)
 	{
 		philo_msg(philo, "is    EATING    ", P_EAT, cal);
-		philo->t_meal = t_mu_s(philo->rules);// + philo->rules->t_eat / 2;
+		philo->t_meal = t_mu_s(philo->rules);
+		fprintf(stderr, "%s meals[%d] | limit [%d]%s\n", \
+		warn(1), philo->n_meals, philo->rules->n_meals, color(0));
+		philo->n_meals--;
 	}
 	else if (philo->action == 3)
 	{
@@ -35,37 +38,31 @@ void	lock_msg(t_philo *philo, t_philo *cal)
 	else if (philo->action == 4)
 		philo_msg(philo, "is   THINKING   ", P_THINK, cal);
 }
-// philo->rules->t_sleep < t_mu_s(philo->rules) - philo->sleep)
-// else if (philo->action == 4 && !philo->to_lock && !died) 
-// && time_ms(philo) > philo->sleep + philo->rules->t_sleep
 
 static void	action(t_philo *philo, t_rules *rules, t_philo *lock)
 {
 	lock_msg(philo, philo);
-	if (lock)
+	if (lock && philo->action < 3)
 	{
 		if (philo->action == 2)
 			ft_usleep(rules, philo, -1, 1);
 		pthread_mutex_unlock(&lock->fork.lock); 
 	}
-	else
+	else if (!lock && philo->action == 3)
 	{
-		if (philo->action == 3)
-		{
-			if (philo->right)
-				pthread_mutex_unlock(&philo->fork.lock);
-			if (rules->t_sleep > t_mu_s(rules) - philo->sleep)
-				ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
-		}
-		else if (philo->action >= 4)
-		{
-			philo->action = 0;
-			if (philo->right)
-				pthread_mutex_unlock(&philo->fork.lock);
-			else
-				philo->action = 2;
-			usleep(100);
-		}
+		if (philo->right)
+			pthread_mutex_unlock(&philo->fork.lock);
+		if (rules->t_sleep > t_mu_s(rules) - philo->sleep)
+			ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
+	}
+	else if (!lock && philo->action >= 4)
+	{
+		philo->action = 0;
+		if (philo->right)
+			pthread_mutex_unlock(&philo->fork.lock);
+		else
+			philo->action = 2;
+		usleep(100);
 	}
 }
 
@@ -108,10 +105,13 @@ static void	exe(t_philo *philo)
 
 	rules = philo->rules;
 	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
-	ft_usleep(rules, philo, 0, philo->think + 1.5e3);
+	if (philo->wait)
+		ft_usleep(rules, philo, 0, philo->wait + 1.5e3);
 	while (1)
 	{
 		if (check_locks(philo, philo->right, philo->left))
+			return ;
+		if (meal_done(rules, philo))
 			return ;
 	}
 }

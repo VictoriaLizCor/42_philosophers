@@ -39,7 +39,16 @@ static int	val_exist(long num, int arr[], int size)
 	return (0);
 }
 
-int	*random_non_repetive_values(int min, int max, int size)
+/*
+  ** @brief:Create an array of non repetitive random numbers.
+  **
+  ** @param[in]: min value to start.
+  ** @param[in]: max value to end.
+  ** @param[in]: size of the array.
+  ** @return     array
+  ** file :libft2.c
+*/
+int	*random_values(int min, int max, int size)
 {
 	int		*array;
 	int		i;

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/07 13:00:03 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/07 16:24:34 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,28 @@ void	init_neightbor(t_philo *philos, int size)
 			philo_neightbor(philos, i, i - 1, 0);
 		i++;
 	}
+}
+
+void	wait_all(t_rules *rules, t_philo *philo, bool limit, int size)
+{
+	static int	sum;
+
+	while (1)
+	{
+		pthread_mutex_lock(&rules->lock[COUNT]->lock);
+		if (!limit++)
+			sum += philo->id;
+		if (!rules->lock[COUNT]->stat && sum == size)
+		{
+			rules->lock[COUNT]->stat = true;
+			init_sync(rules, philo, 1);
+		}
+		if (rules->lock[COUNT]->stat)
+			break ;
+		pthread_mutex_unlock(&rules->lock[COUNT]->lock);
+	}
+	if (rules->t_sleep > rules->t_eat)
+		philo->t_aux = rules->t_sleep;
+	philo->t_start = rules->t_start;
+	pthread_mutex_unlock(&rules->lock[COUNT]->lock);
 }

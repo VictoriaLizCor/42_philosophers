@@ -30,8 +30,9 @@
 #  define D_PHI 0
 # endif
 
-# define EXTRA_TIME 500
-# define T_DIED_EXTRA 500
+# define EXTRA_TIME 0
+# define T_DIED_EXTRA 0
+
 
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
@@ -44,7 +45,7 @@ typedef enum e_mutexes
 	TIME,
 	MSG,
 	COUNT,
-	START,
+	MEAL,
 	N_MUTEX
 }	t_mutexes;
 
@@ -74,7 +75,7 @@ struct	s_philo
 	int				n_meals;
 	t_ll			t_meal;
 	t_ll			sleep;
-	t_ll			think;
+	t_ll			wait;
 	t_ll			time;
 	t_ll			t_aux;
 	t_ll			t_extra;
@@ -94,6 +95,7 @@ struct	s_philo
 t_ll		time_ms(t_philo *philo);
 t_ll		t_mu_s(t_rules *rules);
 t_ll		get_time(void);
+void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
 void		init_neightbor(t_philo *philos, int size);
 /* libft1.c */
 size_t		ft_strlen(const char *str);
@@ -101,7 +103,7 @@ int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
 char		*ft_strchr(const char *s, int c);
 /* libft2.c */
-int			*random_non_repetive_values(int min, int max, int size);
+int			*random_values(int min, int max, int size);
 /* philo_utils1.c */
 void		lock_msg(t_philo *philo, t_philo *cal);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
@@ -114,9 +116,9 @@ void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 void		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 void		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
-void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
-void		destroy_mutex(t_philo *philo, t_rules *rules);
 bool		died_msg(t_rules *rules, t_philo *philo);
+bool		meal_done(t_rules *rules, t_philo *philo);
+void		destroy_mutex(t_philo *philo, t_rules *rules);
 /* check_error.c*/
 void		ft_error(int id, char *str1, char *str2, int exit_error);
 void		error_thread(void *data, int type);
