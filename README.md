@@ -1,7 +1,7 @@
 # 42_philosophers
 Summary: In this project, you will learn the basics of threading a process. You will see how to create threads and you will discover mutexes
 Philosophers with threads and mutexes
-
+https://docs.google.com/spreadsheets/d/1vMqbPiwxofL9Sml8P4xzVZGiHuUEPMZShsZQjZ5Xx4I/edit#gid=2085454190
 /*
 The functions used:
 
