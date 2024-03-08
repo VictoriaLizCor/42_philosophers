@@ -19,8 +19,9 @@ void	init_sync(t_rules *rules, t_philo *philo, int i)
 	if (rules->n_philos > 1)
 	{
 		rules->last = philo->left;
+		philo->left->wait = philo->t_aux;
 		next = philo;
-		fprintf(stderr, "\t\t\tStart with[%d] \n\t\t\tLast [%d]\n", \
+		printf("\t\t\tStart with[%d] \n\t\t\tLast [%d]\n", \
 		philo->id, rules->last->id);
 		while (i < rules->n_philos)
 		{
@@ -33,16 +34,6 @@ void	init_sync(t_rules *rules, t_philo *philo, int i)
 		}
 	}
 	rules->t_start = get_time();
-}
-
-bool	odd_philo(t_philo *p)
-{
-	bool	died;
-	int		n_philos;
-
-	n_philos = p->rules->n_philos;
-	died = (p->id == n_philos && p->id % 2 && n_philos > 2);
-	return (died);
 }
 
 char	*color(int idx)

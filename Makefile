@@ -91,9 +91,21 @@ rbig1:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
+rbig1_e:$(NAME)
+	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 400 200 100 2))
+	@echo ./philo n die eat sleep
+	./philo $(NUM)
+	@echo ./philo $(NUM)
 rbig2:$(NAME)
 	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100))
+	@echo ./philo n die eat sleep
+	./philo $(NUM)
+	@echo ./philo $(NUM)
+rbig2_e:$(NAME)
+	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100 2))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
@@ -145,6 +157,9 @@ ex2_1:$(NAME)
 ex22:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 410 200 200
+ex22_e:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 410 200 200 2
 ex23:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 610 300 100
@@ -160,6 +175,9 @@ ex3:$(NAME)
 ex31:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 3 900 300 100
+ex3_e:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 3 800 200 200 2
 ex4:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 4 310 200 100
@@ -178,6 +196,14 @@ ex43:$(NAME)
 ex5:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 5 800 200 200
+ex5_e:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 5 800 200 200 2
+	@echo ./philo 5 800 200 200 2
+ex5_e7:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 5 800 200 200 2
+	@echo ./philo 5 800 200 200 7
 ex10:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 10 600 300 100
@@ -193,6 +219,11 @@ ex103:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 10 410 300 100
 	@echo ./philo 10 410 300 100
+ex10_e:$(NAME)
+	$(eval EAT=$(shell seq 1 3 | sort -R | tail -n 1 | tr '\n' ' '))
+	@echo ./philo n die eat sleep
+	./philo 10 800 200 200 $(EAT)
+	echo ./philo 10 800 200 200 $(EAT)
 ex_11:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 11 600 300 100

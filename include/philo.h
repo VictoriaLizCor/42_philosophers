@@ -64,6 +64,7 @@ struct s_rules
 	int				n_philos;
 	int				n_meals;
 	t_mutex			**lock;
+	t_mutex			dead;
 	int				*error;
 	struct s_philo	*last;
 };
@@ -110,14 +111,13 @@ void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
 char		*warn(int idx);
-bool		odd_philo(t_philo *p);
 void		init_sync(t_rules *rules, t_philo *philo, int i);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 /* philo_utils3.c */
 void		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 void		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
 bool		died_msg(t_rules *rules, t_philo *philo);
-bool		meal_done(t_rules *rules, t_philo *philo);
+bool		meal_done(t_rules *rules, t_philo *philo, bool check);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 /* check_error.c*/
 void		ft_error(int id, char *str1, char *str2, int exit_error);

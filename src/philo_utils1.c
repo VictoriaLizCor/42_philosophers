@@ -15,7 +15,6 @@
 void	lock_msg(t_philo *philo, t_philo *cal)
 {
 	philo->action++;
-	philo->time = t_mu_s(philo->rules);
 	if (philo->action == 1 && philo->to_lock)
 	{
 		philo_msg(philo, "has taken a fork", P_FORK, cal);
@@ -26,9 +25,8 @@ void	lock_msg(t_philo *philo, t_philo *cal)
 	{
 		philo_msg(philo, "is    EATING    ", P_EAT, cal);
 		philo->t_meal = t_mu_s(philo->rules);
-		fprintf(stderr, "%s meals[%d] | limit [%d]%s\n", \
-		warn(1), philo->n_meals, philo->rules->n_meals, color(0));
-		philo->n_meals--;
+		if (philo->n_meals > 0)
+			philo->n_meals--;
 	}
 	else if (philo->action == 3)
 	{
@@ -44,18 +42,18 @@ static void	action(t_philo *philo, t_rules *rules, t_philo *lock)
 	lock_msg(philo, philo);
 	if (lock && philo->action < 3)
 	{
-		if (philo->action == 2)
+		if (!meal_done(rules, philo, true) && philo->action == 2)
 			ft_usleep(rules, philo, -1, 1);
 		pthread_mutex_unlock(&lock->fork.lock); 
 	}
-	else if (!lock && philo->action == 3)
+	if ((!lock || meal_done(rules, philo, 0)) && philo->action == 3)
 	{
 		if (philo->right)
 			pthread_mutex_unlock(&philo->fork.lock);
 		if (rules->t_sleep > t_mu_s(rules) - philo->sleep)
 			ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
 	}
-	else if (!lock && philo->action >= 4)
+	else if ((!lock || meal_done(rules, philo, 0)) && philo->action >= 4)
 	{
 		philo->action = 0;
 		if (philo->right)
@@ -65,6 +63,7 @@ static void	action(t_philo *philo, t_rules *rules, t_philo *lock)
 		usleep(100);
 	}
 }
+// (!lock || meal_done(rules, philo, 0))
 
 static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 {
@@ -90,14 +89,12 @@ static bool	check_locks(t_philo *philo, t_philo *right, t_philo *left)
 		debug_thread_check(philo, "CHECK", 0);
 		action(philo, philo->rules, NULL);
 	}
-	return (died_msg(philo->rules, philo));
+	return (died_msg(philo->rules, philo) || \
+	meal_done(philo->rules, philo, false));
 }
 
 /*
-if time_eat >= time_sleep
-	
-if time_eat < time_sleep
-
+  ** @brief
 */
 static void	exe(t_philo *philo)
 {
@@ -110,8 +107,6 @@ static void	exe(t_philo *philo)
 	while (1)
 	{
 		if (check_locks(philo, philo->right, philo->left))
-			return ;
-		if (meal_done(rules, philo))
 			return ;
 	}
 }

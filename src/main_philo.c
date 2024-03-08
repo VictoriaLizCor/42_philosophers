@@ -25,7 +25,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	{
 		(*philos + i)->id = i + 1;
 		(*philos + i)->action = 2;
-		(*philos + i)->n_meals = rules->n_meals;
+		(*philos + i)->n_meals = rules->n_meals / rules->n_philos;
 		(*philos + i)->rules = rules;
 		(*philos + i)->t_aux = rules->t_eat;
 		(*philos + i)->t_extra = T_DIED_EXTRA;
@@ -54,6 +54,8 @@ static void	init_rules_mutexes(t_rules *rules)
 			(*rules->error)++;
 		i++;
 	}
+	if (pthread_mutex_init(&rules->dead.lock, NULL) != 0)
+		(*rules->error)++;
 	if (*rules->error)
 		ft_error(0, "in Mutex array", NULL, 1);
 }
@@ -64,9 +66,9 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->t_die = (t_ll)ft_atol(argv[2]) * (t_ll)1000;
 	rules->t_eat = (t_ll)ft_atol(argv[3]) * (t_ll)1000;
 	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
-	rules->n_meals = 0;
+	rules->n_meals = -1;
 	if (argv[5])
-		rules->n_meals = (t_ll)ft_atol(argv[5]);
+		rules->n_meals = (t_ll)ft_atol(argv[5]) * rules->n_philos;
 	init_rules_mutexes(rules);
 }
 
@@ -86,8 +88,8 @@ static void	begin_hunger_games(char **argv, int *error)
 	{
 		ran_val = random_values(0, rules.n_philos, rules.n_philos);
 		while (i < rules.n_philos)
-			fprintf(stderr, "%d ", ran_val[i++] + 1);
-		fprintf(stderr, "\n");
+			printf("%d ", ran_val[i++] + 1);
+		printf("\n");
 		start_threads(philos, &rules, ran_val);
 		free(ran_val);
 	}
