@@ -93,56 +93,48 @@
 // 	meal_done(philo->rules, philo, false));
 // }
 
-void	lock_msg(t_philo *philo, t_philo *cal)
+void	action_ext(t_philo *philo, t_rules *rules, t_philo *lock)
 {
-	philo->action++;
-	if (check_action(philo, '=', 1))
+	if (check_action(philo, '=', 3))
 	{
-		philo_msg(philo, P_FORK, cal);
-	}
-	else if (check_action(philo, '=', 2))
-	{
-		philo_msg(philo, P_EAT, cal);
-		philo->t_meal = time_ms(philo);
-		if (philo->n_meals > 0)
-			philo->n_meals--;
-	}
-	else if (check_action(philo, '=', 3))
-	{
-		philo_msg(philo, P_SLEEP, cal);
+		philo_msg(philo, P_SLEEP, lock);
 		philo->sleep = time_ms(philo);
+		if (rules->t_sleep > t_mu_s(rules) - philo->sleep)
+			ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
 	}
 	else if (check_action(philo, '=', 4))
-		philo_msg(philo, P_THINK, cal);
+	{
+		philo_msg(philo, P_THINK, lock);
+		philo->action = 0;
+		if (!philo->right)
+			philo->action = 2;
+	}
 }
 
 static void	action(t_philo *philo, t_rules *rules, t_philo *lock)
 {
-	lock_msg(philo, philo);
+	philo->action++;
+	debug_thread_check(philo, "ACTION", 0);
 	if (check_action(philo, '=', 1))
 	{
 		philo->to_lock = philo->right;
 		lock_fork(philo);
 		lock_fork(philo->right);
+		philo_msg(philo, P_FORK, lock);
 	}
 	else if (check_action(philo, '=', 2))
 	{
+		philo_msg(philo, P_EAT, lock);
+		philo->t_meal = time_ms(philo);
+		if (philo->n_meals > 0)
+			philo->n_meals--;
 		ft_usleep(rules, philo, -1, 1);
 		unlock_fork(philo->right);
 		unlock_fork(philo);
 		philo->to_lock = NULL;
 	}
-	if (check_action(philo, '=', 3))
-	{
-		if (rules->t_sleep > t_mu_s(rules) - philo->sleep)
-			ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
-	}
-	else if (check_action(philo, '>', 3))
-	{
-		philo->action = 0;
-		if (!philo->right)
-			philo->action = 2;
-	}
+	else
+		action_ext(philo, rules, lock);
 }
 
 /*
@@ -165,7 +157,6 @@ static void	exe(t_philo *philo)
 		}
 		else if (check_fork(philo) == false)
 		{
-			debug_thread_check(philo, "UNLOCK", 0);
 			action(philo, philo->rules, NULL);
 		}
 		if (died_msg(philo->rules, philo) || meal_done(rules, philo, false))

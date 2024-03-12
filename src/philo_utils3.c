@@ -29,12 +29,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 				rules->t_eat < t_mu_s(rules) - philo->t_meal)
 				return ;
 			else if (t_mu_s(rules) > philo->t_meal + limit * rules->t_sleep)
-			{
-				// lock_msg(philo->to_lock, philo);
-				// philo->to_lock->action = 2;
-				// lock_msg(philo->to_lock, philo);
 				limit++;
-			}
 		}
 		else if (limit < t_mu_s(rules) - time)
 			return ;

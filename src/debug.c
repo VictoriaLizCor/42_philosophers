@@ -23,16 +23,17 @@ void	print_action(t_philo *philo, t_philo *caller)
 	sum = philo->time % (philo->rules->t_eat + philo->rules->t_sleep);
 	if (check_action(&philo_tmp, '>', -1) && check_action(&philo_tmp, '<', 5))
 	{
-		if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))
+		// if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))
+		if (!died_msg(philo_tmp.rules, &philo_tmp))
 			printf( \
 			" %03lld [%lld]\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
 			t_mu_s(philo_tmp.rules) / 1000, t_mu_s(philo_tmp.rules), philo_tmp.id, \
 			philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
-		else if (!died_msg(philo_tmp.rules, &philo_tmp))
-			printf( \
-			" %03lld [%lld]\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
-			t_mu_s(philo_tmp.rules) / 1000, t_mu_s(philo_tmp.rules), caller->id, \
-			philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
+		// else if (!died_msg(philo_tmp.rules, &philo_tmp))
+		// 	printf( \
+		// 	" %03lld [%lld]\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
+		// 	t_mu_s(philo_tmp.rules) / 1000, t_mu_s(philo_tmp.rules), caller->id, \
+		// 	philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
 	}
 }
 
