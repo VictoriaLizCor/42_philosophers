@@ -31,7 +31,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 			else if (t_mu_s(rules) > philo->t_meal + limit * rules->t_sleep)
 				limit++;
 		}
-		else if (limit < t_mu_s(rules) - time)
+		else if ((limit < t_mu_s(rules) - time) || meal_done(rules, philo, false))
 			return ;
 		usleep(100);
 	}

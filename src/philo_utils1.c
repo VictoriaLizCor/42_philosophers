@@ -93,7 +93,7 @@
 // 	meal_done(philo->rules, philo, false));
 // }
 
-void	action_ext(t_philo *philo, t_rules *rules, t_philo *lock)
+static void	action_ext(t_philo *philo, t_rules *rules, t_philo *lock)
 {
 	if (check_action(philo, '=', 3))
 	{
@@ -109,8 +109,7 @@ void	action_ext(t_philo *philo, t_rules *rules, t_philo *lock)
 		if (!philo->right)
 			philo->action = 2;
 	}
-}
-
+}/*!!! ADD MEAL CHECK!!!*/
 static void	action(t_philo *philo, t_rules *rules, t_philo *lock)
 {
 	philo->action++;
@@ -118,9 +117,9 @@ static void	action(t_philo *philo, t_rules *rules, t_philo *lock)
 	if (check_action(philo, '=', 1))
 	{
 		philo->to_lock = philo->right;
+		philo_msg(philo, P_FORK, lock);
 		lock_fork(philo);
 		lock_fork(philo->right);
-		philo_msg(philo, P_FORK, lock);
 	}
 	else if (check_action(philo, '=', 2))
 	{
