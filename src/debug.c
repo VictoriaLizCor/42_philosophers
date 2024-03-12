@@ -21,7 +21,7 @@ void	print_action(t_philo *philo, t_philo *caller)
 		return ;
 	philo_tmp = *philo;
 	sum = philo->time % (philo->rules->t_eat + philo->rules->t_sleep);
-	if (philo_tmp.action >= 0 && philo_tmp.action <= 4)
+	if (check_action(&philo_tmp, '>', -1) && check_action(&philo_tmp, '<', 5))
 	{
 		if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))
 			printf( \

@@ -15,6 +15,7 @@ SRCS =	main_philo.c		\
 		philo_utils1.c		\
 		philo_utils2.c		\
 		philo_utils3.c		\
+		philo_utils4.c		\
 		check_error.c		\
 		libft_1.c			\
 		libft_2.c			\
@@ -87,25 +88,25 @@ r21:$(NAME)
 	./philo $(NUM)
 rbig1:$(NAME)
 	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 400 200 100))
+	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
 rbig1_e:$(NAME)
 	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 400 200 100 2))
+	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100 2))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
 rbig2:$(NAME)
 	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100))
+	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
 rbig2_e:$(NAME)
 	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100 2))
+	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100 2))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)

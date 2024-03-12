@@ -12,30 +12,6 @@
 
 #include <philo.h>
 
-void	init_sync(t_rules *rules, t_philo *philo, int i)
-{
-	t_philo		*next;
-
-	if (rules->n_philos > 1)
-	{
-		rules->last = philo->left;
-		philo->left->wait = philo->t_aux;
-		next = philo;
-		printf("\t\t\tStart with[%d] \n\t\t\tLast [%d]\n", \
-		philo->id, rules->last->id);
-		while (i < rules->n_philos)
-		{
-			if (i % 2 == 1)
-				next->action = 0;
-			else
-				next->wait = philo->t_aux;
-			i++;
-			next = next->right;
-		}
-	}
-	rules->t_start = get_time();
-}
-
 char	*color(int idx)
 {
 	char	**s_color;
@@ -79,4 +55,27 @@ void	philo_neightbor(t_philo *philos, int i, int left, int right)
 {
 	philos[i].left = &philos[left];
 	philos[i].right = &philos[right];
+}
+
+void	init_neightbor(t_philo *philos, int size)
+{
+	int	i;
+
+	i = 0;
+	if (!size)
+	{
+		philos[i].left = (void *)0;
+		philos[i].right = (void *)0;
+		return ;
+	}
+	while (i <= size)
+	{
+		if (i == 0)
+			philo_neightbor(philos, i, size, i + 1);
+		else if (i != size)
+			philo_neightbor(philos, i, i - 1, i + 1);
+		else if (i == size)
+			philo_neightbor(philos, i, i - 1, 0);
+		i++;
+	}
 }

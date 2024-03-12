@@ -44,7 +44,7 @@ typedef enum e_mutexes
 	DEAD,
 	TIME,
 	MSG,
-	COUNT,
+	START,
 	MEAL,
 	N_MUTEX
 }	t_mutexes;
@@ -96,8 +96,8 @@ struct	s_philo
 t_ll		time_ms(t_philo *philo);
 t_ll		t_mu_s(t_rules *rules);
 t_ll		get_time(void);
+void		init_sync(t_rules *rules, t_philo *philo, int i);
 void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
-void		init_neightbor(t_philo *philos, int size);
 /* libft1.c */
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
@@ -111,14 +111,19 @@ void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
 char		*warn(int idx);
-void		init_sync(t_rules *rules, t_philo *philo, int i);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
+void		init_neightbor(t_philo *philos, int size);
 /* philo_utils3.c */
 void		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
-void		philo_msg(t_philo *philo, char *msg, char *msg_color, t_philo *cal);
+void		philo_msg(t_philo *philo, char *msg, t_philo *cal);
 bool		died_msg(t_rules *rules, t_philo *philo);
 bool		meal_done(t_rules *rules, t_philo *philo, bool check);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
+/* philo_utils4.c */
+void		lock_fork(t_philo *philo);
+void		unlock_fork(t_philo *philo);
+bool		check_fork(t_philo *philo);
+bool		check_action(t_philo *philo, char op, int val);
 /* check_error.c*/
 void		ft_error(int id, char *str1, char *str2, int exit_error);
 void		error_thread(void *data, int type);
@@ -131,11 +136,11 @@ void		debug_thread_check(t_philo *philo, char *msg, bool block);
 void		print_ft_usleep(t_philo *philo, t_ll time, t_ll tmp);
 void		print_msg(t_rules *rules, t_philo *philos);
 
-# define P_EAT "\x1B[1;41;33m"
-# define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m"
-# define P_THINK "\x1B[48;5;31m\x1B[38;5;118m"
-# define P_DEAD "\x1B[48;5;237m\x1B[38;5;172m"
-# define P_FORK "\x1B[48;5;255m\x1B[38;5;0m"
+# define P_EAT "\x1B[1;41;33m is    EATING     \x1B[0m"
+# define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m is   SLEEPING    \x1B[0m"
+# define P_THINK "\x1B[48;5;31m\x1B[38;5;118m is   THINKING    \x1B[0m"
+# define P_DEAD "\x1B[48;5;237m\x1B[38;5;172m       DIED       \x1B[0m"
+# define P_FORK "\x1B[48;5;255m\x1B[38;5;0m has taken a fork \x1B[0m"
 
 // # define CNRM "\x1B[0m"
 // # define CRED "\x1B[31m"
