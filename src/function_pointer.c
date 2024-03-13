@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/12 14:22:42 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/13 16:19:33 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,17 +57,22 @@ void	init_sync(t_rules *rules, t_philo *philo, int i)
 		rules->last = philo->left;
 		rules->last->wait = philo->t_aux;
 		next = philo;
-		printf("\t\t\tStart with[%d] \n\t\t\tLast [%d]\n", \
-		philo->id, rules->last->id);
 		while (i < rules->n_philos)
 		{
 			if (i % 2 == 1)
+			{
+				printf("%s\t [%d]", color(3), next->id);
 				next->action = 0;
+			}
 			else
+			{
 				next->wait = philo->t_aux;
+				printf("%s\t [%d]", color(1), next->id);
+			}
 			i++;
 			next = next->right;
 		}
+		printf("\t %s*[%d]%s\n\n", color(1), rules->last->id, color(0));
 	}
 	rules->t_start = get_time();
 }
@@ -81,7 +86,7 @@ void	wait_all(t_rules *rules, t_philo *philo, bool limit, int size)
 		pthread_mutex_lock(&rules->lock[START]->lock);
 		if (!limit++)
 			sum += philo->id;
-		if (!rules->lock[START]->stat && sum == size)
+		if (rules->lock[START]->stat == 0 && sum == size)
 		{
 			rules->lock[START]->stat = true;
 			init_sync(rules, philo, 1);
@@ -93,6 +98,5 @@ void	wait_all(t_rules *rules, t_philo *philo, bool limit, int size)
 	if (rules->t_sleep > rules->t_eat)
 		philo->t_aux = rules->t_sleep;
 	philo->t_start = rules->t_start;
-	printf("[%d]->ACTION = %d\n", philo->id, philo->action);
 	pthread_mutex_unlock(&rules->lock[START]->lock);
 }

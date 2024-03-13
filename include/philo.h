@@ -33,7 +33,6 @@
 # define EXTRA_TIME 0
 # define T_DIED_EXTRA 0
 
-
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
 typedef struct s_philo	t_philo;
@@ -83,7 +82,6 @@ struct	s_philo
 	pthread_t		thread;
 	time_t			t_start;
 	t_mutex			fork;
-	struct s_philo	*to_lock;
 	struct s_philo	*lock_by;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -106,7 +104,7 @@ char		*ft_strchr(const char *s, int c);
 /* libft2.c */
 int			*random_values(int min, int max, int size);
 /* philo_utils1.c */
-void		lock_msg(t_philo *philo, t_philo *cal);
+void		lock_msg(t_philo *philo);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
@@ -115,13 +113,13 @@ void		philo_neightbor(t_philo *philos, int i, int left, int right);
 void		init_neightbor(t_philo *philos, int size);
 /* philo_utils3.c */
 void		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
-void		philo_msg(t_philo *philo, char *msg, t_philo *cal);
+void		philo_msg(t_philo *philo, char *msg);
 bool		died_msg(t_rules *rules, t_philo *philo);
 bool		meal_done(t_rules *rules, t_philo *philo, bool check);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 /* philo_utils4.c */
-void		lock_fork(t_philo *philo);
-void		unlock_fork(t_philo *philo);
+void		lock_mutex(t_mutex *mutex);
+void		unlock_mutex(t_mutex *mutex);
 bool		check_fork(t_philo *philo);
 bool		check_action(t_philo *philo, char op, int val);
 /* check_error.c*/
@@ -129,11 +127,11 @@ void		ft_error(int id, char *str1, char *str2, int exit_error);
 void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
-void		print_action(t_philo *philo, t_philo *caller);
+void		print_action(t_philo *philo);
 void		debug_death(t_philo *p, t_rules *rules, t_ll time, t_ll check_meal);
 
-void		debug_thread_check(t_philo *philo, char *msg, bool block);
-void		print_ft_usleep(t_philo *philo, t_ll time, t_ll tmp);
+void		debug_thread_check(t_philo *philo, char *msg);
+void		print_ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 void		print_msg(t_rules *rules, t_philo *philos);
 
 # define P_EAT "\x1B[1;41;33m is    EATING     \x1B[0m"

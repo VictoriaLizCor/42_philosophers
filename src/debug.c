@@ -12,7 +12,7 @@
 
 #include <philo.h>
 
-void	print_action(t_philo *philo, t_philo *caller)
+void	print_action(t_philo *philo)
 {
 	t_philo	philo_tmp;
 	int		sum;
@@ -21,33 +21,18 @@ void	print_action(t_philo *philo, t_philo *caller)
 		return ;
 	philo_tmp = *philo;
 	sum = philo->time % (philo->rules->t_eat + philo->rules->t_sleep);
-	if (check_action(&philo_tmp, '>', -1) && check_action(&philo_tmp, '<', 5))
-	{
-		// if (philo_tmp.to_lock && !died_msg(philo_tmp.rules, &philo_tmp))
-		if (!died_msg(philo_tmp.rules, &philo_tmp))
-			printf( \
-			" %03lld [%lld]\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
-			t_mu_s(philo_tmp.rules) / 1000, t_mu_s(philo_tmp.rules), philo_tmp.id, \
-			philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
-		// else if (!died_msg(philo_tmp.rules, &philo_tmp))
-		// 	printf( \
-		// 	" %03lld [%lld]\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
-		// 	t_mu_s(philo_tmp.rules) / 1000, t_mu_s(philo_tmp.rules), caller->id, \
-		// 	philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
-	}
+	if (!died_msg(philo_tmp.rules, &philo_tmp))
+		printf( \
+		" %03lld [%lld]\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
+		t_mu_s(philo_tmp.rules) / 1000, t_mu_s(philo_tmp.rules), philo_tmp.id, \
+		philo_tmp.id, philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
 }
 
-void	debug_thread_check(t_philo *philo, char *msg, bool unlock)
+void	debug_thread_check(t_philo *philo, char *msg)
 {
 	if (D_PHI == 0)
 		return ;
-	if (unlock && !died_msg(philo->rules, philo))
-	{
-		printf(" %03lld [%lld]\t\t\t\t\t\t\t\t%s -> [%d]\n", \
-		t_mu_s(philo->rules) / 1000, t_mu_s(philo->rules), \
-		msg, philo->id);
-	}
-	else if (!died_msg(philo->rules, philo))
+	if (!died_msg(philo->rules, philo))
 	{
 		printf(" %03lld [%lld]\t\t\t\t\t\t\t\t %s -> [%d]{%d}\n", \
 		t_mu_s(philo->rules) / 1000, t_mu_s(philo->rules), \
@@ -55,7 +40,7 @@ void	debug_thread_check(t_philo *philo, char *msg, bool unlock)
 	}
 }
 
-void	print_ft_usleep(t_philo *philo, t_ll time, t_ll tmp)
+void	print_ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp)
 {
 	t_philo		philo_tmp;
 	t_ll		current;
@@ -63,20 +48,20 @@ void	print_ft_usleep(t_philo *philo, t_ll time, t_ll tmp)
 	if (D_PHI == 0)
 		return ;
 	philo_tmp = *philo;
-	pthread_mutex_lock(&philo->rules->lock[MSG]->lock);
-	current = time_ms(philo);
-	if (!died_msg(philo->rules, philo))
+	pthread_mutex_lock(&rules->lock[MSG]->lock);
+	current = time_ms(&philo_tmp);
+	if (!died_msg(rules, philo) || !meal_done(rules, philo, false))
 	{
-		if (time == -1 && philo->rules->t_eat < current - philo_tmp.t_meal)
+		if (time == -1 && rules->t_eat < current - philo_tmp.t_meal)
 			printf( \
-			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t\t[%d][%d] DONE Eating\n", \
-			current / 1000, current, philo->id, philo->to_lock->id);
+			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t[%d][%d] DONE Eating\n", \
+			current / 1000, current, philo->id, philo->right->id);
 		else if (time >= 0 && tmp < current - time)
 			printf( \
-			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t\t[%d][%d] DONE Sleeping\n", \
+			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t[%d][%d] DONE Sleeping\n", \
 			current / 1000, current, philo->id, philo->id);
 	}
-	pthread_mutex_unlock(&philo->rules->lock[MSG]->lock);
+	pthread_mutex_unlock(&rules->lock[MSG]->lock);
 }
 
 void	debug_death(t_philo *philo, t_rules *rules, t_ll time, t_ll check_meal )
@@ -95,9 +80,9 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll time, t_ll check_meal )
 		printf( \
 		"\t\t\t\t\t*[%d]{%d} => meal[%lld | %lld] \tsleep[%lld| %lld]\n", \
 		philo->id, philo->action, philo->t_meal, time, philo->sleep, time);
-		printf("\t\t\t\t\t*[%d] ==> [%lld || %lld - %lld] = %lld\n", \
+		printf("\t\t\t\t\t*[%d] ==> [%lld || %lld - %lld] = %lf\n", \
 		philo->id, philo->t_meal, check_meal, rules->t_die, \
-		check_meal - rules->t_die);
+		(double)(check_meal - rules->t_die) / 1000);
 	}
 }
 

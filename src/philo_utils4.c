@@ -6,24 +6,24 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/12 15:50:43 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/13 11:22:26 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	lock_fork(t_philo *philo)
+void	lock_mutex(t_mutex *mutex)
 {
-	pthread_mutex_lock(&philo->fork.lock); 
-	philo->fork.stat = true;
-	pthread_mutex_unlock(&philo->fork.lock);
+	pthread_mutex_lock(&mutex->lock); 
+	mutex->stat = true;
+	pthread_mutex_unlock(&mutex->lock);
 }
 
-void	unlock_fork(t_philo *philo)
+void	unlock_mutex(t_mutex *mutex)
 {
-	pthread_mutex_lock(&philo->fork.lock); 
-	philo->fork.stat = false;
-	pthread_mutex_unlock(&philo->fork.lock);
+	pthread_mutex_lock(&mutex->lock); 
+	mutex->stat = false;
+	pthread_mutex_unlock(&mutex->lock);
 }
 
 bool	check_fork(t_philo *philo)
@@ -46,5 +46,6 @@ bool	check_action(t_philo *philo, char op, int val)
 		result = philo->action > val;
 	else if (op == '=')
 		result = philo->action == val;
-	return ((void)pthread_mutex_unlock(&philo->fork.lock), result);
+	pthread_mutex_unlock(&philo->fork.lock);
+	return (result);
 }

@@ -8,7 +8,7 @@ S = 1
 ifeq ($(S), 1)
 D_SAN =  -D D_PHI=$(D) -Wall -Wextra -fsanitize=thread #-Werror
 else
-D_SAN = -D D_PHI=$(D) -Wall -Wextra -fsanitize=address  #-Werror
+D_SAN = -D D_PHI=$(D) -Wall -Wextra #-fsanitize=address  #-Werror
 endif
 SRCS_DIR = src/
 SRCS =	main_philo.c		\
@@ -73,7 +73,7 @@ resan:
 	@make -C . e1
 r1:$(NAME)
 	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100))
+	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 r2:$(NAME)
@@ -94,22 +94,24 @@ rbig1:$(NAME)
 	@echo ./philo $(NUM)
 rbig1_e:$(NAME)
 	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100 2))
+	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100 10))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
 rbig2:$(NAME)
-	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 5 100 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
 rbig2_e:$(NAME)
-	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
-	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100 2))
+	$(eval PHILO=$(shell seq 5 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100 10))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
+ifeq ($(INTERRUPTED), 1)
 	@echo ./philo $(NUM)
+endif
 e1:$(NAME)
 	$(eval PHILO=$(shell seq 6 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval T_EAT=$(shell seq 100 300 | sort -R | tail -n 1 | tr '\n' ' '))
@@ -172,11 +174,14 @@ ex25:$(NAME)
 	./philo 2 400 100 101
 ex3:$(NAME)
 	@echo ./philo n die eat sleep
+	./philo 3 410 200 200
+ex32:$(NAME)
+	@echo ./philo n die eat sleep
 	./philo 3 800 200 200
 ex31:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 3 900 300 100
-ex3_e:$(NAME)
+ex32_e:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 3 800 200 200 2
 ex4:$(NAME)
@@ -191,6 +196,9 @@ ex4_1:$(NAME)
 ex42:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 4 410 200 200
+ex42_e:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 4 410 200 200 8
 ex43:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 4 410 300 100
@@ -228,7 +236,6 @@ ex10_e:$(NAME)
 ex_11:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 11 600 300 100
-
 ex20:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 20 800 200 200
@@ -241,9 +248,18 @@ ex100:$(NAME)
 ex200:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 200 800 200 200
-ex5d:$(NAME)
+ex300:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 5 800 200 200
+	./philo 300 800 200 200
+ex300_e:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 300 800 200 200 5
+exn: $(NAME)
+	@echo ./philo n die eat sleep
+	./philo $n 800 200 200
+in: $(NAME)
+	@echo ./philo n die eat sleep
+	./philo $n $d $e $s $m
 top:$(NAME)
 	top -opid -stats command,pid,threads,cpu,state,mem,kshrd
 # 	while $(shell ps | awk '/philo/ && !/awk/ {print $$1}') ; do \
@@ -251,9 +267,7 @@ top:$(NAME)
 # 	done ; \
 # _top:
 # 	top -l15 -stats command,pid,threads,cpu,state,mem,kshrd -pid $(pgrep -f philo) | grep -A1 COMMAND
-t1:
-	cc test/threads.c -pthread -o test/t1
-	./test/t1
+
 # finish standard input with Ctl+D
 #git commit -F -<<EOF
 git:	fclean
@@ -347,4 +361,21 @@ NOCOLOR	= "\033[m"
 CYAN = "\033[0;1;36m"
 PHILO_BANNER = "$$PHILO"
 TRASH_BANNER = "$$TRASH"
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re error
+
+# use mode: make error r="rule" #
+# try to catch error
+error:
+	trap 'make $r ; exit 2' SIGINT; \
+	echo EXIT_CODE $(CROSS)$(RED) INTERRUPTED $(NOCOLOR)
+# @bash -c "trap 'trap - SIGINT SIGTERM ERR; exit 1' SIGINT SIGTERM ERR"
+# @bash -c "trap 'trap make $r; exit 1' SIGINT SIGTERM ERR; $(MAKE) error_msg"
+# @make $r || (exit_code=$$?;if [ $$exit_code -eq 1 ]; then echo $$exit_code; fi)
+	
+# ifeq ($shell(echo $(shell "trap - SIGINT SIGTERM ERR; exit 1")), 1)
+# @echo "SIGINT received, exiting"
+# endif
+# bash -c "trap "$(shell make $r)""" SIGINT
+# @echo $(CROSS)$(RED)Interrupted$(NOCOLOR)
+# trap 'make $$r' SIGINT;
+# @bash -c "trap 'trap - SIGINT SIGTERM ERR; exit 1' SIGINT SIGTERM ERR; $(MAKE) error_msg"
