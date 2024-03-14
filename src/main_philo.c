@@ -24,7 +24,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	while (i < size)
 	{
 		(*philos)[i].id = i + 1;
-		(*philos)[i].action = 3;
+		(*philos)[i].action = 2;
 		(*philos)[i].n_meals = rules->n_meals / rules->n_philos;
 		(*philos)[i].rules = rules;
 		(*philos)[i].t_aux = rules->t_eat;

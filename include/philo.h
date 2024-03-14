@@ -121,7 +121,7 @@ void		destroy_mutex(t_philo *philo, t_rules *rules);
 /* philo_utils4.c */
 void		lock_mutex(t_mutex *mutex);
 void		unlock_mutex(t_mutex *mutex);
-void		check_mutex(t_mutex *mutex);
+bool		check_mutex(t_mutex *mutex);
 bool		check_fork(t_philo *philo);
 bool		check_action(t_philo *philo, char op, int val);
 /* check_error.c*/

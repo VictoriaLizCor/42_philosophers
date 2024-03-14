@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/14 14:15:22 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/14 16:52:23 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,13 @@ void	unlock_mutex(t_mutex *mutex)
 	pthread_mutex_unlock(&mutex->lock);
 }
 
+/*
+  ** @brief: Checks mutex state.
+  **
+  ** @param[in]: mutex pointer
+  ** @return     true if mutex state is lock
+  ** @file 	 philo_utils4.c
+*/
 bool	check_mutex(t_mutex *mutex)
 {
 	pthread_mutex_lock(&mutex->lock);
@@ -37,8 +44,8 @@ bool	check_mutex(t_mutex *mutex)
 /*
   ** @brief: Checks if fork is available.
   **
-  ** @param[in]: philosopher in use
-  ** @return     true if available
+  ** @param[in]: philosopher rutine
+  ** @return     true if fork state is lock
   ** @file 	 philo_utils4.c
 */
 bool	check_fork(t_philo *philo)

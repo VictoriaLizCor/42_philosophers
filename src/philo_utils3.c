@@ -58,33 +58,28 @@ void	philo_msg(t_philo *philo, char *msg)
 		print_action(philo);
 		print_msg(philo, msg, time);
 	}
-	else
-		lock_mutex(&philo->rules->lock[MSG])
 }
 
 bool	died_msg(t_rules *rules, t_philo *philo)
 {
-	bool	died;
 	t_ll	starve;
 	t_ll	current_time;
 	int		i;
 
 	i = philo->id;
-	pthread_mutex_lock(&rules->lock[DEAD]->lock);
-	if (!rules->lock[DEAD]->stat)
+	if (!check_mutex(rules->lock[DEAD]))
 	{
 		current_time = time_ms(philo);
 		starve = current_time - philo->t_meal;
 		if (starve > (rules->t_die))
 		{
-			rules->lock[DEAD]->stat = 1;
+			lock_mutex(rules->lock[DEAD]);
 			print_msg(philo, P_DEAD, current_time);
 			debug_death(philo, rules, current_time);
+			return (true);
 		}
 	}
-	died = rules->lock[DEAD]->stat;
-	pthread_mutex_unlock(&rules->lock[DEAD]->lock);
-	return (died);
+	return (check_mutex(rules->lock[DEAD]));
 }
 // printf(" %lld\tphilo %s [%03d] %s %s\n\n", 
 // current_time / 1000, color(i), i, color(0), P_DEAD);

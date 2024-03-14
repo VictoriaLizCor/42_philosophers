@@ -56,7 +56,7 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 	int		i;
 
 	i = philo->id;
-	if (!check_mutex(&philo->rules->lock[MSG]))
+	if (!check_mutex(philo->rules->lock[DEAD]))
 	{
 		if (D_PHI == 1)
 			printf(" %lld [%lld]\tphilo %s [%03d] %s %s\n\n", \
