@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   function_pointer.c                                 :+:      :+:    :+:   */
+/*   sync_functions.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/13 16:19:33 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/14 09:59:27 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,15 @@ t_ll	time_ms(t_philo *philo)
 	return (ms);
 }
 
-t_ll	t_mu_s(t_rules *rules)
+t_ll	t_mu_s(t_ll start)
 {
 	t_ll	ms;
 	t_ll	current;
 
-	pthread_mutex_lock(&rules->lock[TIME]->lock);
 	current = get_time();
-	ms = current - rules->t_start;
-	pthread_mutex_unlock(&rules->lock[TIME]->lock);
+	if (current == 0)
+		return (-1);
+	ms = current - start;
 	return (ms);
 }
 

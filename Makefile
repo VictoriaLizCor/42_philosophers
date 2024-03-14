@@ -19,7 +19,7 @@ SRCS =	main_philo.c		\
 		check_error.c		\
 		libft_1.c			\
 		libft_2.c			\
-		function_pointer.c	\
+		sync_functions.c	\
 		debug.c				\
 
 OBJS_DIR = obj/
@@ -165,7 +165,7 @@ ex22_e:$(NAME)
 	./philo 2 410 200 200 2
 ex23:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 2 610 300 100
+	./philo 2 310 200 100
 ex24:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 800 100 200

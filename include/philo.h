@@ -92,7 +92,7 @@ struct	s_philo
 
 /* function_pointer.c */
 t_ll		time_ms(t_philo *philo);
-t_ll		t_mu_s(t_rules *rules);
+t_ll		t_mu_s(t_ll start);
 t_ll		get_time(void);
 void		init_sync(t_rules *rules, t_philo *philo, int i);
 void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
@@ -109,6 +109,7 @@ void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
 char		*warn(int idx);
+void		print_msg(t_philo *philo, char *msg, t_ll time);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 void		init_neightbor(t_philo *philos, int size);
 /* philo_utils3.c */
@@ -128,11 +129,10 @@ void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo);
-void		debug_death(t_philo *p, t_rules *rules, t_ll time, t_ll check_meal);
-
+void		debug_death(t_philo *p, t_rules *rules, t_ll time);
 void		debug_thread_check(t_philo *philo, char *msg);
 void		print_ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
-void		print_msg(t_rules *rules, t_philo *philos);
+void		print_neightbor(t_rules *rules, t_philo *philos);
 
 # define P_EAT "\x1B[1;41;33m is    EATING     \x1B[0m"
 # define P_SLEEP "\x1B[48;5;97m\x1B[38;5;81m is   SLEEPING    \x1B[0m"

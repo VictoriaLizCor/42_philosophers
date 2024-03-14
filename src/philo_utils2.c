@@ -51,6 +51,19 @@ char	*warn(int idx)
 	return (s_color[idx]);
 }
 
+void	print_msg(t_philo *philo, char *msg, t_ll time)
+{
+	int		i;
+
+	i = philo->id;
+	if (D_PHI == 1)
+		printf(" %lld [%lld]\tphilo %s [%03d] %s %s\n\n", \
+		time / 1000, time, color(i), i, color(0), msg);
+	else
+		printf(" %lld\tphilo %s [%03d] %s %s\n\n", \
+		time / 1000, color(i), i, color(0), msg);
+}
+
 void	philo_neightbor(t_philo *philos, int i, int left, int right)
 {
 	philos[i].left = &philos[left];
@@ -78,4 +91,6 @@ void	init_neightbor(t_philo *philos, int size)
 			philo_neightbor(philos, i, i - 1, 0);
 		i++;
 	}
+	if (D_PHI == 1)
+		print_neightbor(philos->rules, philos);
 }
