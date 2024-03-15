@@ -51,22 +51,6 @@ char	*warn(int idx)
 	return (s_color[idx]);
 }
 
-void	print_msg(t_philo *philo, char *msg, t_ll time)
-{
-	int		i;
-
-	i = philo->id;
-	if (!check_mutex(philo->rules->lock[DEAD]))
-	{
-		if (D_PHI == 1)
-			printf(" %lld [%lld]\tphilo %s [%03d] %s %s\n\n", \
-			time / 1000, time, color(i), i, color(0), msg);
-		else
-			printf(" %lld\tphilo %s [%03d] %s %s\n\n", \
-			time / 1000, color(i), i, color(0), msg);
-	}
-}
-
 void	philo_neightbor(t_philo *philos, int i, int left, int right)
 {
 	philos[i].left = &philos[left];
@@ -96,4 +80,33 @@ void	init_neightbor(t_philo *philos, int size)
 	}
 	if (D_PHI == 1)
 		print_neightbor(philos->rules, philos);
+}
+
+void	destroy_mutex(t_philo *philos, t_rules *rules)
+{
+	int	i;
+
+	i = 0;
+	if (philos)
+	{
+		while (i < rules->n_philos)
+		{
+			if (pthread_mutex_destroy(&philos[i].fork.lock))
+				error_thread(&philos[i], 1);
+			memset(&philos[i], 0, sizeof(t_philo));
+			i++;
+		}
+	}
+	i = 0;
+	while (i < N_MUTEX)
+	{
+		if (rules->lock[i])
+		{
+			if (pthread_mutex_destroy(&rules->lock[i]->lock))
+				error_thread(NULL, 2);
+			free(rules->lock[i]);
+		}
+		i++;
+	}
+	free(rules->lock);
 }

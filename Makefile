@@ -144,6 +144,9 @@ err:$(NAME)
 ex1:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 1 210 100 100
+ex1_e:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 1 210 100 100 2
 ex11:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 1 800 200 200
@@ -254,6 +257,12 @@ ex300:$(NAME)
 ex300_e:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 300 800 200 200 5
+ex500:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 500 800 200 200
+ex500_e:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 500 800 200 200 5
 exn: $(NAME)
 	@echo ./philo n die eat sleep
 	./philo $n 800 200 200

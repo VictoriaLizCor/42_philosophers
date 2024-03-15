@@ -63,26 +63,22 @@ struct s_rules
 	int				n_philos;
 	int				n_meals;
 	t_mutex			**lock;
-	t_mutex			dead;
 	int				*error;
 	struct s_philo	*last;
 };
 
 struct	s_philo
 {
+	pthread_t		thread;
 	int				id;
 	int				action;
 	int				n_meals;
 	t_ll			t_meal;
 	t_ll			sleep;
 	t_ll			wait;
-	t_ll			time;
 	t_ll			t_aux;
 	t_ll			t_extra;
-	pthread_t		thread;
-	time_t			t_start;
 	t_mutex			fork;
-	struct s_philo	*lock_by;
 	struct s_philo	*right;
 	struct s_philo	*left;
 	t_rules			*rules;
@@ -90,12 +86,11 @@ struct	s_philo
 // t_ll			(*g_time)(t_philo *);
 // t_get_time		t;
 
-/* function_pointer.c */
-t_ll		time_ms(t_philo *philo);
+/* sync_functions.c */
 t_ll		t_mu_s(t_ll start);
 t_ll		get_time(void);
-void		init_sync(t_rules *rules, t_philo *philo, int i);
-void		wait_all(t_rules *rules, t_philo *philo, bool tmp, int size);
+void		init_sync(t_philo *philo);
+void		wait_all(t_philo *philo, int mutex, void (*fun)(t_philo *philo));
 /* libft1.c */
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);
@@ -109,30 +104,43 @@ void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
 char		*color(int idx);
 char		*warn(int idx);
-void		print_msg(t_philo *philo, char *msg, t_ll time);
+void		destroy_mutex(t_philo *philo, t_rules *rules);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 void		init_neightbor(t_philo *philos, int size);
 /* philo_utils3.c */
 void		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 void		philo_msg(t_philo *philo, char *msg);
-bool		died_msg(t_rules *rules, t_philo *philo);
+bool		dead(t_rules *rules, t_philo *philo);
 bool		meal_done(t_rules *rules, t_philo *philo, bool check);
-void		destroy_mutex(t_philo *philo, t_rules *rules);
+void		print_msg(t_philo *philo, char *msg, t_ll time);
 /* philo_utils4.c */
+/*!<>*/
 void		lock_mutex(t_mutex *mutex);
 void		unlock_mutex(t_mutex *mutex);
 bool		check_mutex(t_mutex *mutex);
+/*! \file	philo_utils4.c
+  ** @brief	Checks if fork is available
+  ** @param	t_philo	*philo	 Philosopher currently running
+  ** @return	true if fork state is lock
+*/
 bool		check_fork(t_philo *philo);
+/*! \file	philo_utils4.c
+  ** @brief	Checks if fork is available
+  ** @param	t_philo	*philo	 Philosopher currently running
+  ** @param	char	op Check operation ['<', '>', '='] on action
+  ** @param	int	val Value to compare with action
+  ** @return boolen	result if operation is true or false
+*/
 bool		check_action(t_philo *philo, char op, int val);
 /* check_error.c*/
 void		ft_error(int id, char *str1, char *str2, int exit_error);
 void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
-void		print_action(t_philo *philo);
-void		debug_death(t_philo *p, t_rules *rules, t_ll time);
-void		debug_thread_check(t_philo *philo, char *msg);
-void		print_ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
+void		print_action(t_philo *philo, t_ll time);
+void		debug_death(t_philo *philo, t_rules *rules, t_ll time, t_ll meal);
+void		debug_thread_check(t_philo *philo, char *msg, char *col);
+void		print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 void		print_neightbor(t_rules *rules, t_philo *philos);
 
 # define P_EAT "\x1B[1;41;33m is    EATING     \x1B[0m"

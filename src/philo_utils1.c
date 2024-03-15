@@ -16,7 +16,7 @@ static void	action_ext(t_philo *philo, t_rules *rules, t_philo *last)
 {
 	if (check_action(philo, '=', 3))
 	{
-		philo->sleep = time_ms(philo);
+		philo->sleep = t_mu_s(rules->t_start);
 		philo_msg(philo, P_SLEEP);
 		if (t_mu_s(rules->t_start) < rules->t_sleep + philo->sleep)
 			ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
@@ -26,16 +26,18 @@ static void	action_ext(t_philo *philo, t_rules *rules, t_philo *last)
 		philo_msg(philo, P_THINK);
 		philo->action = 0;
 		if ((philo->right || check_fork(philo)) && \
-		time_ms(philo) < philo->t_meal + rules->t_eat)
+		t_mu_s(rules->t_start) < philo->t_meal + rules->t_eat)
 			philo->action = 2;
-		else
+		else if (check_fork(philo))
 		{
-			// ft_usleep(rules, philo, 0, 1);
-			while (check_fork(philo) || died_msg(rules, philo))
-				usleep(10);
+			ft_usleep(rules, philo, 0, 1);
 		}
 	}
 }
+// ft_usleep(rules, philo, 0, 1);
+// philo->sleep + rules->t_eat
+// while (check_fork(philo) || !dead(rules, philo))
+// 	usleep(10);
 // printf("STATUS [%d] -> time [%d] \n", check_fork(philo),
 		//time_ms(philo) < philo->t_meal + rules->t_eat);
 
@@ -45,7 +47,7 @@ static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 	if (check_action(philo, '=', 1) && stat)
 	{
 		lock_mutex(&philo->fork);
-		debug_thread_check(philo, "LOCKING");
+		debug_thread_check(philo, "LOCKING", color(14));
 		lock_mutex(&philo->right->fork);
 		philo_msg(philo, P_FORK);
 		if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
@@ -66,11 +68,11 @@ static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 			ft_usleep(rules, philo, -1, 1);
 		if (philo->right)
 		{
-			debug_thread_check(philo, "UNLOCKING");
+			debug_thread_check(philo, "UNLOCKING", color(13));
 			unlock_mutex(&philo->right->fork);
 			if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
 			{
-				debug_thread_check(philo, "UNLOCKING LEFT");
+				debug_thread_check(philo, "UNLOCKING LEFT", color(15));
 				if (philo->id == last->right->id || \
 					philo->id == last->left->id)
 					unlock_mutex(&philo->left->fork);
@@ -95,22 +97,18 @@ static void	exe(t_philo *philo)
 	bool	stat;
 
 	rules = philo->rules;
-	philo->t_start = rules->t_start;
-	wait_all(rules, philo, 0, (rules->n_philos * (rules->n_philos + 1) / 2));
+	if (rules->n_philos > 1)
+		wait_all(philo, START, init_sync);
+	else
+		rules->t_start = get_time();
 	philo_msg(philo, P_THINK);
-	// if (philo->wait)
-	// 	usleep(10);
 	while (1)
 	{
 		stat = (philo->right != NULL || check_fork(philo)) && \
 		check_action(philo, '<', 3);
 		action(philo, rules, stat, rules->last);
-		if (died_msg(philo->rules, philo) || meal_done(rules, philo, false))
-		{
-			// if (check_fork(philo))
-			// 	unlock_mutex(&philo->fork);
+		if (check_mutex(rules->lock[DEAD]) || check_mutex(rules->lock[MEAL]))
 			return ;
-		}
 	}
 }
 

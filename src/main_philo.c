@@ -54,8 +54,6 @@ static void	init_rules_mutexes(t_rules *rules)
 			(*rules->error)++;
 		i++;
 	}
-	if (pthread_mutex_init(&rules->dead.lock, NULL) != 0)
-		(*rules->error)++;
 	if (*rules->error)
 		ft_error(0, "in Mutex array", NULL, 1);
 }
