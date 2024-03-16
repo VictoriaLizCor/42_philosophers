@@ -256,7 +256,7 @@ ex300:$(NAME)
 	./philo 300 800 200 200
 ex300_e:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 300 800 200 200 5
+	./philo 300 800 200 200 1
 ex500:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 500 800 200 200
@@ -265,7 +265,10 @@ ex500_e:$(NAME)
 	./philo 500 800 200 200 5
 exn: $(NAME)
 	@echo ./philo n die eat sleep
-	./philo $n 800 200 200
+	./philo $n 61 10 50
+exne: $(NAME)
+	@echo ./philo n die eat sleep
+	./philo $n 110 50 50 1
 in: $(NAME)
 	@echo ./philo n die eat sleep
 	./philo $n $d $e $s $m

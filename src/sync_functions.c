@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/15 18:03:57 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/16 15:50:20 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,88 +38,80 @@ t_ll	t_mu_s(t_ll start)
 	return (ms);
 }
 
-void	init_time(t_rules *rules, t_philo *philo, int i)
+void	init_time(t_rules *rules, t_philo *philo)
 {
+	t_ll		extra;
 	t_philo		*next;
-	static t_ll	extra;
+	int			i;
 
-	i = 0;
+	i = 1;
+	extra = 0;
 	next = philo;
-	while (i++ <= rules->n_philos)
+	while (i <= rules->n_philos)
 	{
 		if (next->t_extra > extra)
 			extra = next->t_extra;
 		next = next->right;
+		i++;
 	}
-	if (check_mutex(rules->lock[TIME]))
-		printf("\t\t\t%sMAX_EXTRA [%lld]%s\n", color(15), extra, color(0));
+	printf("\t\t%sMAX_EXTRA [%lld]%s\n", color(15), extra, color(0));
 }
 
-void	init_sync(t_philo *philo)
+void	init_sync(t_rules *rules, t_philo *philo)
 {
 	t_philo	*next;
 	int		i;
-	t_rules	*rules;
 
-	rules = philo->rules;
-	i = 0;
+	i = 1;
 	rules->last = philo->left;
 	rules->last->wait = philo->t_aux;
 	next = philo;
 	while (i < rules->n_philos)
 	{
+		if (i % 2 == 1 && D_PHI != 0)
+			printf("\t%s [%d]", color(3), next->id);
+		else if (i % 2 == 0 && D_PHI != 0)
+			printf("\t %s [%d]", color(1), next->id);
 		if (i % 2 == 1)
-		{
-			printf("%s\t [%d]", color(3), next->id);
 			next->action = 0;
-		}
 		else
-		{
 			next->wait = philo->t_aux;
-			printf("%s\t [%d]", color(1), next->id);
-		}
 		i++;
 		next = next->right;
 	}
 	rules->t_start = get_time();
 	printf("\t %s*[%d]%s\n\n", color(1), rules->last->id, color(0));
 }
-// void	handling_files(void (*fun)(t_pipex *), t_pipex *ptr)
-// handling_files(openfile, node->next);
 
-void	wait_all(t_philo *philo, int mutex, void (*fun)(t_philo *philo))
+void	ft_sync(t_philo *philo, int m, void (*f)(t_rules *r, t_philo *p))
 {
 	static int	sum;
-	static bool	limit;
+	bool		limit;
 	t_rules		*rules;
 
 	rules = philo->rules;
+	limit = 0;
 	while (1)
 	{
-		pthread_mutex_lock(&rules->lock[mutex]->lock);
+		pthread_mutex_lock(&rules->lock[m]->lock);
 		if (!limit++)
 			sum++;
-		if (rules->lock[mutex]->stat == 0 && sum == rules->n_philos)
+		if (rules->lock[m]->stat == 0 && sum == rules->n_philos)
 		{
-			rules->lock[mutex]->stat = 1;
-			fun(philo);
+			rules->lock[m]->stat = 1;
+			f(rules, philo);
 		}
-		if (rules->lock[mutex]->stat)
+		if (rules->lock[m]->stat == 1)
 			break ;
-		pthread_mutex_unlock(&rules->lock[mutex]->lock);
+		pthread_mutex_unlock(&rules->lock[m]->lock);
 	}
-	pthread_mutex_unlock(&rules->lock[mutex]->lock);
+	philo->t_extra = t_mu_s(rules->t_start);
 	if (rules->t_sleep > rules->t_eat)
 		philo->t_aux = rules->t_sleep;
+	pthread_mutex_unlock(&rules->lock[m]->lock);
 }
-	// sum = 0;
-	// size = 0;
-	// next = philo;
-	// philo->t_extra = t_mu_s(rules->t_start);
-	// while (size++ <= rules->n_philos)
-	// {
-	// 	if (next->t_extra > sum)
-	// 		sum = next->t_extra;
-	// 	next = next->right;
-	// }
-	// printf("\t\t\t%sMAX_EXTRA [%lld]%s\n", color(15), sum, color(0));
+			// if (philo->id == rules->last->id)
+			// {
+			// 	sum = 0;
+			// 	printf("\t\t%s SUM[%d]\n", warn(0),philo->id);
+			// }

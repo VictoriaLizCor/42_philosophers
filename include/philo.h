@@ -89,8 +89,9 @@ struct	s_philo
 /* sync_functions.c */
 t_ll		t_mu_s(t_ll start);
 t_ll		get_time(void);
-void		init_sync(t_philo *philo);
-void		wait_all(t_philo *philo, int mutex, void (*fun)(t_philo *philo));
+void		init_time(t_rules *rules, t_philo *philo);
+void		init_sync(t_rules *rules, t_philo *philo);
+void		ft_sync(t_philo *philo, int m, void (*f)(t_rules *r, t_philo *p));
 /* libft1.c */
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);

@@ -29,9 +29,7 @@ static void	action_ext(t_philo *philo, t_rules *rules, t_philo *last)
 		t_mu_s(rules->t_start) < philo->t_meal + rules->t_eat)
 			philo->action = 2;
 		else if (check_fork(philo))
-		{
 			ft_usleep(rules, philo, 0, 1);
-		}
 	}
 }
 // ft_usleep(rules, philo, 0, 1);
@@ -65,7 +63,7 @@ static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 		if (philo->n_meals > 0)
 			philo->n_meals--;
 		if (!meal_done(rules, philo, true))
-			ft_usleep(rules, philo, -1, 1);
+			ft_usleep(rules, philo, -1, philo->t_meal);
 		if (philo->right)
 		{
 			debug_thread_check(philo, "UNLOCKING", color(13));
@@ -93,14 +91,17 @@ static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 */
 static void	exe(t_philo *philo)
 {
-	t_rules	*rules;
-	bool	stat;
+	t_rules		*rules;
+	bool		stat;
 
 	rules = philo->rules;
-	if (rules->n_philos > 1)
-		wait_all(philo, START, init_sync);
-	else
+	if (rules->n_philos == 1)
 		rules->t_start = get_time();
+	else
+	{
+		ft_sync(philo, START, init_sync);
+		// ft_sync(philo, TIME, init_time);
+	}
 	philo_msg(philo, P_THINK);
 	while (1)
 	{
@@ -139,3 +140,14 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 		i++;
 	}
 }
+
+// extra = 0;
+// 	i = 0;
+// 	next = philo;
+// 	while (i++ <= rules->n_philos && next->right)
+// 	{
+// 		if (next->t_extra > extra)
+// 			extra = next->t_extra;
+// 		next = next->right;
+// 	}
+// 	printf("\t\t\t%sMAX_EXTRA [%lld]%s\n", color(15), extra, color(0));

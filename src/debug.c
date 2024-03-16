@@ -72,28 +72,22 @@ void	print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp)
 
 void	debug_death(t_philo *philo, t_rules *rules, t_ll time, t_ll starve)
 {
-	t_ll	extra;
-	int		i;
-	t_philo	*next;
+	t_ll	dead_extra;
 
 	if (D_PHI == 0)
 		return ;
+	dead_extra = rules->t_die + philo->t_extra;
+	printf("\t\t%sPHILOEXTRA [%lld]%s\n", color(15), philo->t_extra, color(0));
 	printf(\
 	"\t\t\t*[%d]{%d} => meal[%lld | %lld] \tsleep[%lld| %lld]\n", \
 	philo->id, philo->action, philo->t_meal, time, philo->sleep, time);
 	printf("\t\t\t*[%d] ==> [%lld || %lld - %lld] = %lf\n", \
-	philo->id, philo->t_meal, starve, rules->t_die, \
-	(double)(starve - rules->t_die) / 1000);
-	extra = 0;
-	i = 0;
-	next = philo;
-	while (i++ <= rules->n_philos && next->right)
-	{
-		if (next->t_extra > extra)
-			extra = next->t_extra;
-		next = next->right;
-	}
-	printf("\t\t\t%sMAX_EXTRA [%lld]%s\n", color(15), extra, color(0));
+	philo->id, philo->t_meal, dead_extra, starve, \
+	(double)(dead_extra - starve) / 1000);
+	printf("\t\t\tT_DEAD = \t\t[%lld]\n", rules->t_die);
+	printf("\t\t\tDEAD EXTRA= \t\t[%lld]\n", dead_extra);
+	printf("\t\t\tLAST MEAL = \t\t[%lld]\n", philo->t_meal);
+	printf("\t\t\tTIME - lAST MEAL = \t[%lld]\n", starve);
 }
 
 void	print_neightbor(t_rules *rules, t_philo *tmp)

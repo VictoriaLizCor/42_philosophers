@@ -21,7 +21,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 			return ;
 		if (time == -1)
 		{
-			if (t_mu_s(rules->t_start) > rules->t_eat + philo->t_meal)
+			if (t_mu_s(rules->t_start) > rules->t_eat + limit)
 				return ;
 		}
 		else
@@ -70,8 +70,16 @@ void	philo_msg(t_philo *philo, char *msg)
 		print_action(philo, time);
 		print_msg(philo, msg, time);
 	}
+	else if (!check_mutex(rules->lock[DEAD]))
+	{
+		lock_mutex(rules->lock[DEAD]);
+		lock_mutex(rules->lock[TIME]);
+		print_msg(philo, P_DEAD, time);
+		debug_death(philo, rules, time, time - philo->t_meal);
+		if (philo->right)
+			init_time(rules, philo);
+	}
 }
-// printf("%sDEAD STAT = %d\n%s ", warn(0), rules->lock[MSG]->stat, color(0));
 
 bool	dead(t_rules *rules, t_philo *philo)
 {
@@ -80,20 +88,14 @@ bool	dead(t_rules *rules, t_philo *philo)
 	int		i;
 
 	i = philo->id;
-	if (!check_mutex(rules->lock[DEAD]))
+	if (!check_mutex(rules->lock[MSG]))
 	{
 		time = t_mu_s(rules->t_start);
 		starve = time - (philo->t_meal);
-		if (starve > (rules->t_die))
-		{
-			lock_mutex(rules->lock[DEAD]);
+		if (starve > (rules->t_die + philo->t_extra))
 			lock_mutex(rules->lock[MSG]);
-			print_msg(philo, P_DEAD, time);
-			printf("\t\t\t%sEXTRA [%lld]%s\n", color(15), philo->t_extra, color(0));
-			debug_death(philo, rules, time, starve);
-		}
 	}
-	return (check_mutex(rules->lock[DEAD]));
+	return (check_mutex(rules->lock[MSG]));
 }
 
 bool	meal_done(t_rules *rules, t_philo *philo, bool check)
@@ -103,7 +105,7 @@ bool	meal_done(t_rules *rules, t_philo *philo, bool check)
 	pthread_mutex_lock(&rules->lock[MEAL]->lock);
 	if (check && (philo->n_meals == 0 && rules->n_meals > 0))
 	{
-		if (D_PHI == 1)
+		if (D_PHI != 0)
 			printf("%s\t RULES[%d] PhILO_MEALS[%d] [%d]%s\n", \
 			warn(0), rules->n_meals, philo->n_meals, philo->id, color(0));
 		rules->n_meals--;
@@ -111,7 +113,7 @@ bool	meal_done(t_rules *rules, t_philo *philo, bool check)
 	if (!check && rules->n_meals == 0 && !rules->lock[MEAL]->stat)
 	{
 		rules->lock[MEAL]->stat = 1;
-		if (D_PHI == 1)
+		if (D_PHI != 0)
 			printf("%s [%d]PhILO_MEALS[%d]%s\n", \
 			warn(1), philo->id, philo->n_meals, color(0));
 	}
