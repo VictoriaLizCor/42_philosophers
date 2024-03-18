@@ -21,27 +21,19 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 			return ;
 		if (time == -1)
 		{
-			if (t_mu_s(rules->t_start) > rules->t_eat + limit)
+			if (t_mu_s(philo->t_start) > rules->t_eat + limit)
 				return ;
 		}
 		else
 		{
 			if (time == 0 && !check_fork(philo))
-			{
-				debug_thread_check(philo, "RETURN", color(12));
-				return ;
-			}
-			else if(time == 0 && !check_fork(philo))
-				debug_thread_check(philo, "WAITING LOCK", color(12));
+				return ((void)debug_thread_check(philo, "RETURN", color(12)));
 			else if (time > 0 && (limit < t_mu_s(rules->t_start) - time))
 				return ;
 		}
 		usleep(10);
 	}
 }
-// else if (t_mu_s(rules) > philo->t_meal + limit * rules->t_sleep)
-// limit++;
-//rules->t_eat < t_mu_s(rules) - philo->t_meal
 
 void	print_msg(t_philo *philo, char *msg, t_ll time)
 {
@@ -49,6 +41,9 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 	t_ll	ms;
 
 	i = philo->id;
+	pthread_mutex_lock(&philo->rules->lock[PRINT]->lock);
+	if (time == 0)
+		time = t_mu_s(philo->rules->t_start);
 	ms = time / 1000;
 	if (D_PHI == 0)
 		printf(" %03lld\tphilo %s [%03d] %s %s\n\n", \
@@ -56,6 +51,7 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 	else
 		printf(" %03lld [%lld]\tphilo %s [%03d] %s %s\n\n", \
 		ms, time, color(i), i, color(0), msg);
+	pthread_mutex_unlock(&philo->rules->lock[PRINT]->lock);
 }
 
 void	philo_msg(t_philo *philo, char *msg)
@@ -66,8 +62,8 @@ void	philo_msg(t_philo *philo, char *msg)
 
 	rules = philo->rules;
 	i = philo->id;
-	time = t_mu_s(rules->t_start);
-	if (!check_mutex(rules->lock[MSG]))
+	time = 0;
+	if (!check_mutex(rules->lock[MSG]) && !check_mutex(rules->lock[DEAD]))
 	{
 		print_action(philo, time);
 		print_msg(philo, msg, time);
@@ -75,11 +71,11 @@ void	philo_msg(t_philo *philo, char *msg)
 	else if (!check_mutex(rules->lock[DEAD]))
 	{
 		lock_mutex(rules->lock[DEAD]);
-		lock_mutex(rules->lock[TIME]);
+		time = t_mu_s(rules->t_start);
 		print_msg(philo, P_DEAD, time);
-		debug_death(philo, rules, time, time - philo->t_meal);
 		if (philo->right)
 			init_time(rules, philo);
+		debug_death(philo, rules, time);
 	}
 }
 
@@ -92,10 +88,10 @@ bool	dead(t_rules *rules, t_philo *philo)
 	i = philo->id;
 	if (!check_mutex(rules->lock[MSG]))
 	{
+		starve = (philo->t_meal + rules->t_die);
 		time = t_mu_s(rules->t_start);
-		starve = time - (philo->t_meal);
-		if (starve > (rules->t_die + philo->t_extra))
-			lock_mutex(rules->lock[MSG]);
+		if (time > starve)
+			return ((void)lock_mutex(rules->lock[MSG]), 1);
 	}
 	return (check_mutex(rules->lock[MSG]));
 }

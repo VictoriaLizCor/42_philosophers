@@ -25,13 +25,16 @@ static void	action_ext(t_philo *philo, t_rules *rules, t_philo *last)
 	{
 		philo_msg(philo, P_THINK);
 		philo->action = 0;
-		if ((philo->right || check_fork(philo)) && \
+		printf("\t\t\t\t\t%s [%d]meal %lld%s\n", warn(1), philo->id, \
+		philo->t_meal + rules->t_eat + philo->sleep, color(0));
+		if ((!philo->right || check_fork(philo)) && \
 		t_mu_s(rules->t_start) < philo->t_meal + rules->t_eat)
 			philo->action = 2;
 		else if (check_fork(philo))
 			ft_usleep(rules, philo, 0, 1);
 	}
 }
+//  && t_mu_s(rules->t_start) < philo->t_meal + rules->t_eat
 
 static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 {
@@ -50,6 +53,7 @@ static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 		if (philo->n_meals < rules->n_meals)
 			philo->n_meals++;
 		philo_msg(philo, P_EAT);
+		philo->e_meal = philo->t_meal - philo->t_extra;
 		if (!meal_done(rules, philo, true))
 			ft_usleep(rules, philo, -1, philo->t_meal);
 		if (philo->right)
@@ -90,7 +94,10 @@ static void	exe(t_philo *philo)
 
 	rules = philo->rules;
 	if (rules->n_philos == 1)
+	{
 		rules->t_start = get_time();
+		philo->t_start = rules->t_start;
+	}
 	else
 	{
 		ft_sync(philo, START, init_sync);

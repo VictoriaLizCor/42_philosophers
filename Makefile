@@ -3,7 +3,9 @@ FLAGS = -Wall -Wextra #-Werror
 #D_SAN = -Wall -Wextra -fsanitize=thread
 INCLUDES += -I include/
 CC = cc
-D = 1
+# DEBUG
+D = 2
+# Sanitizer
 S = 1
 ifeq ($(S), 1)
 D_SAN =  -D D_PHI=$(D) -Wall -Wextra -fsanitize=thread #-Werror
@@ -160,6 +162,9 @@ ex21:$(NAME)
 ex2_1:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 401 200 100
+ex2_1e:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 401 200 100 2
 ex22:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 410 200 200
@@ -201,7 +206,7 @@ ex42:$(NAME)
 	./philo 4 410 200 200
 ex42_e:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 4 410 200 200 8
+	./philo 4 410 200 200 2
 ex43:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 4 410 300 100
@@ -248,12 +253,18 @@ ex50:$(NAME)
 ex100:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 100 800 200 200
+ex1001:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 100 410 200 200
 ex200:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 200 800 200 200
 ex300:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 300 800 200 200
+ex3001:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 300 410 200 200
 ex300_e:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 300 800 200 200 1
@@ -263,12 +274,15 @@ ex500:$(NAME)
 ex500_e:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 500 800 200 200 5
-exn: $(NAME)
+exnt: $(NAME)
 	@echo ./philo n die eat sleep
 	./philo $n 61 10 50
+exn: $(NAME)
+	@echo ./philo n die eat sleep
+	./philo $n 800 200 200
 exne: $(NAME)
 	@echo ./philo n die eat sleep
-	./philo $n 110 50 50 1
+	./philo $n 800 200 200 1
 in: $(NAME)
 	@echo ./philo n die eat sleep
 	./philo $n $d $e $s $m

@@ -42,6 +42,7 @@ typedef enum e_mutexes
 {
 	DEAD,
 	TIME,
+	PRINT,
 	MSG,
 	START,
 	MEAL,
@@ -60,6 +61,7 @@ struct s_rules
 	t_ll			t_die;
 	t_ll			t_eat;
 	t_ll			t_sleep;
+	t_ll			extra;
 	int				n_philos;
 	int				n_meals;
 	t_mutex			**lock;
@@ -77,7 +79,9 @@ struct	s_philo
 	t_ll			sleep;
 	t_ll			wait;
 	t_ll			t_aux;
+	t_ll			e_meal;
 	t_ll			t_extra;
+	t_ll			t_start;
 	t_mutex			fork;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -87,8 +91,8 @@ struct	s_philo
 // t_get_time		t;
 
 /* sync_functions.c */
-t_ll		t_mu_s(t_ll start);
 t_ll		get_time(void);
+t_ll		t_mu_s(t_ll start);
 void		init_time(t_rules *rules, t_philo *philo);
 void		init_sync(t_rules *rules, t_philo *philo);
 void		ft_sync(t_philo *philo, int m, void (*f)(t_rules *r, t_philo *p));
@@ -139,7 +143,7 @@ void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo, t_ll time);
-void		debug_death(t_philo *philo, t_rules *rules, t_ll time, t_ll meal);
+void		debug_death(t_philo *philo, t_rules *rules, t_ll time);
 void		debug_thread_check(t_philo *philo, char *msg, char *col);
 void		print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 void		print_neightbor(t_rules *rules, t_philo *philos);

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/16 15:50:20 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/18 14:19:16 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ t_ll	t_mu_s(t_ll start)
 	current = get_time();
 	if (current == 0)
 		return (-1);
+	
 	ms = current - start;
 	return (ms);
 }
@@ -54,7 +55,7 @@ void	init_time(t_rules *rules, t_philo *philo)
 		next = next->right;
 		i++;
 	}
-	printf("\t\t%sMAX_EXTRA [%lld]%s\n", color(15), extra, color(0));
+	rules->extra = extra;
 }
 
 void	init_sync(t_rules *rules, t_philo *philo)
@@ -105,6 +106,7 @@ void	ft_sync(t_philo *philo, int m, void (*f)(t_rules *r, t_philo *p))
 			break ;
 		pthread_mutex_unlock(&rules->lock[m]->lock);
 	}
+	philo->t_start = get_time();
 	philo->t_extra = t_mu_s(rules->t_start);
 	if (rules->t_sleep > rules->t_eat)
 		philo->t_aux = rules->t_sleep;
