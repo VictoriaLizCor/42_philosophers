@@ -164,7 +164,10 @@ ex2_1:$(NAME)
 	./philo 2 401 200 100
 ex2_1e:$(NAME)
 	@echo ./philo n die eat sleep
-	./philo 2 401 200 100 2
+	./philo 2 401 200 100 3
+ex2_1e1:$(NAME)
+	@echo ./philo n die eat sleep
+	./philo 2 401 200 50 3
 ex22:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo 2 410 200 200

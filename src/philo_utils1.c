@@ -25,17 +25,25 @@ static void	action_ext(t_philo *philo, t_rules *rules, t_philo *last)
 	{
 		philo_msg(philo, P_THINK);
 		philo->action = 0;
-		printf("\t\t\t\t\t%s [%d]meal %lld%s\n", warn(1), philo->id, \
-		philo->t_meal + rules->t_eat + philo->sleep, color(0));
+		printf("\t\t\t\t\t%s [%d]time %% eat %lld%s\n", warn(0), philo->id, \
+		((t_mu_s(rules->t_start)) % rules->t_eat) / 1000, color(0));
+		printf("\t\t\t\t\t%s [%d] eat %% sleep [%lld]%s\n", warn(0), philo->id, \
+		rules->t_eat % rules->t_sleep, color(0));
+		printf("\t\t\t\t\t%s [%d] eat / sleep [%lld]%s\n", warn(0), philo->id, \
+		rules->t_eat / rules->t_sleep, color(0));
 		if ((!philo->right || check_fork(philo)) && \
-		t_mu_s(rules->t_start) < philo->t_meal + rules->t_eat)
+		(rules->t_eat / rules->t_sleep) > 1 && \
+		((t_mu_s(rules->t_start)) % rules->t_eat) / 1000)
 			philo->action = 2;
 		else if (check_fork(philo))
 			ft_usleep(rules, philo, 0, 1);
 	}
 }
+// philo->t_meal + rules->t_eat + rules->t_sleep, \
+// 		t_mu_s(rules->t_start) % rules->t_eat, color(0));
 //  && t_mu_s(rules->t_start) < philo->t_meal + rules->t_eat
-
+// t_mu_s(rules->t_start) % rules->t_eat > rules->t_sleep && 
+// 		t_mu_s(rules->t_start) > philo->t_meal + rules->t_eat
 static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 {
 	philo->action++;
