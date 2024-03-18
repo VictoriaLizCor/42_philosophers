@@ -26,15 +26,17 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 		}
 		else
 		{
-			if (time == 0 && (check_fork(philo)))
+			if (time == 0 && !check_fork(philo))
 			{
 				debug_thread_check(philo, "RETURN", color(12));
 				return ;
 			}
+			else if(time == 0 && !check_fork(philo))
+				debug_thread_check(philo, "WAITING LOCK", color(12));
 			else if (time > 0 && (limit < t_mu_s(rules->t_start) - time))
 				return ;
 		}
-		usleep(20);
+		usleep(10);
 	}
 }
 // else if (t_mu_s(rules) > philo->t_meal + limit * rules->t_sleep)
@@ -100,23 +102,24 @@ bool	dead(t_rules *rules, t_philo *philo)
 
 bool	meal_done(t_rules *rules, t_philo *philo, bool check)
 {
-	bool	done;
+	bool		status;
+	static int	done;
 
 	pthread_mutex_lock(&rules->lock[MEAL]->lock);
-	if (check && (philo->n_meals == 0 && rules->n_meals > 0))
+	if (check && (philo->n_meals == rules->n_meals))
 	{
+		done++;
 		if (D_PHI != 0)
 			printf("%s\t RULES[%d] PhILO_MEALS[%d] [%d]%s\n", \
 			warn(0), rules->n_meals, philo->n_meals, philo->id, color(0));
-		rules->n_meals--;
 	}
-	if (!check && rules->n_meals == 0 && !rules->lock[MEAL]->stat)
+	if (!check && !rules->lock[MEAL]->stat && done == rules->n_philos)
 	{
 		rules->lock[MEAL]->stat = 1;
 		if (D_PHI != 0)
 			printf("%s [%d]PhILO_MEALS[%d]%s\n", \
 			warn(1), philo->id, philo->n_meals, color(0));
 	}
-	done = rules->lock[MEAL]->stat;
-	return ((void)pthread_mutex_unlock(&rules->lock[MEAL]->lock), done);
+	status = rules->lock[MEAL]->stat;
+	return ((void)pthread_mutex_unlock(&rules->lock[MEAL]->lock), status);
 }

@@ -32,12 +32,6 @@ static void	action_ext(t_philo *philo, t_rules *rules, t_philo *last)
 			ft_usleep(rules, philo, 0, 1);
 	}
 }
-// ft_usleep(rules, philo, 0, 1);
-// philo->sleep + rules->t_eat
-// while (check_fork(philo) || !dead(rules, philo))
-// 	usleep(10);
-// printf("STATUS [%d] -> time [%d] \n", check_fork(philo),
-		//time_ms(philo) < philo->t_meal + rules->t_eat);
 
 static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 {
@@ -45,36 +39,23 @@ static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 	if (check_action(philo, '=', 1) && stat)
 	{
 		lock_mutex(&philo->fork);
-		debug_thread_check(philo, "LOCKING", color(14));
 		lock_mutex(&philo->right->fork);
 		philo_msg(philo, P_FORK);
-		if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
-		{
-			if (philo->id == last->right->id || \
-				philo->id == last->left->id)
-				lock_mutex(&philo->left->fork);
-		}
+		debug_thread_check(philo, "LOCKING", color(14));
+		usleep(10);
 	}
 	else if (check_action(philo, '=', 2) && stat)
 	{
-		usleep(10);
-		philo_msg(philo, P_EAT);
 		philo->t_meal = t_mu_s(rules->t_start);
-		if (philo->n_meals > 0)
-			philo->n_meals--;
+		if (philo->n_meals < rules->n_meals)
+			philo->n_meals++;
+		philo_msg(philo, P_EAT);
 		if (!meal_done(rules, philo, true))
 			ft_usleep(rules, philo, -1, philo->t_meal);
 		if (philo->right)
 		{
-			debug_thread_check(philo, "UNLOCKING", color(13));
 			unlock_mutex(&philo->right->fork);
-			if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
-			{
-				debug_thread_check(philo, "UNLOCKING LEFT", color(15));
-				if (philo->id == last->right->id || \
-					philo->id == last->left->id)
-					unlock_mutex(&philo->left->fork);
-			}
+			debug_thread_check(philo, "UNLOCKING", color(13));
 			unlock_mutex(&philo->fork);
 		}
 	}
@@ -82,6 +63,19 @@ static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 		action_ext(philo, rules, last);
 }
 
+// if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
+// {
+// 	if (philo->id == last->right->id || \
+// 		philo->id == last->left->id)
+// 		lock_mutex(&philo->left->fork);
+// }
+// if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
+// {
+// 	debug_thread_check(philo, "UNLOCKING LEFT", color(15));
+// 	if (philo->id == last->right->id || \
+// 		philo->id == last->left->id)
+// 		unlock_mutex(&philo->left->fork);
+// }
 /*
 	if(fork-lock)
 		sleep and wake

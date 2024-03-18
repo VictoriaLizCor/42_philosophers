@@ -21,9 +21,10 @@ void	print_action(t_philo *philo, t_ll time)
 	philo_tmp = *philo;
 	if (!check_mutex(philo->rules->lock[MSG]))
 		printf(\
-		" %03lld [%lld]\t\t\t\t[%d][%d]{%d} => meal[%lld] \t sleep[%lld]\n", \
-		time / 1000, time, philo_tmp.id, philo_tmp.id, \
-		philo_tmp.action, philo_tmp.t_meal, philo_tmp.sleep);
+		" %03lld [%lld]\t\t\t\t[%d][%d]{%d} => meal[%d|%d][%lld] \t sleep[%lld]\n", \
+		time / 1000, time, philo_tmp.id, philo_tmp.id, philo_tmp.action, \
+		philo_tmp.n_meals, philo_tmp.rules->n_meals, philo_tmp.t_meal, \
+		philo_tmp.sleep);
 }
 
 void	debug_thread_check(t_philo *philo, char *msg, char *col)
@@ -63,7 +64,7 @@ void	print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp)
 			printf(\
 			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t%s[%d][%d] DONE Sleeping%s\n", \
 			ms, current, color(10), philo->id, philo->action, color(0));
-		else if (time == 0 && (check_fork(philo)))
+		else if (time == 0 && !check_fork(philo))
 			printf(\
 			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t%s[%d][%d] DONE Thinking%s\n", \
 			ms, current, color(12), philo->id, philo->action, color(0));
