@@ -306,7 +306,7 @@ git:	fclean
 # 	git add ./
 # 	git commit -m "$m"
 # 	@echo $(YELLOW)
-# 	git push
+# 	git push 
 # git log --pretty="%C(Yellow)%h  %C(reset)%ad (%C(Green)%cr%C(reset)) %C(Cyan)%an: %C(reset)%s" --date=short
 re: fclean all
 
