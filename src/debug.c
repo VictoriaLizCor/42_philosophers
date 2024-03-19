@@ -32,14 +32,14 @@ void	debug_thread_check(t_philo *philo, char *msg, char *col)
 	t_ll	time;
 	t_ll	ms;
 
-	if (D_PHI != 1)
+	if (D_PHI == 0)
 		return ;
-	time = t_mu_s(philo->t_start);
+	time = t_mu_s(philo->rules->t_start);
 	ms = time / (t_ll)1000;
 	if (!check_mutex(philo->rules->lock[MSG]))
 	{
 		printf(" %03lld [%lld]\t\t\t\t\t\t\t\t\t\t%s %s %s-> [%d]{%d}\n", \
-		ms, time, col, msg, color(0), philo->id, philo->action);
+		ms, time, col, msg, font(0), philo->id, philo->action);
 	}
 }
 
@@ -52,22 +52,23 @@ void	print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp)
 	if (D_PHI != 1)
 		return ;
 	philo_tmp = *philo;
-	current = t_mu_s(philo->t_start);
+	current = t_mu_s(rules->t_start);
 	if (!check_mutex(rules->lock[MSG]))
 	{
 		ms = current / (t_ll)1000;
 		if (time == -1 && rules->t_eat < current - philo_tmp.t_meal)
 			printf(\
 			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t%s[%d][%d] DONE Eating%s\n", \
-			ms, current, color(2), philo->id, philo->action, color(0));
+			ms, current, font(2), philo->id, philo->action, font(0));
 		else if (time > 0 && tmp < current - time)
 			printf(\
 			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t%s[%d][%d] DONE Sleeping%s\n", \
-			ms, current, color(10), philo->id, philo->action, color(0));
-		else if (time == 0 && !check_fork(philo))
+			ms, current, font(10), philo->id, philo->action, font(0));
+		else if (time == 0 && \
+		!check_fork(philo->right) && !check_fork(philo->left))
 			printf(\
 			" %lld [%lld]\t\t\t\t\t\t\t\t\t\t%s[%d][%d] DONE Thinking%s\n", \
-			ms, current, color(12), philo->id, philo->action, color(0));
+			ms, current, font(12), philo->id, philo->action, font(0));
 	}
 }
 
@@ -80,30 +81,21 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll time)
 	if (D_PHI == 0)
 		return ;
 	i = philo->id;
-	printf("\t\t\t%s DEAD *[%d]{%d}\t\t%s\n", color(i), i, philo->action, color(0));
+	printf("\t\t\t%s DEAD *[%d]{%d}\t\t%s\n", font(i), i, philo->action, font(0));
 	dead_extra = rules->t_die + philo->t_extra;
 	starve = philo->t_meal + rules->t_die;
 	printf("\t\t\tRULES CURRENT =\t\t[%lld]\n", t_mu_s(rules->t_start));
-	printf("\t\t\tPHILO CURRENT =\t\t[%lld]\n\n", t_mu_s(philo->t_start));
 	printf("\t\t\tCURRENT =\t\t[%lld]\n", time);
 	printf("\t\t\tT_DEAD =\t\t[%lld]\n", rules->t_die);
-	printf("\t\t\tDEAD EXTRA=\t\t[%lld]\n", dead_extra);
 	printf("\t\t\tP_MEAL =\t\t[%lld]\t\tP_SLEEP[%lld]\n", philo->t_meal, philo->sleep);
 	printf("\n\t\t\tP_EXTRA =\t\t[%lld]\n", philo->t_extra);
 	printf("\t\t\tP_MEAL =\t\t[%lld]\n", philo->t_meal);
-	printf("\t\t\tE_MEAL =\t\t[%lld]\n", philo->e_meal);
-	printf("\t\t\tP_MEAL + DEAD =\t\t[%lld]\n", philo->t_meal + rules->t_die);
-	printf("\t\t\tE_MEAL + DEAD =\t\t[%lld]\n", philo->e_meal + rules->t_die);
 	printf("\n\t\t\tCURRENT =\t\t[%lld]\n", time);
 	printf("\t\t\tP_MEAL + DEAD =\t\t[%lld]\n", philo->t_meal + rules->t_die);
 	printf("\t\t\tTIME - (P_MEAL + DEAD)=\t[%lld]\n", time - \
 	(philo->t_meal + rules->t_die));
 	printf("\n\t\t\tCURRENT =\t\t[%lld]\n", time);
-	printf("\t\t\tE_MEAL + DEAD =\t\t[%lld]\n", philo->e_meal + rules->t_die);
-	printf("\t\t\tTIME - (E_MEAL + DEAD)=\t[%lld]\n", time - \
-	(philo->e_meal + rules->t_die));
 	starve = philo->t_meal - rules->extra;
-	printf("\n\t\t\t%sMAX_EXTRA [%lld]%s\n", color(15), rules->extra, color(0));
 	printf("\t\t\tCURRENT =\t\t[%lld]\n", time);
 	printf("\t\t\tstarve + DEAD =\t\t[%lld]\n", starve + rules->t_die);
 	printf("\t\t\tTIME - (starve + DEAD)=\t[%lld]\n", time - \

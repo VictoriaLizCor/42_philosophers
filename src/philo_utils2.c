@@ -12,7 +12,7 @@
 
 #include <philo.h>
 
-char	*color(int idx)
+char	*font(int idx)
 {
 	char	**s_color;
 

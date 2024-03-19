@@ -17,7 +17,7 @@ void	ft_error(int id, char *str1, char *str2, int exit_error)
 	if (exit_error > 0)
 		printf("%sERROR: ", warn(0));
 	else if (exit_error == 0)
-		printf("%s", color(0));
+		printf("%s", font(0));
 	else
 		printf("%s", warn(1));
 	if (id > 0 && str1)
@@ -31,7 +31,7 @@ void	ft_error(int id, char *str1, char *str2, int exit_error)
 		printf(": ");
 		printf("%s", str2);
 	}
-	printf("%s\n", color(0));
+	printf("%s\n", font(0));
 }
 
 void	error_thread(void *data, int type)

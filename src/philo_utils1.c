@@ -12,78 +12,63 @@
 
 #include <philo.h>
 
-static void	action_ext(t_philo *philo, t_rules *rules, t_philo *last)
+static void	sleep_think(t_philo *philo, t_rules *rules)
 {
-	if (check_action(philo, '=', 3))
+	if (check_value(philo, &philo->action, '=', 3))
 	{
 		philo->sleep = t_mu_s(rules->t_start);
 		philo_msg(philo, P_SLEEP);
-		if (t_mu_s(rules->t_start) < rules->t_sleep + philo->sleep)
-			ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
+		ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
 	}
-	else if (check_action(philo, '=', 4))
+	else if (check_value(philo, &philo->action, '=', 4))
 	{
 		philo_msg(philo, P_THINK);
 		philo->action = 0;
-		if ((!philo->right || check_fork(philo)) && \
-		(rules->t_eat / rules->t_sleep) > 1 && \
-		((t_mu_s(rules->t_start)) % rules->t_eat) / 1000)
+		if (philo->wait)
+			printf("\t\t\t\t\t%s [%d] time [%lld]%s\n", warn(0), philo->id, \
+			t_mu_s(rules->t_start) / (rules->t_eat * philo->wait), font(0));
+		// printf("\t\t\t\t\t%s [%d] meal + wait [%lld]%s\n", warn(0), philo->id, \
+		// philo->t_meal + philo->wait, font(0));
+		// printf("\t\t\t\t\t %s*[%lld]%s\n\n", font(1), philo->wait, font(0));
+		// printf("\t\t\t\t\t%s [%d] TIME < AUX [%d]{%d}%s\n", warn(1), philo->id, \
+		// (t_mu_s(rules->t_start) < (philo->t_meal + philo->wait)), philo->n_meals, font(0));
+		if (!philo->right)
 			philo->action = 2;
-		else if (check_fork(philo))
+		else if ((t_mu_s(rules->t_start) < philo->t_meal + philo->wait) && \
+		check_fork(philo->right) && check_fork(philo->left))
+			philo->action = 2;
+		else if (check_fork(philo->right) && check_fork(philo->left))
 			ft_usleep(rules, philo, 0, 1);
 	}
 }
-// printf("\t\t\t\t\t%s [%d]time %% eat %lld%s\n", warn(0), philo->id, \
-// ((t_mu_s(rules->t_start)) % rules->t_eat) / 1000, color(0));
-// printf("\t\t\t\t\t%s [%d] eat %% sleep [%lld]%s\n", warn(0), philo->id, \
-// rules->t_eat % rules->t_sleep, color(0));
-// printf("\t\t\t\t\t%s [%d] eat / sleep [%lld]%s\n", warn(0), philo->id, \
-// rules->t_eat / rules->t_sleep, color(0));
 
-static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
+static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 {
-	philo->action++;
-	if (check_action(philo, '=', 1) && stat)
+	if (philo->id == rules->last->id && rules->n_philos % 2 == 1)
+		usleep(20);
+	if (check_value(philo, &philo->action, '=', 1) && !check_fork(philo))
 	{
 		lock_mutex(&philo->fork);
 		lock_mutex(&philo->right->fork);
+		lock_mutex(&philo->left->fork);
 		philo_msg(philo, P_FORK);
-		debug_thread_check(philo, "LOCKING", color(14));
+		debug_thread_check(philo, "LOCKING", font(14));
 		usleep(10);
 	}
-	else if (check_action(philo, '=', 2) && stat)
+	else if (check_value(philo, &philo->action, '=', 2) && check_fork(philo))
 	{
 		philo->t_meal = t_mu_s(rules->t_start);
-		if (philo->n_meals < rules->n_meals)
-			philo->n_meals++;
+		philo->n_meals++;
 		philo_msg(philo, P_EAT);
-		philo->e_meal = philo->t_meal - philo->t_extra;
 		if (!meal_done(rules, philo, true))
 			ft_usleep(rules, philo, -1, philo->t_meal);
-		if (philo->right)
-		{
-			unlock_mutex(&philo->right->fork);
-			debug_thread_check(philo, "UNLOCKING", color(13));
-			unlock_mutex(&philo->fork);
-		}
+		unlock_mutex(&philo->right->fork);
+		unlock_mutex(&philo->left->fork);
+		debug_thread_check(philo, "UNLOCKING", font(13));
+		unlock_mutex(&philo->fork);
 	}
-	else
-		action_ext(philo, rules, last);
 }
 
-// if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
-// {
-// 	if (philo->id == last->right->id || \
-// 		philo->id == last->left->id)
-// 		lock_mutex(&philo->left->fork);
-// }
-// if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
-// {
-// 	debug_thread_check(philo, "UNLOCKING LEFT", color(15));
-// 	if (philo->id == last->right->id || \
-// 		philo->id == last->left->id)
-// 		unlock_mutex(&philo->left->fork);
-// }
 /*
 	if(fork-lock)
 		sleep and wake
@@ -94,25 +79,20 @@ static void	action(t_philo *philo, t_rules *rules, bool stat, t_philo *last)
 static void	exe(t_philo *philo)
 {
 	t_rules		*rules;
-	bool		stat;
 
 	rules = philo->rules;
 	if (rules->n_philos == 1)
-	{
 		rules->t_start = get_time();
-		philo->t_start = rules->t_start;
-	}
 	else
-	{
 		ft_sync(philo, START, init_sync);
-		// ft_sync(philo, TIME, init_time);
-	}
 	philo_msg(philo, P_THINK);
 	while (1)
 	{
-		stat = (philo->right != NULL || check_fork(philo)) && \
-		check_action(philo, '<', 3);
-		action(philo, rules, stat, rules->last);
+		philo->action++;
+		if (philo->right && check_value(philo, &philo->action, '<', 3))
+			lock_eat(philo, rules, rules->last);
+		else
+			sleep_think(philo, rules);
 		if (check_mutex(rules->lock[DEAD]) || check_mutex(rules->lock[MEAL]))
 			return ;
 	}
@@ -155,4 +135,26 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 // 			extra = next->t_extra;
 // 		next = next->right;
 // 	}
-// 	printf("\t\t\t%sMAX_EXTRA [%lld]%s\n", color(15), extra, color(0));
+// 	printf("\t\t\t%sMAX_EXTRA [%lld]%s\n", font(15), extra, font(0));
+
+		// printf("\t\t\t\t\t%s [%d] last meal [%lld]%s\n", warn(0), philo->id, \
+		// 	t_mu_s(rules->t_start) - philo->t_meal, font(0));
+		// if (rules->n_philos % 2 == 1)
+		// {
+		// 	printf("\t\t\t\t\t%s [%d] last meal > 3 * last_meal[%d]%s\n", warn(0), philo->id, \
+		// 	t_mu_s(rules->t_start) > (philo->t_meal + rules->t_eat * 3), font(0));
+		// }
+		// printf("\t\t\t\t\t %s*[%lld]%s\n\n", font(1), philo->wait, font(0));
+		// printf("\t\t\t\t\t%s [%d] DIE [%lld]%s\n", warn(0), philo->id, \
+		// t_mu_s(rules->t_start) % rules->t_die , font(0));
+		// printf("\t\t\t\t\t%s [%d] DIE %% AUX[%lld]%s\n", warn(0), philo->id, \
+		// rules->t_die % philo->wait, font(0));
+// if ((!philo->right || check_fork(philo)) && \
+// 		(rules->t_eat / rules->t_sleep) > 1 && \
+// 		((t_mu_s(rules->t_start)) % rules->t_eat) / 1000)
+// printf("\t\t\t\t\t%s [%d]time %% eat %lld%s\n", warn(0), philo->id, \
+// ((t_mu_s(rules->t_start)) % rules->t_eat) / 1000, font(0));
+// printf("\t\t\t\t\t%s [%d] eat %% sleep [%lld]%s\n", warn(0), philo->id, \
+// rules->t_eat % rules->t_sleep, font(0));
+// printf("\t\t\t\t\t%s [%d] eat / sleep [%lld]%s\n", warn(0), philo->id, \
+// rules->t_eat / rules->t_sleep, font(0));

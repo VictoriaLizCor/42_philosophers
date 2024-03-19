@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/15 13:00:06 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/19 17:38:06 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ bool	check_mutex(t_mutex *mutex)
 bool	check_fork(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->fork.lock); 
-	if (philo->fork.stat == 1 || t_mu_s(philo->rules->t_start) < 10)
+	if (philo->fork.stat == 1)
 	{
 		pthread_mutex_unlock(&philo->fork.lock);
 		usleep(10);
@@ -46,18 +46,18 @@ bool	check_fork(t_philo *philo)
 	return ((void) pthread_mutex_unlock(&philo->fork.lock), false);
 }
 
-bool	check_action(t_philo *philo, char op, int val)
+bool	check_value(t_philo *philo, int *val1, char op, int val2)
 {
 	bool	result;
 
 	result = false;
 	pthread_mutex_lock(&philo->fork.lock);
 	if (op == '<')
-		result = philo->action < val;
+		result = *val1 < val2;
 	else if (op == '>')
-		result = philo->action > val;
+		result = *val1 > val2;
 	else if (op == '=')
-		result = philo->action == val;
+		result = *val1 == val2;
 	pthread_mutex_unlock(&philo->fork.lock);
 	return (result);
 }

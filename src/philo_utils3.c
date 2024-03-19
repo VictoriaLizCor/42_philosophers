@@ -21,13 +21,14 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 			return ;
 		if (time == -1)
 		{
-			if (t_mu_s(philo->t_start) > rules->t_eat + limit)
+			if (t_mu_s(rules->t_start) > rules->t_eat + limit)
 				return ;
 		}
 		else
 		{
-			if (time == 0 && !check_fork(philo))
-				return ((void)debug_thread_check(philo, "RETURN", color(12)));
+			if (time == 0 && \
+			(!check_fork(philo->right) && !check_fork(philo->left)))
+				return ((void)debug_thread_check(philo, "RETURN", font(12)));
 			else if (time > 0 && (limit < t_mu_s(rules->t_start) - time))
 				return ;
 		}
@@ -47,10 +48,10 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 	ms = time / 1000;
 	if (D_PHI == 0)
 		printf(" %03lld\tphilo %s [%03d] %s %s\n\n", \
-		ms, color(i), i, color(0), msg);
+		ms, font(i), i, font(0), msg);
 	else
 		printf(" %03lld [%lld]\tphilo %s [%03d] %s %s\n\n", \
-		ms, time, color(i), i, color(0), msg);
+		ms, time, font(i), i, font(0), msg);
 	pthread_mutex_unlock(&philo->rules->lock[PRINT]->lock);
 }
 
@@ -65,7 +66,7 @@ void	philo_msg(t_philo *philo, char *msg)
 	time = 0;
 	if (!check_mutex(rules->lock[MSG]) && !check_mutex(rules->lock[DEAD]))
 	{
-		print_action(philo, time);
+		print_action(philo, t_mu_s(rules->t_start));
 		print_msg(philo, msg, time);
 	}
 	else if (!check_mutex(rules->lock[DEAD]))
@@ -73,8 +74,6 @@ void	philo_msg(t_philo *philo, char *msg)
 		lock_mutex(rules->lock[DEAD]);
 		time = t_mu_s(rules->t_start);
 		print_msg(philo, P_DEAD, time);
-		if (philo->right)
-			init_time(rules, philo);
 		debug_death(philo, rules, time);
 	}
 }
@@ -107,14 +106,14 @@ bool	meal_done(t_rules *rules, t_philo *philo, bool check)
 		done++;
 		if (D_PHI == 1)
 			printf("%s\t RULES[%d] PhILO_MEALS[%d] [%d]%s\n", \
-			warn(0), rules->n_meals, philo->n_meals, philo->id, color(0));
+			warn(0), rules->n_meals, philo->n_meals, philo->id, font(0));
 	}
 	if (!check && !rules->lock[MEAL]->stat && done == rules->n_philos)
 	{
 		rules->lock[MEAL]->stat = 1;
 		if (D_PHI == 1)
 			printf("%s [%d]PhILO_MEALS[%d]%s\n", \
-			warn(1), philo->id, philo->n_meals, color(0));
+			warn(1), philo->id, philo->n_meals, font(0));
 	}
 	status = rules->lock[MEAL]->stat;
 	return ((void)pthread_mutex_unlock(&rules->lock[MEAL]->lock), status);

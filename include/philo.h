@@ -30,8 +30,6 @@
 #  define D_PHI 0
 # endif
 
-# define EXTRA_TIME 0
-# define T_DIED_EXTRA 0
 
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
@@ -65,6 +63,7 @@ struct s_rules
 	int				n_philos;
 	int				n_meals;
 	t_mutex			**lock;
+	bool			odd;
 	int				*error;
 	struct s_philo	*last;
 };
@@ -78,10 +77,7 @@ struct	s_philo
 	t_ll			t_meal;
 	t_ll			sleep;
 	t_ll			wait;
-	t_ll			t_aux;
-	t_ll			e_meal;
 	t_ll			t_extra;
-	t_ll			t_start;
 	t_mutex			fork;
 	struct s_philo	*right;
 	struct s_philo	*left;
@@ -107,7 +103,7 @@ int			*random_values(int min, int max, int size);
 void		lock_msg(t_philo *philo);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
-char		*color(int idx);
+char		*font(int idx);
 char		*warn(int idx);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
@@ -136,7 +132,7 @@ bool		check_fork(t_philo *philo);
   ** @param	int	val Value to compare with action
   ** @return boolen	result if operation is true or false
 */
-bool		check_action(t_philo *philo, char op, int val);
+bool		check_value(t_philo *philo, int *val1, char op, int val2);
 /* check_error.c*/
 void		ft_error(int id, char *str1, char *str2, int exit_error);
 void		error_thread(void *data, int type);
