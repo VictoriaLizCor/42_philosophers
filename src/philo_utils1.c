@@ -16,7 +16,7 @@ static void	sleep_think(t_philo *philo, t_rules *rules)
 {
 	if (check_value(philo, &philo->action, '=', 3))
 	{
-		philo->sleep = t_mu_s(rules->t_start);
+		philo->sleep = t_mu_s(philo->t_start);
 		philo_msg(philo, P_SLEEP);
 		ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
 	}
@@ -24,41 +24,35 @@ static void	sleep_think(t_philo *philo, t_rules *rules)
 	{
 		philo_msg(philo, P_THINK);
 		philo->action = 0;
-		if (philo->wait)
-			printf("\t\t\t\t\t%s [%d] time [%lld]%s\n", warn(0), philo->id, \
-			t_mu_s(rules->t_start) / (rules->t_eat * philo->wait), font(0));
-		// printf("\t\t\t\t\t%s [%d] meal + wait [%lld]%s\n", warn(0), philo->id, \
-		// philo->t_meal + philo->wait, font(0));
-		// printf("\t\t\t\t\t %s*[%lld]%s\n\n", font(1), philo->wait, font(0));
-		// printf("\t\t\t\t\t%s [%d] TIME < AUX [%d]{%d}%s\n", warn(1), philo->id, \
-		// (t_mu_s(rules->t_start) < (philo->t_meal + philo->wait)), philo->n_meals, font(0));
-		if (!philo->right)
-			philo->action = 2;
-		else if ((t_mu_s(rules->t_start) < philo->t_meal + philo->wait) && \
-		check_fork(philo->right) && check_fork(philo->left))
-			philo->action = 2;
-		else if (check_fork(philo->right) && check_fork(philo->left))
-			ft_usleep(rules, philo, 0, 1);
+		if (philo->id == rules->last->id && rules->odd)
+			usleep(50);
+		if (!rules->odd)
+		{
+			if (!philo->right)
+				philo->action = 2;
+			else if (rules->t_sleep / rules->t_sleep && \
+			t_mu_s(philo->t_start) < philo->t_meal + rules->t_eat)
+				philo->action = 2;
+			else if (check_fork(philo))
+				ft_usleep(rules, philo, 0, 1);
+		}
+		else
+			sleep_think_utils(philo, rules);
 	}
 }
 
 static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 {
-	if (philo->id == rules->last->id && rules->n_philos % 2 == 1)
-		usleep(20);
-	if (check_value(philo, &philo->action, '=', 1) && !check_fork(philo))
+	if (!check_fork(philo))
 	{
 		lock_mutex(&philo->fork);
 		lock_mutex(&philo->right->fork);
 		lock_mutex(&philo->left->fork);
 		philo_msg(philo, P_FORK);
 		debug_thread_check(philo, "LOCKING", font(14));
-		usleep(10);
-	}
-	else if (check_value(philo, &philo->action, '=', 2) && check_fork(philo))
-	{
-		philo->t_meal = t_mu_s(rules->t_start);
+		philo->t_meal = t_mu_s(philo->t_start);
 		philo->n_meals++;
+		usleep(10);
 		philo_msg(philo, P_EAT);
 		if (!meal_done(rules, philo, true))
 			ft_usleep(rules, philo, -1, philo->t_meal);
@@ -67,6 +61,7 @@ static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 		debug_thread_check(philo, "UNLOCKING", font(13));
 		unlock_mutex(&philo->fork);
 	}
+	philo->action += 1;
 }
 
 /*
@@ -89,7 +84,7 @@ static void	exe(t_philo *philo)
 	while (1)
 	{
 		philo->action++;
-		if (philo->right && check_value(philo, &philo->action, '<', 3))
+		if (philo->right && check_value(philo, &philo->action, '=', 1))
 			lock_eat(philo, rules, rules->last);
 		else
 			sleep_think(philo, rules);

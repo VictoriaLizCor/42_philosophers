@@ -74,32 +74,28 @@ void	print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp)
 
 void	debug_death(t_philo *philo, t_rules *rules, t_ll time)
 {
-	t_ll	dead_extra;
 	t_ll	starve;
 	int		i;
 
 	if (D_PHI == 0)
 		return ;
 	i = philo->id;
-	printf("\t\t\t%s DEAD *[%d]{%d}\t\t%s\n", font(i), i, philo->action, font(0));
-	dead_extra = rules->t_die + philo->t_extra;
 	starve = philo->t_meal + rules->t_die;
-	printf("\t\t\tRULES CURRENT =\t\t[%lld]\n", t_mu_s(rules->t_start));
-	printf("\t\t\tCURRENT =\t\t[%lld]\n", time);
+	printf("\t\t\tRULES CURRENT =\t\t[%lld]\n", time);
 	printf("\t\t\tT_DEAD =\t\t[%lld]\n", rules->t_die);
 	printf("\t\t\tP_MEAL =\t\t[%lld]\t\tP_SLEEP[%lld]\n", philo->t_meal, philo->sleep);
-	printf("\n\t\t\tP_EXTRA =\t\t[%lld]\n", philo->t_extra);
-	printf("\t\t\tP_MEAL =\t\t[%lld]\n", philo->t_meal);
 	printf("\n\t\t\tCURRENT =\t\t[%lld]\n", time);
 	printf("\t\t\tP_MEAL + DEAD =\t\t[%lld]\n", philo->t_meal + rules->t_die);
-	printf("\t\t\tTIME - (P_MEAL + DEAD)=\t[%lld]\n", time - \
-	(philo->t_meal + rules->t_die));
+	printf("\t\t\tSTARVE - TIME =\t\t[%lld]\n", \
+	starve - time);
+	printf("\n\t\t\t STARVE =\t\t[%lld]\n", time - philo->t_meal);
+	printf("\t\t\t TIME - P_MEAL - EXTRA =\t[%lld]\n", \
+	time - philo->t_meal - philo->t_extra);
+	printf("\t\t\t T_EXTRA =\t\t[%lld]\n", philo->t_extra);
+	printf("\t\t\tT_DEAD + T_EXTRA=\t\t[%lld]\n", rules->t_die + philo->t_extra);
 	printf("\n\t\t\tCURRENT =\t\t[%lld]\n", time);
-	starve = philo->t_meal - rules->extra;
-	printf("\t\t\tCURRENT =\t\t[%lld]\n", time);
-	printf("\t\t\tstarve + DEAD =\t\t[%lld]\n", starve + rules->t_die);
-	printf("\t\t\tTIME - (starve + DEAD)=\t[%lld]\n", time - \
-	(starve + rules->t_die));
+	printf("\t\t\tTIME - (starve + DEAD)=\t[%lld]\n", time - (starve));
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
 void	print_neightbor(t_rules *rules, t_philo *tmp)

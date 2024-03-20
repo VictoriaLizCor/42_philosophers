@@ -21,7 +21,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 			return ;
 		if (time == -1)
 		{
-			if (t_mu_s(rules->t_start) > rules->t_eat + limit)
+			if (t_mu_s(philo->t_start) > rules->t_eat + limit)
 				return ;
 		}
 		else
@@ -29,7 +29,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 			if (time == 0 && \
 			(!check_fork(philo->right) && !check_fork(philo->left)))
 				return ((void)debug_thread_check(philo, "RETURN", font(12)));
-			else if (time > 0 && (limit < t_mu_s(rules->t_start) - time))
+			else if (time > 0 && (limit < t_mu_s(philo->t_start) - time))
 				return ;
 		}
 		usleep(10);
@@ -72,24 +72,21 @@ void	philo_msg(t_philo *philo, char *msg)
 	else if (!check_mutex(rules->lock[DEAD]))
 	{
 		lock_mutex(rules->lock[DEAD]);
-		time = t_mu_s(rules->t_start);
-		print_msg(philo, P_DEAD, time);
-		debug_death(philo, rules, time);
+		print_msg(philo, P_DEAD, t_mu_s(rules->t_start));
+		debug_death(philo, rules, t_mu_s(philo->t_start));
 	}
 }
 
 bool	dead(t_rules *rules, t_philo *philo)
 {
-	t_ll	starve;
 	t_ll	time;
 	int		i;
 
 	i = philo->id;
 	if (!check_mutex(rules->lock[MSG]))
 	{
-		starve = (philo->t_meal + rules->t_die);
-		time = t_mu_s(rules->t_start);
-		if (time > starve)
+		time = t_mu_s(philo->t_start) - philo->t_meal;
+		if ((rules->t_die) < time)
 			return ((void)lock_mutex(rules->lock[MSG]), 1);
 	}
 	return (check_mutex(rules->lock[MSG]));

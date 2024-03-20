@@ -26,7 +26,9 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos)[i].id = i + 1;
 		(*philos)[i].action = 2;
 		(*philos)[i].rules = rules;
-
+		(*philos)[i].wait = 2 * rules->t_eat;
+		if (rules->odd)
+			(*philos)[i].wait = 3 * rules->t_eat;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			ft_error(0, "in Mutex init", NULL, 1);
 		i++;
@@ -64,6 +66,9 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->t_sleep = (t_ll)ft_atol(argv[4]) * (t_ll)1000;
 	rules->n_meals = -1;
 	rules->odd = rules->n_philos % 2;
+	rules->extra = 0;
+	if (rules->odd)
+		rules->extra = 3 * rules->t_eat;
 	if (argv[5])
 		rules->n_meals = (t_ll)ft_atol(argv[5]);
 	init_rules_mutexes(rules);

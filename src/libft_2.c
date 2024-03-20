@@ -12,6 +12,45 @@
 
 #include <philo.h>
 
+char	*font(int idx)
+{
+	char	**s_color;
+
+	s_color = (char *[]){
+		"\x1B[0m", \
+		"\x1B[48;5;255m\x1B[38;5;1m", \
+		"\x1B[41m", \
+		"\x1B[48;5;255m\x1B[38;5;2m", \
+		"\x1B[42m", \
+		"\x1B[48;5;255m\x1B[38;5;3m", \
+		"\x1B[43m", \
+		"\x1B[48;5;255m\x1B[38;5;4m", \
+		"\x1B[44m", \
+		"\x1B[48;5;255m\x1B[38;5;5m", \
+		"\x1B[45m", \
+		"\x1B[48;5;255m\x1B[38;5;6m", \
+		"\x1B[46m", \
+		"\x1B[48;5;255m\x1B[38;5;8m", \
+		"\x1B[48;5;8m\x1B[38;5;255m", \
+		"\x1B[48;5;255m\x1B[38;5;208m", \
+		"\x1B[48;5;208m\x1B[38;5;255m", \
+	};
+	if (idx > 16)
+		idx = (idx % 16);
+	return (s_color[idx]);
+}
+
+char	*warn(int idx)
+{
+	char	**s_color;
+
+	s_color = (char *[]){
+		"\x1B[31m", \
+		"\x1B[32m", \
+	};
+	return (s_color[idx]);
+}
+
 static long	generate_rand_num(long min, long max)
 {
 	struct timeval	tv;

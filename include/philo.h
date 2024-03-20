@@ -74,9 +74,11 @@ struct	s_philo
 	int				id;
 	int				action;
 	int				n_meals;
+	t_ll			t_start;
 	t_ll			t_meal;
 	t_ll			sleep;
 	t_ll			wait;
+	t_ll			t_aux;
 	t_ll			t_extra;
 	t_mutex			fork;
 	struct s_philo	*right;
@@ -89,7 +91,8 @@ struct	s_philo
 /* sync_functions.c */
 t_ll		get_time(void);
 t_ll		t_mu_s(t_ll start);
-void		init_time(t_rules *rules, t_philo *philo);
+void		sleep_think_utils(t_philo *philo, t_rules *rules);
+// void		init_time(t_rules *rules, t_philo *philo);
 void		init_sync(t_rules *rules, t_philo *philo);
 void		ft_sync(t_philo *philo, int m, void (*f)(t_rules *r, t_philo *p));
 /* libft1.c */

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/19 18:04:44 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/20 13:28:39 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,85 @@ t_ll	t_mu_s(t_ll start)
 	return (ms);
 }
 
+void	sleep_think_utils(t_philo *philo, t_rules *rules)
+{
+	t_ll	time;
+	t_ll	p_timing;
+	t_ll	aux;
+
+	time = t_mu_s(rules->t_start);
+	p_timing = philo->wait * rules->t_eat;
+	aux = 0;
+	if (rules->odd)
+		aux = time / rules->extra;
+	printf("\t\t\t\t\t%s [%d] wait \t\t[%lld]%s\n", font(philo->id), philo->id, \
+	philo->wait, font(0));
+	printf("\t\t\t\t\t%s [%d] time/(eat * extra) [%lld]%s\n", font(philo->id), \
+	philo->id, aux, font(0));
+	if (!philo->right)
+		philo->action = 2;
+	else if (rules->t_sleep / rules->t_sleep && \
+	(time < aux + philo->wait))
+		philo->action = 2;
+	else if (check_fork(philo))
+		ft_usleep(rules, philo, 0, 1);
+}
+
+void	init_sync(t_rules *rules, t_philo *philo)
+{
+	t_philo	*next;
+	int		i;
+
+	i = 1;
+	rules->last = philo->left;
+	next = philo;
+	if (rules->odd)
+		rules->last->wait = 2 * rules->t_eat;
+	while (i < rules->n_philos)
+	{
+		if (i % 2 == 1 && D_PHI != 0)
+			printf("\t%s [%d]", font(3), next->id);
+		else if (i % 2 == 0 && D_PHI != 0)
+			printf("\t %s [%d]", font(1), next->id);
+		if (i % 2 == 1)
+			next->action = 0;
+		else
+			next->wait = rules->t_eat;
+		i++;
+		next = next->right;
+	}
+	if (D_PHI != 0)
+		printf("\t %s*[%d]%s\n\n", font(1), next->id, font(0));
+}
+
+void	ft_sync(t_philo *philo, int m, void (*func)(t_rules *r, t_philo *p))
+{
+	static int	sum;
+	bool		limit;
+	t_rules		*rules;
+
+	rules = philo->rules;
+	limit = 0;
+	while (1)
+	{
+		pthread_mutex_lock(&rules->lock[m]->lock);
+		if (!limit++)
+			sum++;
+		if (rules->lock[m]->stat == 0 && sum == rules->n_philos)
+		{
+			rules->lock[m]->stat = 1;
+			func(rules, philo);
+			rules->t_start = get_time();
+		}
+		if (rules->lock[m]->stat == 1)
+			break ;
+		pthread_mutex_unlock(&rules->lock[m]->lock);
+	}
+	philo->t_extra = t_mu_s(rules->t_start);
+	philo->t_start = get_time();
+	pthread_mutex_unlock(&rules->lock[m]->lock);
+}
+
 // void	init_time(t_rules *rules, t_philo *philo)
 // {
 // 	t_ll		extra;
@@ -60,57 +139,3 @@ t_ll	t_mu_s(t_ll start)
 		// 	(*philos)[i].wait = rules->t_eat;
 		// if (rules->n_philos > 1 && rules->n_philos % 2 == 1)
 		// 	(*philos)[i].wait = 2 * rules->t_eat;
-void	init_sync(t_rules *rules, t_philo *philo)
-{
-	t_philo	*next;
-	int		i;
-
-	i = 1;
-	rules->last = philo->left;
-	next = philo;
-	rules->last->wait = 2;
-	while (i < rules->n_philos)
-	{
-		if (i % 2 == 1 && D_PHI != 0)
-			printf("\t%s [%d]", font(3), next->id);
-		else if (i % 2 == 0 && D_PHI != 0)
-			printf("\t %s [%d]", font(1), next->id);
-		if (i % 2 == 1)
-		{
-			next->action = 0;
-			next->wait = 0;
-		}
-		else
-			next->wait = 1;
-		i++;
-		next = next->right;
-	}
-	rules->t_start = get_time();
-	if (D_PHI != 0)
-	printf("\t %s*[%d]%s\n\n", font(1), rules->last->id, font(0));
-}
-
-void	ft_sync(t_philo *philo, int m, void (*func)(t_rules *r, t_philo *p))
-{
-	static int	sum;
-	bool		limit;
-	t_rules		*rules;
-
-	rules = philo->rules;
-	limit = 0;
-	while (1)
-	{
-		pthread_mutex_lock(&rules->lock[m]->lock);
-		if (!limit++)
-			sum++;
-		if (rules->lock[m]->stat == 0 && sum == rules->n_philos)
-		{
-			rules->lock[m]->stat = 1;
-			func(rules, philo);
-		}
-		if (rules->lock[m]->stat == 1)
-			break ;
-		pthread_mutex_unlock(&rules->lock[m]->lock);
-	}
-	pthread_mutex_unlock(&rules->lock[m]->lock);
-}
