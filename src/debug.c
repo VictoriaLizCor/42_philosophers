@@ -95,7 +95,6 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll time)
 	printf("\t\t\tT_DEAD + T_EXTRA=\t\t[%lld]\n", rules->t_die + philo->t_extra);
 	printf("\n\t\t\tCURRENT =\t\t[%lld]\n", time);
 	printf("\t\t\tTIME - (starve + DEAD)=\t[%lld]\n", time - (starve));
-	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
 void	print_neightbor(t_rules *rules, t_philo *tmp)

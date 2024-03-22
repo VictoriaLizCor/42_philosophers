@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/20 13:28:39 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:47:08 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,30 +38,41 @@ t_ll	t_mu_s(t_ll start)
 	return (ms);
 }
 
+//rules->extra = 3*rules->t_eat;
 void	sleep_think_utils(t_philo *philo, t_rules *rules)
 {
 	t_ll	time;
-	t_ll	p_timing;
-	t_ll	aux;
+	t_ll	div;
+	t_ll	mod;
 
-	time = t_mu_s(rules->t_start);
-	p_timing = philo->wait * rules->t_eat;
-	aux = 0;
+	time = (t_mu_s(rules->t_start));
+	div = 0;
+	mod = 0;
 	if (rules->odd)
-		aux = time / rules->extra;
-	printf("\t\t\t\t\t%s [%d] wait \t\t[%lld]%s\n", font(philo->id), philo->id, \
-	philo->wait, font(0));
-	printf("\t\t\t\t\t%s [%d] time/(eat * extra) [%lld]%s\n", font(philo->id), \
-	philo->id, aux, font(0));
+	{
+		div = time / rules->extra;
+		mod = ((time % rules->extra) / 1000) * 1000;
+	}
+	if (mod == 0)
+		mod = rules->extra;
+	printf("\t\t\t\t%s[%d] time %% extra[%lld]\t wait[%lld]%s\n", \
+	font(philo->id), philo->id, mod, philo->wait, font(0));
+	printf("\t\t\t\t%s[%d] mod / wait [%lld]%s\n", \
+	font(philo->id), philo->id, (mod / philo->wait), font(0));
 	if (!philo->right)
 		philo->action = 2;
 	else if (rules->t_sleep / rules->t_sleep && \
-	(time < aux + philo->wait))
+	(mod / philo->wait) != 1)
 		philo->action = 2;
 	else if (check_fork(philo))
 		ft_usleep(rules, philo, 0, 1);
 }
 
+	// printf("\t\t\t\t%s[%d] time/extra + wait [%lld]%s\n", font(philo->id), \
+	// philo->id, div + philo->wait, font(0));
+		// printf("\t\t\t\t%s[%d] time/extra[%lld]\t\twait[%lld]%s\n", \
+	// font(philo->id), philo->id, div, philo->wait, font(0));
+	
 void	init_sync(t_rules *rules, t_philo *philo)
 {
 	t_philo	*next;

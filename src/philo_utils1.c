@@ -93,21 +93,33 @@ static void	exe(t_philo *philo)
 	}
 }
 
+	// i = 0;
+	// while (i < rules->n_philos)
+	// {
+		// if (pthread_create(&philos[rand_array[i]].thread, NULL, \
+		// (void *)exe, &philos[rand_array[i]]))
+	// 	{
+	// 		rules->error++;
+	// 		error_thread(&philos[rand_array[i]], 0);
+	// 		return ;
+	// 	}
+	// 	i++;
+	// }
 void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
 	int			i;
 
-	i = 0;
-	while (i < rules->n_philos)
+	i = rules->n_philos - 1;
+	while (i >= 0)
 	{
-		if (pthread_create(&philos[rand_array[i]].thread, NULL, \
-		(void *)exe, &philos[rand_array[i]]))
+		if (pthread_create(&philos[i].thread, NULL, \
+		(void *)exe, &philos[i]))
 		{
 			rules->error++;
 			error_thread(&philos[rand_array[i]], 0);
 			return ;
 		}
-		i++;
+		i--;
 	}
 	i = 0;
 	while (i < rules->n_philos)

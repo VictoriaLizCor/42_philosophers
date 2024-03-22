@@ -282,7 +282,7 @@ exnt: $(NAME)
 	./philo $n 61 10 50
 exn: $(NAME)
 	@echo ./philo n die eat sleep
-	./philo $n 800 200 200
+	./philo $n $d 200 200
 exn1: $(NAME)
 	@echo ./philo n die eat sleep
 	$(eval EXN=$(shell echo $n 800 200 100))
