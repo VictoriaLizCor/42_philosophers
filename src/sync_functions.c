@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/22 16:47:08 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:53:13 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	sleep_think_utils(t_philo *philo, t_rules *rules)
 	if (rules->odd)
 	{
 		div = time / rules->extra;
-		mod = ((time % rules->extra) / 1000) * 1000;
+		mod = ((time % ((div + 1) * rules->extra)) / 1000) * 1000;
 	}
 	if (mod == 0)
 		mod = rules->extra;
