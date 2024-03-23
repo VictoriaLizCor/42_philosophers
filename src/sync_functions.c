@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/23 11:02:40 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/23 12:10:41 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,27 +44,53 @@ void	sleep_think_utils(t_philo *philo, t_rules *rules)
 	t_ll	time;
 	t_ll	div;
 	t_ll	aux;
+	t_ll	time_eat;
 
 	time = (t_mu_s(rules->t_start));
-	div = time / rules->extra;
-	aux = ((div * rules->extra) + philo->wait) / 1000;
+	// div = time / rules->extra;
+	// aux = ((div * rules->extra) + philo->wait) / 1000;
+	div = (t_mu_s(rules->t_start)) % rules->t_eat;
+	printf("\t\t\t\t%s[%d] div[%lld]%s\n", \
+	warn(0), philo->id, div, font(0));
+	time_eat = ((t_mu_s(rules->t_start)) + div) / rules->t_eat;
+	aux = (((t_mu_s(rules->t_start)) + div) % rules->t_eat) % 3;
 	if (D_PHI != 0)
 	{
-		printf("\t\t\t\t%s[%d] eat/sleep[%lld]%s\n", \
+		printf("\t\t\t\t%s[%d] wait[%lld]%s\n", \
+		font(philo->id), philo->id, philo->wait, font(0));
+		printf("\t\t\t\t%s[%d] time /eat[%lld]%s\n", \
+		font(philo->id), philo->id, time_eat % 3, font(0));
+		printf("\t\t\t\t%s[%d] aux[%lld]%s\n", \
+		font(philo->id), philo->id, aux, font(0));
+		printf("\t\t\t\t%s[%d] aux[%lld]%s\n", \
+		font(philo->id), philo->id, aux % 3, font(0));
+		// time_eat = (t_mu_s(rules->t_start)) % rules->t_eat;
+		// printf("\t\t\t\t%s[%d] time %% eat[%lld]%s\n", \
+		// font(philo->id), philo->id, time_eat, font(0));
+		printf("\t\t\t\t%s[%d] eat %%sleep[%lld]%s\n", \
 		font(philo->id), philo->id, rules->t_eat % rules->t_sleep, font(0));
-		printf("\t\t\t\t%s[%d] div[%lld]\t wait[%lld]%s\n", \
-		font(philo->id), philo->id, div, philo->wait, font(0));
-		printf("\t\t\t\t%s[%d] time [%lld] = aux[%lld]%s\n", \
-		font(philo->id), philo->id, time / 1000, aux, font(0));
+		printf("\t\t\t\t%s[%d] eat/sleep[%lld]%s\n", \
+		font(philo->id), philo->id, rules->t_eat / rules->t_sleep, font(0));
+		// printf("\t\t\t\t%s[%d] div[%lld]\t wait[%lld]%s\n", \
+		// font(philo->id), philo->id, div, philo->wait, font(0));
+		// printf("\t\t\t\t%s[%d] time [%lld] = aux[%lld]%s\n", \
+		// font(philo->id), philo->id, time / 1000, aux, font(0));
 	}
 	if (!philo->right)
 		philo->action = 2;
 	else if (rules->t_eat % rules->t_sleep == 0 && \
-	(time / 1000) != aux)
+	philo->wait != aux)
 		philo->action = 2;
 	else if (check_fork(philo))
 		ft_usleep(rules, philo, 0, 1);
 }
+	// if (!philo->right)
+	// 	philo->action = 2;
+	// else if (rules->t_eat % rules->t_sleep == 0 && \
+	// (time / 1000) != aux)
+	// 	philo->action = 2;
+	// else if (check_fork(philo))
+	// 	ft_usleep(rules, philo, 0, 1);
 
 void	init_sync(t_rules *rules, t_philo *philo)
 {
@@ -75,7 +101,7 @@ void	init_sync(t_rules *rules, t_philo *philo)
 	rules->last = philo->left;
 	next = philo;
 	if (rules->odd)
-		rules->last->wait = 2 * rules->t_eat;
+		rules->last->wait = 2;
 	while (i < rules->n_philos)
 	{
 		if (i % 2 == 1 && D_PHI != 0)
@@ -85,7 +111,7 @@ void	init_sync(t_rules *rules, t_philo *philo)
 		if (i % 2 == 1)
 			next->action = 0;
 		else
-			next->wait = rules->t_eat;
+			next->wait = 1;
 		i++;
 		next = next->right;
 	}

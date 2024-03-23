@@ -26,7 +26,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos)[i].id = i + 1;
 		(*philos)[i].action = 2;
 		(*philos)[i].rules = rules;
-		(*philos)[i].wait = rules->t_eat;
+		(*philos)[i].wait = 1;
 		if (rules->odd)
 			(*philos)[i].wait = 0;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
