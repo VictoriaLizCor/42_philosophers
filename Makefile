@@ -306,7 +306,7 @@ exn4: $(NAME)
 exne: $(NAME)
 	@echo ./philo n die eat sleep
 	./philo $n 800 200 200 1
-in: $(NAME)
+exin: $(NAME)
 	@echo ./philo n die eat sleep
 	./philo $n $d $e $s $m
 top:$(NAME)

@@ -64,9 +64,9 @@ void	philo_msg(t_philo *philo, char *msg)
 	rules = philo->rules;
 	i = philo->id;
 	time = 0;
-	if (!check_mutex(rules->lock[MSG]) && !check_mutex(rules->lock[DEAD]))
+	if (!check_mutex(rules->lock[MSG]))
 	{
-		print_action(philo, t_mu_s(rules->t_start));
+		print_action(philo, 0);
 		print_msg(philo, msg, time);
 	}
 	else if (!check_mutex(rules->lock[DEAD]))
@@ -85,7 +85,7 @@ bool	dead(t_rules *rules, t_philo *philo)
 	i = philo->id;
 	if (!check_mutex(rules->lock[MSG]))
 	{
-		time = t_mu_s(philo->t_start) - philo->t_meal;
+		time = t_mu_s(rules->t_start) - philo->t_meal;
 		if ((rules->t_die) < time)
 			return ((void)lock_mutex(rules->lock[MSG]), 1);
 	}

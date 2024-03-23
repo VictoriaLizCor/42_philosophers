@@ -30,7 +30,7 @@ static void	sleep_think(t_philo *philo, t_rules *rules)
 		{
 			if (!philo->right)
 				philo->action = 2;
-			else if (rules->t_sleep / rules->t_sleep && \
+			else if (rules->t_eat % rules->t_sleep == 0 && \
 			t_mu_s(philo->t_start) < philo->t_meal + rules->t_eat)
 				philo->action = 2;
 			else if (check_fork(philo))
