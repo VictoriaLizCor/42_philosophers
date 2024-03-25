@@ -80,7 +80,8 @@ static void	exe(t_philo *philo)
 		rules->t_start = get_time();
 	else
 		ft_sync(philo, START, init_sync);
-	philo_msg(philo, P_THINK);
+	if (check_value(philo, &philo->action, '=', 0))
+		philo_msg(philo, P_THINK);
 	while (1)
 	{
 		philo->action++;

@@ -19,19 +19,15 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 		print_usleep(rules, philo, time, limit);
 		if (dead(rules, philo) || meal_done(rules, philo, false))
 			return ;
-		if (time == -1)
+		if (time == -1 && (t_mu_s(philo->t_start) > rules->t_eat + limit))
+			return ;
+		else if (time == 0)
 		{
-			if (t_mu_s(philo->t_start) > rules->t_eat + limit)
-				return ;
+			if (!check_fork(philo->right) && !check_fork(philo->left))
+				return ((void)debug_thread_check(philo, "BACK", font(12)));
 		}
-		else
-		{
-			if (time == 0 && \
-			(!check_fork(philo->right) && !check_fork(philo->left)))
-				return ((void)debug_thread_check(philo, "RETURN", font(12)));
-			else if (time > 0 && (limit < t_mu_s(philo->t_start) - time))
-				return ;
-		}
+		else if (time > 0 && (limit < t_mu_s(philo->t_start) - time))
+			return ;
 		usleep(10);
 	}
 }
@@ -85,7 +81,7 @@ bool	dead(t_rules *rules, t_philo *philo)
 	i = philo->id;
 	if (!check_mutex(rules->lock[MSG]))
 	{
-		time = t_mu_s(rules->t_start) - philo->t_meal;
+		time = t_mu_s(philo->t_start) - philo->t_meal;
 		if ((rules->t_die) < time)
 			return ((void)lock_mutex(rules->lock[MSG]), 1);
 	}

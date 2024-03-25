@@ -285,12 +285,12 @@ exn: $(NAME)
 	./philo $n $d 200 200
 exn1: $(NAME)
 	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 200 100))
+	$(eval EXN=$(shell echo $n 800 200 200))
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exn2: $(NAME)
 	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 200 200))
+	$(eval EXN=$(shell echo $n 800 200 100))
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exn3: $(NAME)
@@ -299,6 +299,16 @@ exn3: $(NAME)
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exn4: $(NAME)
+	@echo ./philo n die eat sleep
+	$(eval EXN=$(shell echo $n 800 100 200))
+	./philo $(EXN)
+	@echo ./philo $(EXN)
+exn5: $(NAME)
+	@echo ./philo n die eat sleep
+	$(eval EXN=$(shell echo $n 800 100 150))
+	./philo $(EXN)
+	@echo ./philo $(EXN)
+exn6: $(NAME)
 	@echo ./philo n die eat sleep
 	$(eval EXN=$(shell echo $n 800 150 200))
 	./philo $(EXN)
