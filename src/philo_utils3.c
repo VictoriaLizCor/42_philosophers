@@ -82,7 +82,7 @@ bool	dead(t_rules *rules, t_philo *philo)
 	if (!check_mutex(rules->lock[MSG]))
 	{
 		time = t_mu_s(philo->t_start) - philo->t_meal;
-		if ((rules->t_die) < time)
+		if (rules->t_die < time)
 			return ((void)lock_mutex(rules->lock[MSG]), 1);
 	}
 	return (check_mutex(rules->lock[MSG]));

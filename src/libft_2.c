@@ -53,11 +53,9 @@ char	*warn(int idx)
 
 static long	generate_rand_num(long min, long max)
 {
-	struct timeval	tv;
-	long			seed;
+	unsigned long long	seed;
 
-	gettimeofday(&tv, NULL);
-	seed = (long)tv.tv_sec * 1000000 + (long)tv.tv_usec;
+	seed = (unsigned long long)get_time();
 	seed ^= seed << 13;
 	seed ^= seed >> 7;
 	seed ^= seed << 17;

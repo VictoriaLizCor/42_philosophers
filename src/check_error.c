@@ -71,6 +71,8 @@ static void	check_values(char *cpy, int ac, char **argv, int *err)
 		ft_error(-1 * ac, argv[ac], NULL, 1);
 }
 
+// check if ft_isdigit is necessary in first if
+// check if *copy is necessary in second while
 void	check_arguments(char **argv, int *err)
 {
 	char	*copy;

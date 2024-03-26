@@ -24,7 +24,7 @@ static void	sleep_think(t_philo *philo, t_rules *rules)
 	{
 		philo_msg(philo, P_THINK);
 		philo->action = 0;
-		if (philo->id == rules->last->id && rules->odd)
+		if (rules->last && philo->id == rules->last->id && rules->odd)
 			usleep(50);
 		if (!rules->odd)
 		{
@@ -77,7 +77,10 @@ static void	exe(t_philo *philo)
 
 	rules = philo->rules;
 	if (rules->n_philos == 1)
+	{
 		rules->t_start = get_time();
+		philo->t_start = rules->t_start;
+	}
 	else
 		ft_sync(philo, START, init_sync);
 	if (check_value(philo, &philo->action, '=', 0))
@@ -94,18 +97,6 @@ static void	exe(t_philo *philo)
 	}
 }
 
-	// i = 0;
-	// while (i < rules->n_philos)
-	// {
-		// if (pthread_create(&philos[rand_array[i]].thread, NULL, \
-		// (void *)exe, &philos[rand_array[i]]))
-	// 	{
-	// 		rules->error++;
-	// 		error_thread(&philos[rand_array[i]], 0);
-	// 		return ;
-	// 	}
-	// 	i++;
-	// }
 void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
 	int			i;
@@ -133,36 +124,3 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 		i++;
 	}
 }
-
-// extra = 0;
-// 	i = 0;
-// 	next = philo;
-// 	while (i++ <= rules->n_philos && next->right)
-// 	{
-// 		if (next->t_extra > extra)
-// 			extra = next->t_extra;
-// 		next = next->right;
-// 	}
-// 	printf("\t\t\t%sMAX_EXTRA [%lld]%s\n", font(15), extra, font(0));
-
-		// printf("\t\t\t\t\t%s [%d] last meal [%lld]%s\n", warn(0), philo->id, \
-		// 	t_mu_s(rules->t_start) - philo->t_meal, font(0));
-		// if (rules->n_philos % 2 == 1)
-		// {
-		// 	printf("\t\t\t\t\t%s [%d] last meal > 3 * last_meal[%d]%s\n", warn(0), philo->id, \
-		// 	t_mu_s(rules->t_start) > (philo->t_meal + rules->t_eat * 3), font(0));
-		// }
-		// printf("\t\t\t\t\t %s*[%lld]%s\n\n", font(1), philo->wait, font(0));
-		// printf("\t\t\t\t\t%s [%d] DIE [%lld]%s\n", warn(0), philo->id, \
-		// t_mu_s(rules->t_start) % rules->t_die , font(0));
-		// printf("\t\t\t\t\t%s [%d] DIE %% AUX[%lld]%s\n", warn(0), philo->id, \
-		// rules->t_die % philo->wait, font(0));
-// if ((!philo->right || check_fork(philo)) && \
-// 		(rules->t_eat / rules->t_sleep) > 1 && \
-// 		((t_mu_s(rules->t_start)) % rules->t_eat) / 1000)
-// printf("\t\t\t\t\t%s [%d]time %% eat %lld%s\n", warn(0), philo->id, \
-// ((t_mu_s(rules->t_start)) % rules->t_eat) / 1000, font(0));
-// printf("\t\t\t\t\t%s [%d] eat %% sleep [%lld]%s\n", warn(0), philo->id, \
-// rules->t_eat % rules->t_sleep, font(0));
-// printf("\t\t\t\t\t%s [%d] eat / sleep [%lld]%s\n", warn(0), philo->id, \
-// rules->t_eat / rules->t_sleep, font(0));

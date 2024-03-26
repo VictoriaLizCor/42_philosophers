@@ -12,8 +12,6 @@
 
 #include <philo.h>
 
-
-
 void	philo_neightbor(t_philo *philos, int i, int left, int right)
 {
 	philos[i].left = &philos[left];
