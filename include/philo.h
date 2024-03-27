@@ -30,7 +30,6 @@
 #  define D_PHI 0
 # endif
 
-
 typedef long long		t_ll;
 typedef struct s_rules	t_rules;
 typedef struct s_philo	t_philo;
@@ -41,7 +40,6 @@ typedef enum e_mutexes
 	DEAD,
 	TIME,
 	PRINT,
-	MSG,
 	START,
 	MEAL,
 	N_MUTEX
@@ -90,8 +88,7 @@ struct	s_philo
 /* sync_functions.c */
 t_ll		get_time(void);
 t_ll		t_mu_s(t_ll start);
-void		sleep_think_utils(t_philo *philo, t_rules *rules);
-// void		get_max_delay(t_rules *rules, t_philo *philo);
+void		get_max_delay(t_rules *rules, t_philo *philo);
 void		init_sync(t_rules *rules, t_philo *philo);
 void		ft_sync(t_philo *philo, int m, void (*f)(t_rules *r, t_philo *p));
 /* libft1.c */
@@ -100,19 +97,19 @@ int			ft_isdigit(int ch);
 long int	ft_atol(const char *s);
 char		*ft_strchr(const char *s, int c);
 /* libft2.c */
+char		*font(int idx);
+char		*warn(int idx);
 int			*random_values(int min, int max, int size);
 /* philo_utils1.c */
 void		lock_msg(t_philo *philo);
 void		start_threads(t_philo *philos, t_rules *rules, int *array);
 /* philo_utils2.c */
-char		*font(int idx);
-char		*warn(int idx);
+void		sleep_think_utils(t_philo *philo, t_rules *rules);
 void		destroy_mutex(t_philo *philo, t_rules *rules);
 void		philo_neightbor(t_philo *philos, int i, int left, int right);
 void		init_neightbor(t_philo *philos, int size);
 /* philo_utils3.c */
 void		ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
-void		philo_msg(t_philo *philo, char *msg);
 bool		dead(t_rules *rules, t_philo *philo);
 bool		meal_done(t_rules *rules, t_philo *philo, bool check);
 void		print_msg(t_philo *philo, char *msg, t_ll time);
@@ -141,7 +138,7 @@ void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo, t_ll time);
-void		debug_death(t_philo *philo, t_rules *rules, t_ll time);
+void		debug_death(t_philo *philo, t_rules *rules, t_ll ptime, t_ll rtime);
 void		debug_thread_check(t_philo *philo, char *msg, char *col);
 void		print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 void		print_neightbor(t_rules *rules, t_philo *philos);

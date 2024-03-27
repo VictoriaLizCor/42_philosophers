@@ -12,6 +12,33 @@
 
 #include <philo.h>
 
+void	sleep_think_utils(t_philo *philo, t_rules *rules)
+{
+	t_ll	time;
+	t_ll	next_meal;
+	t_ll	last_meal;
+
+	time = (t_mu_s(philo->t_start) / 1000) * 1000;
+	last_meal = philo->t_meal;
+	if (last_meal == 0 && philo->right)
+		last_meal = -1 * (philo->t_aux * rules->t_eat);
+	next_meal = last_meal + (3 * rules->t_eat);
+	next_meal = (next_meal / 1000) * 1000;
+	if (D_PHI != 0 && !check_mutex(rules->lock[DEAD]))
+	{
+		printf("\t\t\t\t%s[%d] time[%lld]%s\n", \
+		warn(0), philo->id, time, font(0));
+		printf("\t\t\t\t%s[%d] next_meal[%lld]%s\n", \
+		font(philo->id), philo->id, next_meal, font(0));
+		printf("\t\t\t\t%s[%d] next_meal - time \t\t[%lld]%s\n", \
+		font(philo->id), philo->id, next_meal - time, font(0));
+	}
+	if (!philo->right || next_meal - time >= rules->t_sleep)
+		philo->action = 2;
+	else if (check_fork(philo))
+		ft_usleep(rules, philo, 0, 1);
+}
+
 void	philo_neightbor(t_philo *philos, int i, int left, int right)
 {
 	philos[i].left = &philos[left];

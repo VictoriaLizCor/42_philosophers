@@ -36,56 +36,54 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 {
 	int		i;
 	t_ll	ms;
-
-	i = philo->id;
-	pthread_mutex_lock(&philo->rules->lock[PRINT]->lock);
-	if (time == 0)
-		time = t_mu_s(philo->rules->t_start);
-	ms = time / 1000;
-	if (D_PHI == 0)
-		printf(" %03lld\tphilo %s [%03d] %s %s\n\n", \
-		ms, font(i), i, font(0), msg);
-	else
-		printf(" %03lld [%lld]\tphilo %s [%03d] %s %s\n\n", \
-		ms, time, font(i), i, font(0), msg);
-	pthread_mutex_unlock(&philo->rules->lock[PRINT]->lock);
-}
-
-void	philo_msg(t_philo *philo, char *msg)
-{
-	int		i;
 	t_rules	*rules;
-	t_ll	time;
 
 	rules = philo->rules;
 	i = philo->id;
-	time = 0;
-	if (!check_mutex(rules->lock[MSG]))
+	pthread_mutex_lock(&rules->lock[PRINT]->lock);
+	if (time == 0)
+		time = t_mu_s(rules->t_start);
+	ms = time / 1000;
+	if (!rules->lock[PRINT]->stat)
 	{
-		print_action(philo, 0);
-		print_msg(philo, msg, time);
+		if (D_PHI == 1)
+			print_action(philo, time);
+		if (D_PHI == 0)
+			printf(" %03lld\tphilo %s [%03d] %s %s\n\n", \
+			ms, font(i), i, font(0), msg);
+		else
+			printf(" %03lld [%lld]\tphilo %s [%03d] %s %s\n\n", \
+			ms, time, font(i), i, font(0), msg);
 	}
-	else if (!check_mutex(rules->lock[DEAD]))
-	{
-		lock_mutex(rules->lock[DEAD]);
-		print_msg(philo, P_DEAD, t_mu_s(rules->t_start));
-		debug_death(philo, rules, t_mu_s(philo->t_start));
-	}
+	pthread_mutex_unlock(&rules->lock[PRINT]->lock);
 }
+
 
 bool	dead(t_rules *rules, t_philo *philo)
 {
 	t_ll	time;
-	int		i;
+	t_ll	last_meal;
+	t_ll	t_aux;
 
-	i = philo->id;
-	if (!check_mutex(rules->lock[MSG]))
+	t_aux = 0;
+	if (!check_mutex(rules->lock[DEAD]))
 	{
-		time = t_mu_s(philo->t_start) - philo->t_meal;
-		if (rules->t_die < time)
-			return ((void)lock_mutex(rules->lock[MSG]), 1);
+		time = (t_mu_s(philo->t_start) / 1000) * 1000;
+		last_meal = time - philo->t_meal;
+		if (rules->t_die < last_meal)
+		{
+			printf("time {%lld} last_meal [%lld]\n", time, last_meal);
+			lock_mutex(rules->lock[DEAD]);
+			t_aux = t_mu_s(rules->t_start);
+			if (!check_mutex(rules->lock[PRINT]))
+			{
+				print_msg(philo, P_DEAD, time);
+				lock_mutex(rules->lock[PRINT]);
+				debug_death(philo, rules, time, t_aux);
+			}
+		}
 	}
-	return (check_mutex(rules->lock[MSG]));
+	return (check_mutex(rules->lock[DEAD]));
 }
 
 bool	meal_done(t_rules *rules, t_philo *philo, bool check)

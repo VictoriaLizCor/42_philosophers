@@ -25,47 +25,20 @@ S			:= 1
 ifeq ($(S), 1)
 D_FLAGS		:= -O0 -g3 -D D_PHI=$(D) -pthread $(FLAGS) -fsanitize=thread,undefined,integer
 else
-D_FLAGS		:= -O0 -g3 -D D_PHI=$(D) -pthread $(FLAGS) -fsanitize=address,undefined,integer
+D_FLAGS		:= -O0 -g3 -pthread $(FLAGS) -fsanitize=address,undefined,integer
 endif
 
 all: $(NAME)
 $(NAME): $(SRCS)
-	@printf "$(LF)\n🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀$(FG_TEXT)\n"
-	@printf "\n"
-	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
+	@printf "\n$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
 	@echo $(GREEN)
+	@printf "$(CC) $(D_FLAGS) $(INCLUDES) $^ -o $@ \n\n";
 	@$(CC) $(D_FLAGS) $(INCLUDES) $^ -o $@
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
-	@printf "$(P_RED) $(VALGRIND) $(P_NC)\n"
-	@printf "$(P_RED) $(D_FLAGS) $(P_NC)\n"
+# @printf "$(P_RED) $(VALGRIND) $(P_NC)\n"
+# @printf "$(P_RED) $(D_FLAGS) $(P_NC)\n"
 
-#------CODE FOR OBJECT FILES------#
-# OBJS_DIR = obj/
-# OBJS = $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
-## OBJS = $(patsubst %.c,$(OBJDIR)%.o, $(addprefix $(SRCS_DIR),$(SRCS)))
-## $(addprefix $(SRCS_DIR), $(SRCS))
-
-#$(NAME): $(OBJS)
-#	@printf "$(LF)\n🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀$(FG_TEXT)\n"
-#	@printf "\n"
-#	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
-#	@echo $(GREEN)
-#	$(CC) -g $(D_SAN) $(INCLUDES) $^ -pthread -o $(NAME)
-#	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
-#	@echo $(PHILO_BANNER)
-
-## creating object files
-## $(OBJS): $(OBJDIR)/%.o: %.c | $(objdirs)
-##	$(CC) -c $< -o $@
-
-# $(OBJS): $(OBJS_DIR)%.o : $(SRCS_DIR)%.c | $(OBJS_DIR)
-# 	@$(CC) -g $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
-# 	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$< $(FG_TEXT)"
-
-# $(OBJS_DIR):
-# 	@mkdir -p $@
-#------------#
 clean:
 	@echo $(RED)
 #	@rm -rf $(OBJS_DIR)
@@ -77,7 +50,7 @@ endif
 
 fclean:	clean
 		@printf "$(LF)🧹🗑️ $(P_RED) Clean $(P_GREEN)$(NAME)\n"
-		@rm -rf $(echo $(NAME))
+		@rm -rf $(NAME)
 		@echo $(TRASH_BANNER)
 		@printf "\n$(P_NC)"
 git:	fclean
@@ -189,8 +162,6 @@ d0:
 	@make re -C . D=0 S=0
 reval:
 	@make re -C . D=0 S=0
-val:$(NAME)
-	valgrind --tool=helgrind ./philo 2 401 200 200
 resan:
 	@make re -C . D=1
 	@make -C . e1
@@ -205,7 +176,7 @@ r2:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 r21:$(NAME)
-	$(eval PHILO=$(shell seq 5 10 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(seq 5 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 410 200 200))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
@@ -406,32 +377,32 @@ exn: $(NAME)
 	./philo $n $d 200 200
 exn1: $(NAME)
 	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 200 200))
+	$(eval EXN=$(shell echo $n 800 200 200 $m))
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exn2: $(NAME)
 	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 200 100))
+	$(eval EXN=$(shell echo $n 800 200 100 $m))
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exn3: $(NAME)
 	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 200 150))
+	$(eval EXN=$(shell echo $n 800 200 150 $m))
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exn4: $(NAME)
 	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 100 200))
+	$(eval EXN=$(shell echo $n 800 100 200 $m))
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exn5: $(NAME)
 	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 100 150))
+	$(eval EXN=$(shell echo $n 800 100 150 $m))
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exn6: $(NAME)
 	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 150 200))
+	$(eval EXN=$(shell echo $n 800 150 200 $m))
 	./philo $(EXN)
 	@echo ./philo $(EXN)
 exne: $(NAME)
@@ -476,3 +447,30 @@ error:
 # @echo $(CROSS)$(RED)Interrupted$(NOCOLOR)
 # trap 'make $$r' SIGINT;
 # @bash -c "trap 'trap - SIGINT SIGTERM ERR; exit 1' SIGINT SIGTERM ERR; $(MAKE) error_msg"
+
+#------CODE FOR OBJECT FILES------#
+# OBJS_DIR = obj/
+# OBJS = $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
+## OBJS = $(patsubst %.c,$(OBJDIR)%.o, $(addprefix $(SRCS_DIR),$(SRCS)))
+## $(addprefix $(SRCS_DIR), $(SRCS))
+
+#$(NAME): $(OBJS)
+#	@printf "$(LF)\n🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀$(FG_TEXT)\n"
+#	@printf "\n"
+#	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
+#	@echo $(GREEN)
+#	$(CC) -g $(D_SAN) $(INCLUDES) $^ -pthread -o $(NAME)
+#	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
+#	@echo $(PHILO_BANNER)
+
+## creating object files
+## $(OBJS): $(OBJDIR)/%.o: %.c | $(objdirs)
+##	$(CC) -c $< -o $@
+
+# $(OBJS): $(OBJS_DIR)%.o : $(SRCS_DIR)%.c | $(OBJS_DIR)
+# 	@$(CC) -g $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
+# 	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$< $(FG_TEXT)"
+
+# $(OBJS_DIR):
+# 	@mkdir -p $@
+#------------#

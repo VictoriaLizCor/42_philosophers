@@ -17,27 +17,16 @@ static void	sleep_think(t_philo *philo, t_rules *rules)
 	if (check_value(philo, &philo->action, '=', 3))
 	{
 		philo->sleep = t_mu_s(philo->t_start);
-		philo_msg(philo, P_SLEEP);
+		print_msg(philo, P_SLEEP, 0);
 		ft_usleep(rules, philo, philo->sleep, rules->t_sleep);
 	}
 	else if (check_value(philo, &philo->action, '=', 4))
 	{
-		philo_msg(philo, P_THINK);
+		print_msg(philo, P_THINK, 0);
 		philo->action = 0;
-		if (rules->last && philo->id == rules->last->id && rules->odd)
+		if (rules->last && (rules->odd && philo->id == rules->last->id))
 			usleep(50);
-		if (!rules->odd)
-		{
-			if (!philo->right)
-				philo->action = 2;
-			else if (rules->t_eat % rules->t_sleep == 0 && \
-			t_mu_s(philo->t_start) < philo->t_meal + rules->t_eat)
-				philo->action = 2;
-			else if (check_fork(philo))
-				ft_usleep(rules, philo, 0, 1);
-		}
-		else
-			sleep_think_utils(philo, rules);
+		sleep_think_utils(philo, rules);
 	}
 }
 
@@ -48,12 +37,12 @@ static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 		lock_mutex(&philo->fork);
 		lock_mutex(&philo->right->fork);
 		lock_mutex(&philo->left->fork);
-		philo_msg(philo, P_FORK);
+		print_msg(philo, P_FORK, 0);
 		debug_thread_check(philo, "LOCKING", font(14));
-		philo->t_meal = t_mu_s(philo->t_start);
+		philo->t_meal = (t_mu_s(philo->t_start) / 1000) * 1000;
 		philo->n_meals++;
 		usleep(10);
-		philo_msg(philo, P_EAT);
+		print_msg(philo, P_EAT, 0);
 		if (!meal_done(rules, philo, true))
 			ft_usleep(rules, philo, -1, philo->t_meal);
 		unlock_mutex(&philo->right->fork);
@@ -76,15 +65,13 @@ static void	exe(t_philo *philo)
 	t_rules		*rules;
 
 	rules = philo->rules;
-	if (rules->n_philos == 1)
-	{
-		rules->t_start = get_time();
-		philo->t_start = rules->t_start;
-	}
-	else
-		ft_sync(philo, START, init_sync);
+
+	ft_sync(philo, START, init_sync);
+	philo->t_start = get_time();
+	philo->t_extra = t_mu_s(rules->t_start);
+	ft_sync(philo, TIME, get_max_delay);
 	if (check_value(philo, &philo->action, '=', 0))
-		philo_msg(philo, P_THINK);
+		print_msg(philo, P_THINK, 0);
 	while (1)
 	{
 		philo->action++;
@@ -97,6 +84,7 @@ static void	exe(t_philo *philo)
 	}
 }
 
+// TEST VERSION
 void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
 	int			i;
@@ -104,11 +92,11 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	i = rules->n_philos - 1;
 	while (i >= 0)
 	{
-		if (pthread_create(&philos[i].thread, NULL, \
+		if (pthread_create(&philos[rules->n_philos - 1 - i].thread, NULL, \
 		(void *)exe, &philos[i]))
 		{
-			rules->error++;
-			error_thread(&philos[rand_array[i]], 0);
+			(*rules->error)++;
+			error_thread(&philos[i], 0);
 			return ;
 		}
 		i--;
@@ -116,11 +104,40 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	i = 0;
 	while (i < rules->n_philos)
 	{
-		if (pthread_join(philos[rand_array[i]].thread, NULL))
+		if (pthread_join(philos[i].thread, NULL))
 		{
-			rules->error++;
+			(*rules->error)++;
 			return ;
 		}
 		i++;
 	}
 }
+
+// REAL VERSION
+// void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
+// {
+// 	int			i;
+
+// 	i = 0;
+// 	while (i < rules->n_philos)
+// 	{
+// 		if (pthread_create(&philos[rand_array[i]].thread, NULL, \
+// 		(void *)exe, &philos[rand_array[i]]))
+// 		{
+// 			(*rules->error)++;
+// 			error_thread(&philos[rand_array[i]], 0);
+// 			return ;
+// 		}
+// 		i++;
+// 	}
+// 	i = 0;
+// 	while (i < rules->n_philos)
+// 	{
+// 		if (pthread_join(philos[rand_array[i]].thread, NULL))
+// 		{
+// 			(*rules->error)++;
+// 			return ;
+// 		}
+// 		i++;
+// 	}
+// }

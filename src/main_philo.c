@@ -33,7 +33,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 	init_neightbor(*philos, size - 1);
 }
 
-static void	init_rules_mutexes(t_rules *rules)
+void	init_rules_mutexes(t_rules *rules)
 {
 	int	i;
 
@@ -41,7 +41,7 @@ static void	init_rules_mutexes(t_rules *rules)
 	rules->lock = (t_mutex **)malloc(sizeof(t_mutex *) * (size_t)N_MUTEX);
 	if (!rules->lock)
 		(*rules->error)++;
-	while (i < N_MUTEX && !*rules->error)
+	while (i < N_MUTEX && !(*rules->error))
 	{
 		rules->lock[i] = (t_mutex *)malloc(sizeof(t_mutex));
 		if (!rules->lock[i])
@@ -64,8 +64,6 @@ static void	init_rules(t_rules *rules, char **argv)
 	rules->n_meals = -1;
 	if (rules->n_philos > 2)
 		rules->odd = rules->n_philos % 2;
-	if (rules->odd)
-		rules->extra = (3 * rules->t_eat);
 	if (argv[5])
 		rules->n_meals = (t_ll)ft_atol(argv[5]);
 	init_rules_mutexes(rules);
@@ -80,6 +78,7 @@ static void	begin_hunger_games(char **argv, int *error)
 
 	i = 0;
 	ran_val = NULL;
+	memset(&rules, 0, sizeof(t_rules));
 	rules.error = error;
 	init_rules(&rules, argv);
 	init_philos(&rules, &philos, rules.n_philos);
@@ -95,6 +94,7 @@ static void	begin_hunger_games(char **argv, int *error)
 		memset(philos, 0, sizeof(t_philo) * rules.n_philos);
 		free(philos);
 	}
+	memset(&rules, 0, sizeof(t_rules));
 }
 
 int	main(int argc, char **argv, char **env)
