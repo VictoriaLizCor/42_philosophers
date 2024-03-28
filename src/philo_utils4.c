@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/19 17:38:06 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:29:16 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,9 @@ bool	check_fork(t_philo *philo)
 	if (philo->fork.stat == 1)
 	{
 		pthread_mutex_unlock(&philo->fork.lock);
-		usleep(10);
 		return (true);
 	}
-	return ((void) pthread_mutex_unlock(&philo->fork.lock), false);
+	return ((void)pthread_mutex_unlock(&philo->fork.lock), false);
 }
 
 bool	check_value(t_philo *philo, int *val1, char op, int val2)

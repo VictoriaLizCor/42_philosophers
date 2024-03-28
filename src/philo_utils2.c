@@ -18,16 +18,20 @@ void	sleep_think_utils(t_philo *philo, t_rules *rules)
 	t_ll	next_meal;
 	t_ll	last_meal;
 
-	time = (t_mu_s(philo->t_start) / 1000) * 1000;
+	time = (t_mu_s(rules->t_start) / 1000) * 1000;
 	last_meal = philo->t_meal;
 	if (last_meal == 0 && philo->right)
 		last_meal = -1 * (philo->t_aux * rules->t_eat);
-	next_meal = last_meal + (3 * rules->t_eat);
+	next_meal = ((last_meal / 1000) * 1000) + (2 * rules->t_eat);
+	if (rules->odd)
+		next_meal = last_meal + (3 * rules->t_eat);
 	next_meal = (next_meal / 1000) * 1000;
-	if (D_PHI != 0 && !check_mutex(rules->lock[DEAD]))
+	if (D_PHI == 2 && !check_mutex(rules->lock[DEAD]))
 	{
 		printf("\t\t\t\t%s[%d] time[%lld]%s\n", \
 		warn(0), philo->id, time, font(0));
+		printf("\t\t\t\t%s[%d] last_meal[%lld]%s\n", \
+		font(philo->id), philo->id, last_meal, font(0));
 		printf("\t\t\t\t%s[%d] next_meal[%lld]%s\n", \
 		font(philo->id), philo->id, next_meal, font(0));
 		printf("\t\t\t\t%s[%d] next_meal - time \t\t[%lld]%s\n", \
@@ -35,8 +39,8 @@ void	sleep_think_utils(t_philo *philo, t_rules *rules)
 	}
 	if (!philo->right || next_meal - time >= rules->t_sleep)
 		philo->action = 2;
-	else if (check_fork(philo))
-		ft_usleep(rules, philo, 0, 1);
+	else
+		ft_usleep(rules, philo, 0, next_meal);
 }
 
 void	philo_neightbor(t_philo *philos, int i, int left, int right)

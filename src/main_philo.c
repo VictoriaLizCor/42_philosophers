@@ -26,6 +26,7 @@ static void	init_philos(t_rules *rules, t_philo **philos, int size)
 		(*philos)[i].id = i + 1;
 		(*philos)[i].action = 3;
 		(*philos)[i].rules = rules;
+		(*philos)[i].t_aux = 1;
 		if (pthread_mutex_init(&(*philos + i)->fork.lock, NULL) != 0)
 			ft_error(0, "in Mutex init", NULL, 1);
 		i++;

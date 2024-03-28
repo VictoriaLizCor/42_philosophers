@@ -19,14 +19,14 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 		print_usleep(rules, philo, time, limit);
 		if (dead(rules, philo) || meal_done(rules, philo, false))
 			return ;
-		if (time == -1 && (t_mu_s(philo->t_start) > rules->t_eat + limit))
+		if (time == -1 && (limit < t_mu_s(rules->t_start) - philo->t_meal))
 			return ;
 		else if (time == 0)
 		{
-			if (!check_fork(philo->right) && !check_fork(philo->left))
+			if (limit < t_mu_s(rules->t_start) && !check_fork(philo))
 				return ((void)debug_thread_check(philo, "BACK", font(12)));
 		}
-		else if (time > 0 && (limit < t_mu_s(philo->t_start) - time))
+		else if (time > 0 && (limit < t_mu_s(rules->t_start) - philo->sleep))
 			return ;
 		usleep(10);
 	}
@@ -49,37 +49,40 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 		if (D_PHI == 1)
 			print_action(philo, time);
 		if (D_PHI == 0)
-			printf(" %03lld\tphilo %s [%03d] %s %s\n\n", \
+			printf(" %03lld\t%sphilo [%03d] %s %s\n\n", \
 			ms, font(i), i, font(0), msg);
 		else
-			printf(" %03lld [%lld]\tphilo %s [%03d] %s %s\n\n", \
+			printf(" %03lld [%lld]\t%sphilo [%03d] %s %s\n\n", \
 			ms, time, font(i), i, font(0), msg);
 	}
 	pthread_mutex_unlock(&rules->lock[PRINT]->lock);
 }
-
 
 bool	dead(t_rules *rules, t_philo *philo)
 {
 	t_ll	time;
 	t_ll	last_meal;
 	t_ll	t_aux;
+	t_ll	m_aux;
 
 	t_aux = 0;
 	if (!check_mutex(rules->lock[DEAD]))
 	{
-		time = (t_mu_s(philo->t_start) / 1000) * 1000;
+		time = t_mu_s(rules->t_start);
+		t_aux = (time / 10000);
 		last_meal = time - philo->t_meal;
-		if (rules->t_die < last_meal)
+		m_aux = (last_meal / 1000) * 1000;
+		if (rules->t_die < m_aux)
 		{
-			printf("time {%lld} last_meal [%lld]\n", time, last_meal);
 			lock_mutex(rules->lock[DEAD]);
-			t_aux = t_mu_s(rules->t_start);
+			t_aux = (t_mu_s(philo->t_start) / 1000) * 1000;
 			if (!check_mutex(rules->lock[PRINT]))
 			{
 				print_msg(philo, P_DEAD, time);
+				printf("\t\ttime {%lld} last_meal [%lld]\n", time, last_meal);
+				printf("\t\ttime {%lld} last_meal [%lld]\n\n", t_aux, m_aux);
 				lock_mutex(rules->lock[PRINT]);
-				debug_death(philo, rules, time, t_aux);
+				debug_death(philo, rules, t_aux, time);
 			}
 		}
 	}

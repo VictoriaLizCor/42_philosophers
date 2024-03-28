@@ -74,23 +74,39 @@ void	print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp)
 	}
 }
 
-void	debug_death(t_philo *philo, t_rules *rules, t_ll ptime, t_ll rtime)
+void	debug_death(t_philo *philo, t_rules *rules, t_ll xtime, t_ll rtime)
 {
 	t_ll	starve;
 	int		i;
+	t_ll	ptime;
+	t_ll		m_aux;
 
 	if (D_PHI == 0)
 		return ;
 	i = philo->id;
+	ptime = t_mu_s(philo->t_start);
+	m_aux = (philo->t_meal / 1000) * 1000;
 	printf("\t\t\tREAL TIME =\t\t[%lld]\n", rtime);
+	printf("\t\t\tREAL TIME =\t\t[%lld]\n", xtime);
 	printf("\t\t\tT_DEAD =\t\t[%lld]\n", rules->t_die);
 	printf("\t\t\tP_MEAL =\t\t[%lld]\t\tP_SLEEP[%lld]\n", philo->t_meal, philo->sleep);
+	printf("\t\t\tM_AUX =\t\t[%lld]\n", m_aux);
 	printf("\n\t\t\tPHILO TIME =\t\t[%lld]\n", ptime);
 	printf("\n");
-	starve = rtime - philo->t_meal;
-	printf("\t\t\tREAL TIME - last_meal =\t\t[%lld]\n", starve);
-	starve = ptime - philo->t_meal;
-	printf("\t\t\tPHI TIME - last_meal =\t\t[%lld]\n", starve);
+	starve = rtime - (philo->t_meal);
+	printf("\t\t\tREAL TIME - last_meal = [%lld] > [%lld] = {%d}\n", \
+	starve, rules->t_die, starve > rules->t_die);
+	starve =  ptime - m_aux;
+	printf("\t\t\tREAL TIME - m_aux.    = [%lld] > [%lld] = {%d}\n", \
+	starve, rules->t_die, starve > rules->t_die);
+	starve = ptime - (philo->t_meal);
+	printf("\t\t\tPHILO TIME - last_meal = [%lld] > [%lld] = {%d}\n", \
+	starve, rules->t_die, starve > rules->t_die);
+	printf("\n\t\t\tREAL TIME - last_meal = [%lld] > [%lld] = {%d}\n", \
+	starve, rules->t_die, starve > rules->t_die);
+	starve = ((ptime - philo->t_meal) / 1000) * 1000;
+	printf("\t\t\tPHI TIME - last_meal = [%lld] > [%lld] = {%d}\n", \
+	starve, rules->t_die, starve > rules->t_die);
 	// printf("\t\t\tP_MEAL + DEAD =\t\t[%lld]\n", philo->t_meal + rules->t_die);
 	// printf("\t\t\tSTARVE - TIME =\t\t[%lld]\n", \
 	// starve - time);
@@ -99,6 +115,9 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll ptime, t_ll rtime)
 	// time - philo->t_meal - philo->t_extra);
 	printf("\t\t\t T_EXTRA =\t\t[%lld]\n", philo->t_extra);
 	printf("\n\n\t\t\t T_EXTRA =\t\t[%lld]\n", rules->extra);
+	printf("\n\n\t\t\t t_start =\t\t[%lld]\n", rules->t_start);
+	printf("\n\n\t\t\t current =\t\t[%lld]\n", get_time());
+	printf("\n\n\t\t\t current =\t\t[%lld]\n", get_time() - philo->r_meal);
 	// printf("\t\t\tT_DEAD + T_EXTRA=\t\t[%lld]\n", rules->t_die + philo->t_extra);
 	// printf("\n\t\t\tCURRENT =\t\t[%lld]\n", time);
 	// printf("\t\t\tTIME - (starve + DEAD)=\t[%lld]\n", time - (starve));

@@ -23,9 +23,9 @@ D			:= 2
 #------ Sanitizer ------#
 S			:= 1
 ifeq ($(S), 1)
-D_FLAGS		:= -O0 -g3 -D D_PHI=$(D) -pthread $(FLAGS) -fsanitize=thread,undefined,integer
+D_FLAGS		:= -O0 -g3 -D D_PHI=$(D) -pthread $(FLAGS) -fsanitize=thread,undefined,integer -fno-optimize-sibling-calls
 else
-D_FLAGS		:= -O0 -g3 -pthread $(FLAGS) -fsanitize=address,undefined,integer
+D_FLAGS		:= -O0 -g3 -pthread $(FLAGS) -fsanitize=address,undefined,integer -fno-optimize-sibling-calls
 endif
 
 all: $(NAME)

@@ -74,6 +74,7 @@ struct	s_philo
 	int				n_meals;
 	t_ll			t_start;
 	t_ll			t_meal;
+	t_ll			r_meal;
 	t_ll			sleep;
 	t_ll			t_aux;
 	t_ll			t_extra;
