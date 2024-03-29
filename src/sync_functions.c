@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/27 16:54:40 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/29 12:42:27 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void	init_sync(t_rules *rules, t_philo *philo)
 	next = philo;
 	if (rules->odd)
 		rules->last->t_aux = 1;
-	rules->t_start = get_time();
 	while (i < rules->n_philos)
 	{
 		if (i % 2 == 1 && D_PHI != 0)
@@ -65,7 +64,7 @@ void	init_sync(t_rules *rules, t_philo *philo)
 	}
 	if (D_PHI != 0)
 		printf("\t %s*[%d]%s\n\n", font(1), rules->last->id, font(0));
-	printf("\n%s[%lld]%s\n", font(10), t_mu_s(rules->t_start), font(0));
+	rules->t_start = get_time();
 }
 
 void	ft_sync(t_philo *philo, int m, void (*func)(t_rules *r, t_philo *p))
@@ -95,23 +94,23 @@ void	ft_sync(t_philo *philo, int m, void (*func)(t_rules *r, t_philo *p))
 	}
 }
 
-void	get_max_delay(t_rules *rules, t_philo *philo)
-{
-	t_ll		extra;
-	t_philo		*next;
-	int			i;
+// void	get_max_delay(t_rules *rules, t_philo *philo)
+// {
+// 	t_ll		extra;
+// 	t_philo		*next;
+// 	int			i;
 
-	i = 0;
-	extra = 0;
-	printf("philo start{%d} | {%d}\n", rules->last->right->id, philo->id);
-	next = rules->last->right;
-	while (i < rules->n_philos)
-	{
-		if (next->t_extra > extra)
-			extra = next->t_extra;
-		next = next->right;
-		i++;
-	}
-	rules->extra = extra;
-	rules->t_start = get_time();
-}
+// 	i = 0;
+// 	extra = 0;
+// 	printf("philo start{%d} | {%d}\n", rules->last->right->id, philo->id);
+// 	next = rules->last->right;
+// 	while (i < rules->n_philos)
+// 	{
+// 		if (next->t_extra > extra)
+// 			extra = next->t_extra;
+// 		next = next->right;
+// 		i++;
+// 	}
+// 	rules->extra = extra;
+// 	rules->t_start = get_time();
+// }

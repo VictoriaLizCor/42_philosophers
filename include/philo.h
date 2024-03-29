@@ -139,7 +139,7 @@ void		error_thread(void *data, int type);
 void		check_arguments(char **argv, int *error);
 /* debug.c*/
 void		print_action(t_philo *philo, t_ll time);
-void		debug_death(t_philo *philo, t_rules *rules, t_ll ptime, t_ll rtime);
+void		debug_death(t_philo *philo, t_rules *rules, t_ll t_aux, t_ll rtime);
 void		debug_thread_check(t_philo *philo, char *msg, char *col);
 void		print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp);
 void		print_neightbor(t_rules *rules, t_philo *philos);

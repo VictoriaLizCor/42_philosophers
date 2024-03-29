@@ -68,12 +68,12 @@ static void	exe(t_philo *philo)
 	ft_sync(philo, START, init_sync);
 	philo->t_start = get_time();
 	philo->t_extra = t_mu_s(rules->t_start);
-	// ft_sync(philo, TIME, get_max_delay);
 	if (check_value(philo, &philo->action, '=', 0))
 		print_msg(philo, P_THINK, 0);
 	while (1)
 	{
 		philo->action++;
+		debug_thread_check(philo, "EXE", font(philo->id));
 		if (check_value(philo, &philo->action, '=', 1))
 			lock_eat(philo, rules, rules->last);
 		else
@@ -83,27 +83,27 @@ static void	exe(t_philo *philo)
 	}
 }
 
-// TEST VERSION
+// REAL VERSION
 void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
 	int			i;
 
-	i = rules->n_philos - 1;
-	while (i >= 0)
+	i = 0;
+	while (i < rules->n_philos)
 	{
-		if (pthread_create(&philos[rules->n_philos - 1 - i].thread, NULL, \
-		(void *)exe, &philos[i]))
+		if (pthread_create(&philos[rand_array[i]].thread, NULL, \
+		(void *)exe, &philos[rand_array[i]]))
 		{
 			(*rules->error)++;
-			error_thread(&philos[i], 0);
+			error_thread(&philos[rand_array[i]], 0);
 			return ;
 		}
-		i--;
+		i++;
 	}
 	i = 0;
 	while (i < rules->n_philos)
 	{
-		if (pthread_join(philos[i].thread, NULL))
+		if (pthread_join(philos[rand_array[i]].thread, NULL))
 		{
 			(*rules->error)++;
 			return ;
@@ -112,27 +112,27 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 	}
 }
 
-// REAL VERSION
+// // TEST VERSION
 // void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 // {
 // 	int			i;
 
-// 	i = 0;
-// 	while (i < rules->n_philos)
+// 	i = rules->n_philos - 1;
+// 	while (i >= 0)
 // 	{
-// 		if (pthread_create(&philos[rand_array[i]].thread, NULL, \
-// 		(void *)exe, &philos[rand_array[i]]))
+// 		if (pthread_create(&philos[rules->n_philos - 1 - i].thread, NULL,
+// 		(void *)exe, &philos[i]))
 // 		{
 // 			(*rules->error)++;
-// 			error_thread(&philos[rand_array[i]], 0);
+// 			error_thread(&philos[i], 0);
 // 			return ;
 // 		}
-// 		i++;
+// 		i--;
 // 	}
 // 	i = 0;
 // 	while (i < rules->n_philos)
 // 	{
-// 		if (pthread_join(philos[rand_array[i]].thread, NULL))
+// 		if (pthread_join(philos[i].thread, NULL))
 // 		{
 // 			(*rules->error)++;
 // 			return ;

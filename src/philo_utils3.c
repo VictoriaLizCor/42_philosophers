@@ -49,10 +49,10 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 		if (D_PHI == 1)
 			print_action(philo, time);
 		if (D_PHI == 0)
-			printf(" %03lld\t%sphilo [%03d] %s %s\n\n", \
+			printf(" %03lld %s philo [%03d] %s %s\n\n", \
 			ms, font(i), i, font(0), msg);
 		else
-			printf(" %03lld [%lld]\t%sphilo [%03d] %s %s\n\n", \
+			printf(" %03lld [%lld] %s philo [%03d] %s %s\n\n", \
 			ms, time, font(i), i, font(0), msg);
 	}
 	pthread_mutex_unlock(&rules->lock[PRINT]->lock);
@@ -69,18 +69,15 @@ bool	dead(t_rules *rules, t_philo *philo)
 	if (!check_mutex(rules->lock[DEAD]))
 	{
 		time = t_mu_s(rules->t_start);
-		t_aux = (time / 10000);
+		t_aux = (time / 1000) * 1000;
 		last_meal = time - philo->t_meal;
 		m_aux = (last_meal / 1000) * 1000;
-		if (rules->t_die < m_aux)
+		if (rules->t_die < last_meal)
 		{
 			lock_mutex(rules->lock[DEAD]);
-			t_aux = (t_mu_s(philo->t_start) / 1000) * 1000;
 			if (!check_mutex(rules->lock[PRINT]))
 			{
 				print_msg(philo, P_DEAD, time);
-				printf("\t\ttime {%lld} last_meal [%lld]\n", time, last_meal);
-				printf("\t\ttime {%lld} last_meal [%lld]\n\n", t_aux, m_aux);
 				lock_mutex(rules->lock[PRINT]);
 				debug_death(philo, rules, t_aux, time);
 			}

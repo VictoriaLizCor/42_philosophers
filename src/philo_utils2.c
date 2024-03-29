@@ -28,8 +28,6 @@ void	sleep_think_utils(t_philo *philo, t_rules *rules)
 	next_meal = (next_meal / 1000) * 1000;
 	if (D_PHI == 2 && !check_mutex(rules->lock[DEAD]))
 	{
-		printf("\t\t\t\t%s[%d] time[%lld]%s\n", \
-		warn(0), philo->id, time, font(0));
 		printf("\t\t\t\t%s[%d] last_meal[%lld]%s\n", \
 		font(philo->id), philo->id, last_meal, font(0));
 		printf("\t\t\t\t%s[%d] next_meal[%lld]%s\n", \
