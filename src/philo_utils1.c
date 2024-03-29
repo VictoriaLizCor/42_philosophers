@@ -45,8 +45,6 @@ static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 		if (!meal_done(rules, philo, true))
 			ft_usleep(rules, philo, -1, rules->t_eat);
 		unlock_mutex(&philo->left->fork);
-		if (philo->id == last->left->id)
-			debug_thread_check(philo, "UNLOCKING", font(13));
 		unlock_mutex(&philo->right->fork);
 		unlock_mutex(&philo->fork);
 		philo->action += 1;

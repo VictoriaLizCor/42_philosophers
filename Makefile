@@ -24,10 +24,10 @@ D			:= 0
 #------ Sanitizer ------#
 S			:= 1
 ifneq ($(D), 0)
-D_FLAGS		+= -O0 -g3
+D_FLAGS		+= -O0 -g3 -D D_PHI=$(D)
 endif	
 ifeq ($(S), 1)
-D_FLAGS		+= -D D_PHI=$(D) -pthread $(FLAGS) -fsanitize=thread,undefined,integer -fno-optimize-sibling-calls
+D_FLAGS		+= -pthread $(FLAGS) -fsanitize=thread,undefined,integer -fno-optimize-sibling-calls
 MAKEFLAGS	+= --debug
 else
 D_FLAGS		:= -pthread $(FLAGS) -fsanitize=address,undefined,integer -fno-optimize-sibling-calls
@@ -360,7 +360,7 @@ exn: $(NAME)
 	@echo ./philo n die eat sleep
 	./philo $n $d 200 200
 exn1: $(NAME)
-	$(eval EXN=$(shell echo $n 800 200 100 $m))
+	$(eval EXN=$(shell echo $n 800 200 200 $m))
 	@echo ./philo n die eat sleep
 	./philo $(EXN)
 	@echo ./philo $(EXN)

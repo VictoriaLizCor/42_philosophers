@@ -23,7 +23,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 			return ;
 		else if (time == 0)
 		{
-			if (limit < t_mu_s(rules->t_start) && !check_fork(philo))
+			if ((limit < t_mu_s(rules->t_start)) && !check_fork(philo))
 				return ((void)debug_thread_check(philo, "BACK", font(12)));
 		}
 		else if (time > 0 && (limit < t_mu_s(rules->t_start) - philo->sleep))

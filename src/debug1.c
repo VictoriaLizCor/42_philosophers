@@ -36,9 +36,9 @@ void	debug_thread_check(t_philo *philo, char *msg, char *col)
 		return ;
 	if (!check_mutex(philo->rules->lock[DEAD]))
 	{
+		pthread_mutex_lock(&philo->rules->lock[PRINT]->lock);
 		time = t_mu_s(philo->rules->t_start);
 		ms = time / (t_ll)1000;
-		pthread_mutex_lock(&philo->rules->lock[PRINT]->lock);
 		printf(" %03lld [%lld]\t\t\t\t\t\t\t\t\t\t%s %s %s-> [%d]{%d}\n", \
 		ms, time, col, msg, font(0), philo->id, philo->action);
 		pthread_mutex_unlock(&philo->rules->lock[PRINT]->lock);

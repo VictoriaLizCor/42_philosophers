@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/28 16:29:16 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/29 17:58:38 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	lock_mutex(t_mutex *mutex)
 
 void	unlock_mutex(t_mutex *mutex)
 {
-	pthread_mutex_lock(&mutex->lock); 
+	pthread_mutex_lock(&mutex->lock);
 	mutex->stat = false;
 	pthread_mutex_unlock(&mutex->lock);
 }
@@ -38,10 +38,7 @@ bool	check_fork(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->fork.lock); 
 	if (philo->fork.stat == 1)
-	{
-		pthread_mutex_unlock(&philo->fork.lock);
-		return (true);
-	}
+		return ((void)pthread_mutex_unlock(&philo->fork.lock), true);
 	return ((void)pthread_mutex_unlock(&philo->fork.lock), false);
 }
 
