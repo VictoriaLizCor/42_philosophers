@@ -1,6 +1,0 @@
-Philosophers:
-
-* Check dead inside ft_usleep								[1]
-* Check n_meal of Philosopher								[0]
-* Change to random array									[1]
-* in case of philo == n_philos  avoid eating for previous	[0]
