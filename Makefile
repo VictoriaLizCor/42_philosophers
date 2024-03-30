@@ -1,6 +1,9 @@
+#------ TARGET ------#
 NAME		:= philo
-FLAGS		:= -Wall -Wextra #-Werror
+#------ WFLAGS ------#
+DFLAGS		:= -Wall -Wextra #-Werror
 INCLUDES	+= -I include/
+#------ SRC FILES & DIRECTORIES ------#
 SRCS_DIR	:= src/
 SRCS		:=	main_philo.c		\
 				philo_utils1.c		\
@@ -12,51 +15,82 @@ SRCS		:=	main_philo.c		\
 				libft_2.c			\
 				sync_functions.c	\
 				debug1.c			
-SRCS		:= $(addprefix $(SRCS_DIR), $(SRCS))
-MAKEFLAGS	+= --no-print-directory
-VALGRIND	:= valgrind -q --leak-check=yes --show-leak-kinds=all
-HELGRIND	:= valgrind -q --tool=helgrind
-LDLIBS		:= -lpthread
-DEBUG_DIR	:= $(NAME).dSYM
-# CC			= cc
 #------ DEBUG ------#
 D			:= 0
 #------ Sanitizer ------#
-S			:= 1
+S			:= -1
+#------ DEBUG UTILS ------#
+MAKEFLAGS	+= --no-print-directory
+VALGRIND	:= valgrind --leak-check=yes --show-leak-kinds=all
+HELGRIND	:= valgrind -q --tool=helgrind
+MAC_LEAKS	:= leaks -atExit --
+BUILD_DIR	:= .build/
+DEBUG_DIR	:= $(NAME).dSYM
+#------ ADDING DEBUG FLAGS ------#
 ifneq ($(D), 0)
-D_FLAGS		+= -O0 -g3 -D D_PHI=$(D)
-endif	
-ifeq ($(S), 1)
-D_FLAGS		+= -pthread $(FLAGS) -fsanitize=thread,undefined,integer -fno-optimize-sibling-calls
-MAKEFLAGS	+= --debug
+D_FLAGS		+= -D D_PHI=$(D)
+endif
+ifeq ($(S), -1)
+#MAKEFLAGS	+= --debug
+OBJS		:= $(addprefix $(SRCS_DIR), $(SRCS))
 else
-D_FLAGS		:= -pthread $(FLAGS) -fsanitize=address,undefined,integer -fno-optimize-sibling-calls
+#------CODE FOR OBJECT FILES------#
+SRCS		:= $(SRCS:%=$(SRC_DIR)%)
+OBJS		:= $(SRCS:$(SRC_DIR)%.c=$(BUILD_DIR)%.o)
+DEPS		:= $(OBJS:.o=.d)
+endif
+#------ Include flags for Sanitizer ------#
+ifeq ($(S), 1)
+D_FLAGS		+= -O0 -g3 -pthread -fsanitize=thread,undefined,integer -fno-optimize-sibling-calls
+endif
+ifeq ($(S), 0)
+D_FLAGS		+= -O0 -g3 -pthread -fsanitize=address,undefined,integer -fno-optimize-sibling-calls
 endif
 
+#------ RULES ------#
 all: $(NAME)
-$(NAME): $(SRCS)
-	@printf "\n$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
+
+$(NAME): $(OBJS)
+ifneq ($(S), -1)
+	@printf "$(LF)\n🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀$(FG_TEXT)\n"
+endif
+	@printf "\n"
+	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ 📚\n"
 	@echo $(GREEN)
 	@printf "$(CC) $(D_FLAGS) $(INCLUDES) $^ -o $@ \n\n";
-	@$(CC) $(D_FLAGS) $(INCLUDES) $^ -o $@
+	@$(CC) -g $(DFLAGS) $(INCLUDES) -pthread  $^ -o $(NAME)
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
+ifneq ($(S), -1)
+$(OBJS): $(BUILD_DIR)%.o : $(SRCS_DIR)%.c | $(BUILD_DIR)
+	@$(CC) -g $(DFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
+	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW) $< $(FG_TEXT)"
+
+$(BUILD_DIR):
+	@mkdir -p $@
+endif
+# $(if [ -d "$(DEBUG_DIR)" ], rm -rf $(DEBUG_DIR))
 clean:
 	@echo $(RED)
-#	$(if [ -d "$(DEBUG_DIR)" ], rm -rf $(DEBUG_DIR))
+	@if [ -d "$(BUILD_DIR)" ]; then	\
+		rm -rf $(BUILD_DIR); 		\
+		printf "$(LF)🧹🗑️ $(P_RED) Clean $(P_YELLOW)$(NAME)'s Object files$(P_NC)\n"; \
+	fi
 	@if [ -d "$(DEBUG_DIR)" ]; then	\
-		rm -rf philo.dSYM; 		\
+		rm -rf $(DEBUG_DIR); 		\
 	fi
 	@printf  "\n$(P_NC)"
 
-fclean:	clean
+fclean:clean
 		@printf "$(LF)🧹🗑️ $(P_RED) Clean $(P_GREEN)$(NAME)\n"
 		@rm -rf $(NAME)
 		@echo $(TRASH_BANNER)
 		@printf "\n$(P_NC)"
 
 re: fclean all
+# $(MAKE) fclean
+# $(MAKE) all
 
 .PHONY: all clean fclean re
 
@@ -164,18 +198,24 @@ CYAN = "\033[0;1;36m"
 PHILO_BANNER = "$$PHILO"
 TRASH_BANNER = "$$TRASH"
 
+#------------- TEST UTILS -----------------------------------#
+start:$(NAME)
+	@echo $(GREEN)./$(NAME) $(arg) $(NOCOLOR)
+	$(if $(arg), @-./$(NAME) $(arg), \
+		@printf "Input Example: \n\t make val arg=\"2 410 200 200\"\n")
+val:$(NAME)
+	@echo $(RED) $(VALGRIND) ./$(NAME) $(arg) $(NOCOLOR)
+	$(if $(arg), -$(VALGRIND) ./$(NAME) $(arg), \
+		@printf "Input Example: \n\t make val arg=\"2 410 200 200\"\n")
+hel:$(NAME)
+	@echo $(BLUE) $(HELGRIND) ./$(NAME) $(arg) $(NOCOLOR)
+	$(if $(arg), -$(HELGRIND) ./$(NAME) $(arg), \
+		@printf "Input Example: \n\t make hel arg=\"2 410 200 200\"\n")
+debug:
+	@make re -C . D=$d S=$s
+test_eval: $(NAME)
+	-bash test/eval.sh
 #------------- TEST CASES -----------------------------------#
-start: $(NAME)
-	$(if $(arg), -./$(NAME) $(arg), \
-		@printf "Input Example: \n\t make run arg=\"2 410 200 200\"\n")
-d0:
-	@make re -C . D=0 S=1
-d1:
-	@make re -C . D=1 S=1
-d2:
-	@make re -C . D=2 S=1
-S0:
-	@make re -C . D=0 S=0
 r1:$(NAME)
 	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100))

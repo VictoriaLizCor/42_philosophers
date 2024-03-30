@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/29 12:42:27 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/03/30 16:25:21 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,9 @@ void	ft_sync(t_philo *philo, int m, void (*func)(t_rules *r, t_philo *p))
 		rules->t_start = get_time();
 	while (rules->n_philos > 1)
 	{
-		if (check_mutex(rules->lock[m]))
-			break ;
 		pthread_mutex_lock(&rules->lock[m]->lock);
+		if (rules->lock[m]->stat == 1)
+			break ;
 		if (!limit++)
 			sum++;
 		if (rules->lock[m]->stat == 0 && sum == rules->n_philos)
@@ -92,6 +92,7 @@ void	ft_sync(t_philo *philo, int m, void (*func)(t_rules *r, t_philo *p))
 		}
 		pthread_mutex_unlock(&rules->lock[m]->lock);
 	}
+	pthread_mutex_unlock(&rules->lock[m]->lock);
 }
 
 // void	get_max_delay(t_rules *rules, t_philo *philo)

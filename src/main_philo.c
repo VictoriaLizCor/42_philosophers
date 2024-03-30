@@ -107,6 +107,7 @@ int	main(int argc, char **argv, char **env)
 	if (argc == 5 || argc == 6)
 	{
 		check_arguments(argv, &error);
+		printf("\n");
 		if (!error)
 			begin_hunger_games(argv, &error);
 	}

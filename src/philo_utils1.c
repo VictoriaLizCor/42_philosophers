@@ -44,6 +44,8 @@ static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 		print_msg(philo, P_EAT, 0);
 		if (!meal_done(rules, philo, true))
 			ft_usleep(rules, philo, -1, rules->t_eat);
+		if (philo->right->id == last->id)
+			debug_thread_check(philo, "UNLOCKING", font(13));
 		unlock_mutex(&philo->left->fork);
 		unlock_mutex(&philo->right->fork);
 		unlock_mutex(&philo->fork);
@@ -79,6 +81,7 @@ static void	exe(t_philo *philo)
 		if (check_mutex(rules->lock[DEAD]) || check_mutex(rules->lock[MEAL]))
 			return ;
 	}
+	pthread_exit(NULL);
 }
 
 // REAL VERSION
@@ -86,27 +89,27 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
 	int			i;
 
-	i = 0;
-	while (i < rules->n_philos)
+	i = -1;
+	while (++i < rules->n_philos)
 	{
 		if (pthread_create(&philos[rand_array[i]].thread, NULL, \
 		(void *)exe, &philos[rand_array[i]]))
 		{
 			(*rules->error)++;
 			error_thread(&philos[rand_array[i]], 0);
+			while (i--)
+				pthread_join(philos[rand_array[i]].thread, NULL);
 			return ;
 		}
-		i++;
 	}
-	i = 0;
-	while (i < rules->n_philos)
+	i = -1;
+	while (++i < rules->n_philos)
 	{
 		if (pthread_join(philos[rand_array[i]].thread, NULL))
 		{
 			(*rules->error)++;
 			return ;
 		}
-		i++;
 	}
 }
 
