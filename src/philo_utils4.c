@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/29 17:58:38 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/04/02 11:07:56 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	lock_mutex(t_mutex *mutex)
 {
 	pthread_mutex_lock(&mutex->lock); 
-	mutex->stat = true;
+	mutex->stat = 1;
 	pthread_mutex_unlock(&mutex->lock);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/03/30 16:25:21 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/04/02 12:16:58 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,12 @@ void	init_sync(t_rules *rules, t_philo *philo)
 	t_philo	*next;
 	int		i;
 
-	i = 1;
+	i = 0;
 	rules->last = philo->left;
 	next = philo;
 	if (rules->odd)
 		rules->last->t_aux = 1;
-	while (i < rules->n_philos)
+	while (++i < rules->n_philos)
 	{
 		if (i % 2 == 1 && D_PHI != 0)
 			printf("\t %s [%d]", font(3), next->id);
@@ -59,7 +59,8 @@ void	init_sync(t_rules *rules, t_philo *philo)
 			next->action = 0;
 		else if (rules->odd)
 			next->t_aux = 2;
-		i++;
+		if (next->t_extra > rules->extra)
+			rules->extra = next->t_extra;
 		next = next->right;
 	}
 	if (D_PHI != 0)
@@ -67,32 +68,32 @@ void	init_sync(t_rules *rules, t_philo *philo)
 	rules->t_start = get_time();
 }
 
-void	ft_sync(t_philo *philo, int m, void (*func)(t_rules *r, t_philo *p))
+void	harm(t_philo *p, int m, int *s, void (*f)(t_rules *r, t_philo *p))
 {
-	static int	sum;
+	int			*sum;
 	bool		limit;
 	t_rules		*rules;
 
-	rules = philo->rules;
-	limit = 0;
+	rules = p->rules;
+	sum = s;
 	if (rules->n_philos == 1)
-		rules->t_start = get_time();
-	while (rules->n_philos > 1)
+		return ;
+	limit = 0;
+	while (1)
 	{
 		pthread_mutex_lock(&rules->lock[m]->lock);
-		if (rules->lock[m]->stat == 1)
-			break ;
+		if (rules->lock[m]->stat == 1 && *sum == 0)
+			return ((void)pthread_mutex_unlock(&rules->lock[m]->lock));
 		if (!limit++)
-			sum++;
-		if (rules->lock[m]->stat == 0 && sum == rules->n_philos)
+			(*sum)++;
+		if (rules->lock[m]->stat == 0 && *sum == rules->n_philos)
 		{
 			rules->lock[m]->stat = 1;
-			func(rules, philo);
-			sum = 0;
+			f(rules, p);
+			*sum = 0;
 		}
 		pthread_mutex_unlock(&rules->lock[m]->lock);
 	}
-	pthread_mutex_unlock(&rules->lock[m]->lock);
 }
 
 // void	get_max_delay(t_rules *rules, t_philo *philo)
@@ -101,10 +102,10 @@ void	ft_sync(t_philo *philo, int m, void (*func)(t_rules *r, t_philo *p))
 // 	t_philo		*next;
 // 	int			i;
 
-// 	i = 0;
+// 	i = 1;
 // 	extra = 0;
-// 	printf("philo start{%d} | {%d}\n", rules->last->right->id, philo->id);
-// 	next = rules->last->right;
+// 	rules->last = philo->left;
+// 	next = philo->right;
 // 	while (i < rules->n_philos)
 // 	{
 // 		if (next->t_extra > extra)

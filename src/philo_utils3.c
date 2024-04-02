@@ -44,17 +44,14 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 	if (time == 0)
 		time = t_mu_s(rules->t_start);
 	ms = time / 1000;
-	if (!rules->lock[PRINT]->stat)
-	{
-		if (D_PHI == 1)
-			print_action(philo, time);
-		if (D_PHI == 0)
-			printf(" %03lld %s philo [%03d] %s %s\n\n", \
-			ms, font(i), i, font(0), msg);
-		else
-			printf(" %03lld [%lld] %s philo [%03d] %s %s\n\n", \
-			ms, time, font(i), i, font(0), msg);
-	}
+	if (D_PHI == 1 && !rules->lock[PRINT]->stat)
+		print_action(philo, time);
+	if (D_PHI == 0 && !rules->lock[PRINT]->stat)
+		printf(" %03lld %s philo [%03d] %s %s\n\n", \
+		ms, font(i), i, font(0), msg);
+	else if (!rules->lock[PRINT]->stat)
+		printf(" %03lld [%lld] %s philo [%03d] %s %s\n\n", \
+		ms, time, font(i), i, font(0), msg);
 	pthread_mutex_unlock(&rules->lock[PRINT]->lock);
 }
 
@@ -65,14 +62,13 @@ bool	dead(t_rules *rules, t_philo *philo)
 	t_ll	t_aux;
 	t_ll	m_aux;
 
-	t_aux = 0;
 	if (!check_mutex(rules->lock[DEAD]))
 	{
 		time = t_mu_s(rules->t_start);
 		t_aux = (time / 1000) * 1000;
 		last_meal = time - philo->t_meal;
 		m_aux = (last_meal / 1000) * 1000;
-		if (rules->t_die < last_meal)
+		if (rules->t_die < m_aux)
 		{
 			lock_mutex(rules->lock[DEAD]);
 			if (!check_mutex(rules->lock[PRINT]))

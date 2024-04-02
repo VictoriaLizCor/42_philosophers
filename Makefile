@@ -1,7 +1,7 @@
 #------ TARGET ------#
 NAME		:= philo
 #------ WFLAGS ------#
-DFLAGS		:= -Wall -Wextra #-Werror
+D_FLAGS		= -Wall -Wextra -Werror
 INCLUDES	+= -I include/
 #------ SRC FILES & DIRECTORIES ------#
 SRCS_DIR	:= src/
@@ -16,9 +16,9 @@ SRCS		:=	main_philo.c		\
 				sync_functions.c	\
 				debug1.c			
 #------ DEBUG ------#
-D			:= 0
+D			= 0
 #------ Sanitizer ------#
-S			:= -1
+S			= -1
 #------ DEBUG UTILS ------#
 MAKEFLAGS	+= --no-print-directory
 VALGRIND	:= valgrind --leak-check=yes --show-leak-kinds=all
@@ -28,7 +28,7 @@ BUILD_DIR	:= .build/
 DEBUG_DIR	:= $(NAME).dSYM
 #------ ADDING DEBUG FLAGS ------#
 ifneq ($(D), 0)
-D_FLAGS		+= -D D_PHI=$(D)
+D_FLAGS		+= -g -D D_PHI=$(D)
 endif
 ifeq ($(S), -1)
 #MAKEFLAGS	+= --debug
@@ -58,14 +58,14 @@ endif
 	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ 📚\n"
 	@echo $(GREEN)
 	@printf "$(CC) $(D_FLAGS) $(INCLUDES) $^ -o $@ \n\n";
-	@$(CC) -g $(DFLAGS) $(INCLUDES) -pthread  $^ -o $(NAME)
+	@$(CC) $(D_FLAGS) $(INCLUDES) -pthread  $^ -o $(NAME)
 	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
 	@echo $(PHILO_BANNER)
 
 ifneq ($(S), -1)
 $(OBJS): $(BUILD_DIR)%.o : $(SRCS_DIR)%.c | $(BUILD_DIR)
-	@$(CC) -g $(DFLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
-	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW) $< $(FG_TEXT)"
+	@$(CC) $(D_FLAGS) $(INCLUDES) -MMD -MP -c $< -o $@
+#	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW) $< $(FG_TEXT)"
 
 $(BUILD_DIR):
 	@mkdir -p $@
@@ -93,23 +93,6 @@ re: fclean all
 # $(MAKE) all
 
 .PHONY: all clean fclean re
-
-# use mode: make error r="rule" #
-# try to catch error
-# $(if $(arg), -./$(NAME) $(arg), \
-# 	@printf "Input Example: \n\t make run arg=\"2 410 200 200\"\n")
-error:
-# bash -c "trap 'trap $(MAKE) $r - SIGINT SIGTERM ERR; \
-# exit 1' SIGINT SIGTERM ERR;\
-# printf \"$(P_RED) INTERRUPTED $(P_NC)\n\""
-#bash -c "trap '$(MAKE) $r' - SIGINT SIGTERM ERR; printf \"$(P_RED) INTERRUPTED $(P_NC)\n\""
-	@echo ECXIT $$EC
-	$(if $(EC), \
-		@printf "EXIT CODE $(EC)\n" \
-		@printf "$(P_RED) INTERRUPTED $(P_NC)\n")
-	
-# @bash -c "trap 'trap - SIGINT SIGTERM ERR; exit 1' SIGINT SIGTERM ERR; $(MAKE) error_msg"
-
 
 define PHILO
 
@@ -171,7 +154,8 @@ git:	fclean
 		@echo $(YELLOW) && git push
 
 norm:
-	@norminette ./src | grep -v "OK" || true
+	@printf "$(P_GREEN)norminette ./src ./include $(NC)\n"
+	@norminette ./src ./include | grep "Error" --color || echo $(GREEN)OK$(E_NC)
 
 #--------------------COLORS----------------------------#
 CL_BOLD = \e[1m
@@ -193,22 +177,22 @@ RED = "\033[1;91m"
 GREEN = "\033[1;32m"
 BLUE = "\033[1;34m"
 YELLOW = "\033[1;33m"
-NOCOLOR	= "\033[m"
+E_NC	= "\033[m"
 CYAN = "\033[0;1;36m"
 PHILO_BANNER = "$$PHILO"
 TRASH_BANNER = "$$TRASH"
 
 #------------- TEST UTILS -----------------------------------#
 start:$(NAME)
-	@echo $(GREEN)./$(NAME) $(arg) $(NOCOLOR)
-	$(if $(arg), @-./$(NAME) $(arg), \
+	@echo $(GREEN)./$(NAME) $(arg) $(E_NC)
+	$(if $(arg), -./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make val arg=\"2 410 200 200\"\n")
 val:$(NAME)
-	@echo $(RED) $(VALGRIND) ./$(NAME) $(arg) $(NOCOLOR)
+	@echo $(RED) $(VALGRIND) ./$(NAME) $(arg) $(E_NC)
 	$(if $(arg), -$(VALGRIND) ./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make val arg=\"2 410 200 200\"\n")
 hel:$(NAME)
-	@echo $(BLUE) $(HELGRIND) ./$(NAME) $(arg) $(NOCOLOR)
+	@echo $(BLUE) $(HELGRIND) ./$(NAME) $(arg) $(E_NC)
 	$(if $(arg), -$(HELGRIND) ./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make hel arg=\"2 410 200 200\"\n")
 debug:
@@ -232,25 +216,25 @@ r21:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 rbig1:$(NAME)
-	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 11 300 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
 rbig1_e:$(NAME)
-	$(eval PHILO=$(shell seq 11 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 11 300 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) + 1)) 800 200 100 10))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
 rbig2:$(NAME)
-	$(eval PHILO=$(shell seq 5 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 5 300 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
 rbig2_e:$(NAME)
-	$(eval PHILO=$(shell seq 5 100 | sort -R | tail -n 1 | tr '\n' ' '))
+	$(eval PHILO=$(shell seq 5 300 | sort -R | tail -n 1 | tr '\n' ' '))
 	$(eval NUM = $(shell echo $$(($(PHILO) * 2)) 800 200 100 10))
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
@@ -291,114 +275,6 @@ ran_err:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
-ex1:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 1 210 100 100
-ex1_e:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 1 210 100 100 2
-ex2:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 310 200 100
-ex21:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 400 200 100
-ex2_1:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 401 200 100
-ex2_1e:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 401 200 100 3
-ex2_1e1:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 401 200 50 3
-ex22:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 410 200 200
-ex22_e:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 410 200 200 2
-ex23:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 310 200 100
-ex24:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 800 100 200
-ex25:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 2 400 100 101
-ex3:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 3 410 200 200
-ex32:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 3 800 200 200
-ex31:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 3 900 300 100
-ex32_e:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 3 800 200 200 2
-ex4:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 4 310 200 100
-ex41:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 4 400 200 100
-ex4_1:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 4 401 200 100
-ex42:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 4 410 200 200
-ex42_e:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 4 410 200 200 2
-ex43:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 4 410 300 100
-ex5:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 5 800 200 200
-ex5_e:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 5 800 200 200 2
-	@echo ./philo 5 800 200 200 2
-ex10:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 10 600 300 100
-ex101:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 10 410 300 100
-	@echo ./philo 10 410 300 100
-ex102:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 10 410 200 200
-	@echo ./philo 10 410 200 200
-ex103:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 10 410 300 100
-	@echo ./philo 10 410 300 100
-ex10_e:$(NAME)
-	$(eval EAT=$(shell seq 1 3 | sort -R | tail -n 1 | tr '\n' ' '))
-	@echo ./philo n die eat sleep
-	./philo 10 800 200 200 $(EAT)
-	echo ./philo 10 800 200 200 $(EAT)
-ex_11:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 11 600 300 100
-ex1001:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 100 410 200 200
-ex3001:$(NAME)
-	@echo ./philo n die eat sleep
-	./philo 300 410 200 200
-exnt: $(NAME)
-	@echo ./philo n die eat sleep
-	./philo $n 61 10 50
-exn: $(NAME)
-	@echo ./philo n die eat sleep
-	./philo $n $d 200 200
 exn1: $(NAME)
 	$(eval EXN=$(shell echo $n 800 200 200 $m))
 	@echo ./philo n die eat sleep
@@ -451,29 +327,18 @@ top:$(NAME)
 # 	git push 
 # git log --pretty="%C(Yellow)%h  %C(reset)%ad (%C(Green)%cr%C(reset)) %C(Cyan)%an: %C(reset)%s" --date=short
 
-#------CODE FOR OBJECT FILES------#
-# OBJS_DIR = obj/
-# OBJS = $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
-## OBJS = $(patsubst %.c,$(OBJDIR)%.o, $(addprefix $(SRCS_DIR),$(SRCS)))
-## $(addprefix $(SRCS_DIR), $(SRCS))
-
-#$(NAME): $(OBJS)
-#	@printf "$(LF)\n🚀 $(P_BLUE)Successfully Created $(P_YELLOW)$(NAME)'s Object files 🚀$(FG_TEXT)\n"
-#	@printf "\n"
-#	@printf "$(LF)📚 $(P_BLUE)Create $(P_GREEN)$@ ! 📚\n"
-#	@echo $(GREEN)
-#	$(CC) -g $(D_SAN) $(INCLUDES) $^ -pthread -o $(NAME)
-#	@printf "\n$(LF)🎉 $(P_BLUE)Successfully Created $(P_GREEN)$@! 🎉\n$(P_NC)"
-#	@echo $(PHILO_BANNER)
-
-## creating object files
-## $(OBJS): $(OBJDIR)/%.o: %.c | $(objdirs)
-##	$(CC) -c $< -o $@
-
-# $(OBJS): $(OBJS_DIR)%.o : $(SRCS_DIR)%.c | $(OBJS_DIR)
-# 	@$(CC) -g $(D_SAN) $(INCLUDES) -c $< -pthread -o $@
-# 	@printf "$(LF)🚧 $(P_BLUE)Creating $(P_YELLOW)$@ $(P_BLUE)from $(P_YELLOW)$< $(FG_TEXT)"
-
-# $(OBJS_DIR):
-# 	@mkdir -p $@
-#------------#
+# use mode: make error r="rule" #
+# try to catch error
+# $(if $(arg), -./$(NAME) $(arg), \
+# 	@printf "Input Example: \n\t make run arg=\"2 410 200 200\"\n")
+error:
+# bash -c "trap 'trap $(MAKE) $r - SIGINT SIGTERM ERR; \
+# exit 1' SIGINT SIGTERM ERR;\
+# printf \"$(P_RED) INTERRUPTED $(P_NC)\n\""
+#bash -c "trap '$(MAKE) $r' - SIGINT SIGTERM ERR; printf \"$(P_RED) INTERRUPTED $(P_NC)\n\""
+	@echo ECXIT $$EC
+	$(if $(EC), \
+		@printf "EXIT CODE $(EC)\n" \
+		@printf "$(P_RED) INTERRUPTED $(P_NC)\n")
+	
+# @bash -c "trap 'trap - SIGINT SIGTERM ERR; exit 1' SIGINT SIGTERM ERR; $(MAKE) error_msg"

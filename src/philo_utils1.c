@@ -37,7 +37,6 @@ static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 		lock_mutex(&philo->left->fork);
 		print_msg(philo, P_FORK, 0);
 		debug_thread_check(philo, "LOCKING", font(14));
-		philo->r_meal = get_time();
 		philo->n_meals++;
 		usleep(10);
 		philo->t_meal = t_mu_s(rules->t_start);
@@ -65,9 +64,11 @@ static void	exe(t_philo *philo)
 	t_rules		*rules;
 
 	rules = philo->rules;
-	ft_sync(philo, START, init_sync);
-	philo->t_start = get_time();
 	philo->t_extra = t_mu_s(rules->t_start);
+	if (rules->n_philos == 1)
+		rules->t_start = get_time();
+	harm(philo, START, &rules->sum1, init_sync);
+	philo->t_start = get_time();
 	if (check_value(philo, &philo->action, '=', 0))
 		print_msg(philo, P_THINK, 0);
 	while (1)
@@ -84,12 +85,12 @@ static void	exe(t_philo *philo)
 	pthread_exit(NULL);
 }
 
-// REAL VERSION
 void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 {
-	int			i;
+	int	i;
 
 	i = -1;
+	rules->t_start = get_time();
 	while (++i < rules->n_philos)
 	{
 		if (pthread_create(&philos[rand_array[i]].thread, NULL, \
@@ -103,7 +104,7 @@ void	start_threads(t_philo *philos, t_rules *rules, int *rand_array)
 		}
 	}
 	i = -1;
-	while (++i < rules->n_philos)
+	while (++i < rules->n_philos && !(*rules->error))
 	{
 		if (pthread_join(philos[rand_array[i]].thread, NULL))
 		{

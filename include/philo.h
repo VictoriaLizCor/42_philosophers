@@ -63,6 +63,8 @@ struct s_rules
 	t_mutex			**lock;
 	bool			odd;
 	int				*error;
+	int				sum1;
+	int				sum2;
 	struct s_philo	*last;
 };
 
@@ -74,7 +76,7 @@ struct	s_philo
 	int				n_meals;
 	t_ll			t_start;
 	t_ll			t_meal;
-	t_ll			r_meal;
+	t_ll			n_meal;
 	t_ll			sleep;
 	t_ll			t_aux;
 	t_ll			t_extra;
@@ -91,7 +93,7 @@ t_ll		get_time(void);
 t_ll		t_mu_s(t_ll start);
 void		get_max_delay(t_rules *rules, t_philo *philo);
 void		init_sync(t_rules *rules, t_philo *philo);
-void		ft_sync(t_philo *philo, int m, void (*f)(t_rules *r, t_philo *p));
+void		harm(t_philo *p, int m, int *s, void (*f)(t_rules *r, t_philo *p));
 /* libft1.c */
 size_t		ft_strlen(const char *str);
 int			ft_isdigit(int ch);

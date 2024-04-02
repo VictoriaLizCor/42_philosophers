@@ -15,30 +15,26 @@
 void	sleep_think_utils(t_philo *philo, t_rules *rules)
 {
 	t_ll	time;
-	t_ll	next_meal;
 	t_ll	last_meal;
 
 	time = (t_mu_s(rules->t_start) / 1000) * 1000;
 	last_meal = philo->t_meal;
 	if (last_meal == 0 && philo->right)
 		last_meal = -1 * (philo->t_aux * rules->t_eat);
-	next_meal = ((last_meal / 1000) * 1000) + (2 * rules->t_eat);
+	philo->n_meal = ((last_meal / 1000) * 1000) + (2 * rules->t_eat);
 	if (rules->odd)
-		next_meal = last_meal + (3 * rules->t_eat);
-	next_meal = (next_meal / 1000) * 1000;
+		philo->n_meal = last_meal + (3 * rules->t_eat);
+	philo->n_meal = (philo->n_meal / 1000) * 1000;
 	if (D_PHI == 2 && !check_mutex(rules->lock[DEAD]))
 	{
-		printf("\t\t\t\t%s[%d] last_meal[%lld]%s\n", \
-		font(philo->id), philo->id, last_meal, font(0));
-		printf("\t\t\t\t%s[%d] next_meal[%lld]%s\n", \
-		font(philo->id), philo->id, next_meal, font(0));
-		printf("\t\t\t\t%s[%d] next_meal - time \t\t[%lld]%s\n", \
-		font(philo->id), philo->id, next_meal - time, font(0));
+		printf("\t\t\t\t%s[%d]>n_meal - time => [%lld]-[%lld]=[%lld]%s\n", \
+		font(philo->id), philo->id, philo->n_meal, time, \
+		philo->n_meal - time, font(0));
 	}
-	if (!philo->right || next_meal - time >= rules->t_sleep)
+	if (!philo->right || philo->n_meal - time >= rules->t_sleep)
 		philo->action = 2;
 	else
-		ft_usleep(rules, philo, 0, next_meal);
+		ft_usleep(rules, philo, 0, philo->n_meal);
 }
 
 void	philo_neightbor(t_philo *philos, int i, int left, int right)
