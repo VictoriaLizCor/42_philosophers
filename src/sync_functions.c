@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/04/02 12:16:58 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/04/03 11:35:07 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,12 @@ void	init_sync(t_rules *rules, t_philo *philo)
 	rules->t_start = get_time();
 }
 
-void	harm(t_philo *p, int m, int *s, void (*f)(t_rules *r, t_philo *p))
+void	harm(t_philo *p, int m, int *sum, void (*f)(t_rules *r, t_philo *p))
 {
-	int			*sum;
 	bool		limit;
 	t_rules		*rules;
 
 	rules = p->rules;
-	sum = s;
 	if (rules->n_philos == 1)
 		return ;
 	limit = 0;
@@ -84,8 +82,11 @@ void	harm(t_philo *p, int m, int *s, void (*f)(t_rules *r, t_philo *p))
 		pthread_mutex_lock(&rules->lock[m]->lock);
 		if (rules->lock[m]->stat == 1 && *sum == 0)
 			return ((void)pthread_mutex_unlock(&rules->lock[m]->lock));
-		if (!limit++)
+		if (!limit)
+		{
 			(*sum)++;
+			limit = 1;
+		}
 		if (rules->lock[m]->stat == 0 && *sum == rules->n_philos)
 		{
 			rules->lock[m]->stat = 1;
