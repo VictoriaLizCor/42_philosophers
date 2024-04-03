@@ -75,9 +75,7 @@ static void	begin_hunger_games(char **argv, int *error)
 	t_rules			rules;
 	t_philo			*philos;
 	int				*ran_val;
-	int				i;
 
-	i = 0;
 	ran_val = NULL;
 	memset(&rules, 0, sizeof(t_rules));
 	rules.error = error;
