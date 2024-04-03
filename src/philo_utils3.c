@@ -28,7 +28,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 		}
 		else if (time > 0 && (limit < t_mu_s(rules->t_start) - philo->sleep))
 			return ;
-		usleep(200);
+		usleep(100);
 	}
 }
 
@@ -65,11 +65,13 @@ bool	dead(t_rules *rules, t_philo *philo)
 	{
 		time = t_mu_s(rules->t_start);
 		t_aux = (time / 1000) * 1000;
-		last_meal = time - philo->t_meal;
-		m_aux = ((last_meal / 1000) * 1000) - (2 * rules->extra);
-		if (rules->t_die < m_aux)
+		last_meal = t_aux - philo->t_meal;
+		m_aux = ((last_meal / 1000) * 1000) - rules->extra;
+		if (m_aux > rules->t_die)
 		{
 			lock_mutex(rules->lock[DEAD]);
+			printf("\t\t\tREAL TIME - last_meal = [%lld] > [%lld] = {%d}\n", \
+			m_aux, rules->t_die, m_aux > rules->t_die);
 			if (!check_mutex(rules->lock[PRINT]))
 			{
 				print_msg(philo, P_DEAD, time);

@@ -22,7 +22,7 @@ S			= -1
 #------ DEBUG UTILS ------#
 MAKEFLAGS	+= --no-print-directory
 VALGRIND	:= valgrind -s --leak-check=yes --show-leak-kinds=all
-HELGRIND	:= valgrind -q --tool=helgrind
+HELGRIND	:= valgrind -s --tool=helgrind
 MAC_LEAKS	:= leaks -atExit --
 BUILD_DIR	:= .build/
 DEBUG_DIR	:= $(NAME).dSYM
@@ -189,15 +189,15 @@ start: $(NAME)
 		@printf "Input Example: \n\t make val arg=\"2 410 200 200\"\n")
 val: $(NAME)
 	@echo $(RED) $(VALGRIND) ./$(NAME) $(arg) $(E_NC)
-	$(if $(arg), -$(VALGRIND) ./$(NAME) $(arg), \
+	@$(if $(arg), -$(VALGRIND) ./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make val arg=\"2 410 200 200\"\n")
 hel: $(NAME)
 	@echo $(BLUE) $(HELGRIND) ./$(NAME) $(arg) $(E_NC)
-	$(if $(arg), -$(HELGRIND) ./$(NAME) $(arg), \
+	@$(if $(arg), -$(HELGRIND) ./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make hel arg=\"2 410 200 200\"\n")
 leaks: $(NAME)
 	@echo $(YELLOW) $(MAC_LEAKS) ./$(NAME) $(arg) $(E_NC)
-	$(if $(arg), -$(MAC_LEAKS) ./$(NAME) $(arg), \
+	@$(if $(arg), -$(MAC_LEAKS) ./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make hel arg=\"2 410 200 200\"\n")
 
 debug:

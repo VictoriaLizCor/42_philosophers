@@ -82,28 +82,24 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll t_aux, t_ll rtime)
 	t_ll	m_aux;
 	t_ll	last_meal;
 
-	// if (D_PHI == 0)
-	// 	return ;
-	printf("\n\t\t\tturn =\t\t[%lld]\n", rtime / rules->t_eat);
+	if (D_PHI == 1)
+		return ;
 	printf("\n\t\t\tACTION =\t\t[%d]\n", philo->action);
-	printf("\t\t\tT_DEAD =\t\t[%lld]\n", rules->t_die);
 	printf("\t\t\tREAL TIME =\t\t[%lld]\n", rtime);
 	printf("\t\t\tT_AUX TIME =\t\t[%lld]\n", t_aux);
 	printf("\t\t\tP_MEAL =\t\t[%lld]\t\tP_SLEEP[%lld]\n", philo->t_meal, philo->sleep);
 	printf("\n");
 	printf("\t\t\tSLEEP = \t\t[%lld]\n", philo->sleep + rules->t_sleep);
-	last_meal = rtime - philo->t_meal;
+	last_meal = t_aux - philo->t_meal;
 	printf("\t\t\tLAST MEAL =\t\t[%lld]\n", last_meal);
+	m_aux = (last_meal / 1000) * 1000;
 	printf("\t\t\tREAL TIME - last_meal = [%lld] > [%lld] = {%d}\n", \
-	last_meal, rules->t_die, last_meal > rules->t_die);
-	m_aux = (last_meal / 1000) * 1000;
+	m_aux, rules->t_die, m_aux > rules->t_die);
 	printf("\t\t\tM_AUX = \t\t[%lld]\n", m_aux);
-	last_meal = rtime - philo->t_meal - rules->extra;
-	printf("\t\t\tLAST MEAL - extra =\t[%lld]\n", last_meal);
+	last_meal = t_aux - philo->t_meal - rules->extra;
+	m_aux = (last_meal / 1000) * 1000;
+	printf("\t\t\tREAL TIME - m_aux - extra = \t\t[%lld]\n", m_aux);
 	printf("\t\t\tNEXT MEAL =\t\t[%lld]\n", philo->n_meal);
-	m_aux = (last_meal / 1000) * 1000;
-	printf("\t\t\tM_AUX = \t\t[%lld]\n", m_aux);
-	printf("\n\t PEXTRA = %lld \n", philo->t_extra);
 	printf("\n\t EXTRA = %lld \n", rules->extra);
 }
 
