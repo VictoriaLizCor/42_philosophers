@@ -54,7 +54,7 @@ int	*random_non_repetive_values(int min, int max, int size)
 	int		tmp;
 	int		random_num;
 
-	array = (int *)calloc(size, sizeof(int));
+	array = (int *)malloc(size * sizeof(int));
 	memset(array, min - 1, sizeof(int) * (size));
 	i = 0;
 	random_num = min - 1;

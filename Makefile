@@ -183,18 +183,23 @@ PHILO_BANNER = "$$PHILO"
 TRASH_BANNER = "$$TRASH"
 
 #------------- TEST UTILS -----------------------------------#
-start:$(NAME)
+start: $(NAME)
 	@echo $(GREEN)./$(NAME) $(arg) $(E_NC)
 	$(if $(arg), -./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make val arg=\"2 410 200 200\"\n")
-val:$(NAME)
+val: $(NAME)
 	@echo $(RED) $(VALGRIND) ./$(NAME) $(arg) $(E_NC)
 	$(if $(arg), -$(VALGRIND) ./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make val arg=\"2 410 200 200\"\n")
-hel:$(NAME)
+hel: $(NAME)
 	@echo $(BLUE) $(HELGRIND) ./$(NAME) $(arg) $(E_NC)
 	$(if $(arg), -$(HELGRIND) ./$(NAME) $(arg), \
 		@printf "Input Example: \n\t make hel arg=\"2 410 200 200\"\n")
+leaks: $(NAME)
+	@echo $(YELLOW) $(MAC_LEAKS) ./$(NAME) $(arg) $(E_NC)
+	$(if $(arg), -$(MAC_LEAKS) ./$(NAME) $(arg), \
+		@printf "Input Example: \n\t make hel arg=\"2 410 200 200\"\n")
+
 debug:
 	@make re -C . D=$d S=$s
 test_eval: $(NAME)

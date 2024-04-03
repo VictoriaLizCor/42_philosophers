@@ -17,10 +17,10 @@ run()
 	echo "  >>> died <<<"
 	sleep 1
 
-	arg="5 800 200 200 7"
-	echo " > philo " $arg
-	sleep 1
-	$MAKE arg="$arg";
+	# arg="5 800 200 200 7"
+	# echo " > philo " $arg
+	# sleep 1
+	# $MAKE arg="$arg";
 
 	# arg="4 410 200 200 7"
 	# echo " > philo " $arg
@@ -46,8 +46,9 @@ run()
 	# sleep 2
 }
 
-# run "re val";
-# run "re hel";
+run "re leaks";
+run "re val";
 # run "re start";
 # run "D=0 S=0 re start";
-run "D=2 S=1 re start";
+# run "D=0 S=1 re start";
+# run "re hel";
