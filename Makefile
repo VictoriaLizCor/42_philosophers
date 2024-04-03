@@ -21,14 +21,14 @@ D			= 0
 S			= -1
 #------ DEBUG UTILS ------#
 MAKEFLAGS	+= --no-print-directory
-VALGRIND	:= valgrind --leak-check=yes --show-leak-kinds=all
+VALGRIND	:= valgrind -s --leak-check=yes --show-leak-kinds=all
 HELGRIND	:= valgrind -q --tool=helgrind
 MAC_LEAKS	:= leaks -atExit --
 BUILD_DIR	:= .build/
 DEBUG_DIR	:= $(NAME).dSYM
 #------ ADDING DEBUG FLAGS ------#
 ifneq ($(D), 0)
-D_FLAGS		+= -g -D D_PHI=$(D)
+D_FLAGS		+= -g3 -D D_PHI=$(D)
 endif
 ifeq ($(S), -1)
 #MAKEFLAGS	+= --debug
@@ -203,7 +203,7 @@ leaks: $(NAME)
 debug:
 	@make re -C . D=$d S=$s
 test_eval: $(NAME)
-	-bash test/eval.sh
+	-bash test/test_cases.sh
 #------------- TEST CASES -----------------------------------#
 r1:$(NAME)
 	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))

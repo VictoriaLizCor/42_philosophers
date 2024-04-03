@@ -47,8 +47,11 @@ run()
 }
 
 run "re leaks";
-run "re val";
-# run "re start";
-# run "D=0 S=0 re start";
-# run "D=0 S=1 re start";
+# run "re val";
+#
+run "re start";
+# with no debug and allocation sanitizers
+run "D=0 S=0 re start";
+# with no debug and thread sanitizers
+run "D=0 S=1 re start";
 # run "re hel";

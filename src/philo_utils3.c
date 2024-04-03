@@ -28,7 +28,7 @@ void	ft_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll limit)
 		}
 		else if (time > 0 && (limit < t_mu_s(rules->t_start) - philo->sleep))
 			return ;
-		usleep(10);
+		usleep(200);
 	}
 }
 
@@ -41,8 +41,7 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 	rules = philo->rules;
 	i = philo->id;
 	pthread_mutex_lock(&rules->lock[PRINT]->lock);
-	if (time == 0)
-		time = t_mu_s(rules->t_start);
+	time = t_mu_s(rules->t_start);
 	ms = time / 1000;
 	if (D_PHI == 1 && !rules->lock[PRINT]->stat)
 		print_action(philo, time);
@@ -67,7 +66,7 @@ bool	dead(t_rules *rules, t_philo *philo)
 		time = t_mu_s(rules->t_start);
 		t_aux = (time / 1000) * 1000;
 		last_meal = time - philo->t_meal;
-		m_aux = (last_meal / 1000) * 1000;
+		m_aux = ((last_meal / 1000) * 1000) - (2 * rules->extra);
 		if (rules->t_die < m_aux)
 		{
 			lock_mutex(rules->lock[DEAD]);

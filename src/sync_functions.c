@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 12:23:58 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/04/03 11:35:07 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/04/03 13:18:02 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	init_sync(t_rules *rules, t_philo *philo)
 		else if (rules->odd)
 			next->t_aux = 2;
 		if (next->t_extra > rules->extra)
-			rules->extra = next->t_extra;
+			rules->extra = next->t_extra + t_mu_s(rules->t_start);
 		next = next->right;
 	}
 	if (D_PHI != 0)

@@ -23,9 +23,9 @@ void	sleep_think_utils(t_philo *philo, t_rules *rules)
 		last_meal = -1 * (philo->t_aux * rules->t_eat);
 	philo->n_meal = ((last_meal / 1000) * 1000) + (2 * rules->t_eat);
 	if (rules->odd)
-		philo->n_meal = last_meal + (3 * rules->t_eat);
+		philo->n_meal = ((last_meal / 1000) * 1000) + (3 * rules->t_eat);
 	philo->n_meal = (philo->n_meal / 1000) * 1000;
-	if (D_PHI == 2 && !check_mutex(rules->lock[DEAD]))
+	if (D_PHI == 2 && !check_mutex(rules->lock[PRINT]))
 	{
 		printf("\t\t\t\t%s[%d]>n_meal - time => [%lld]-[%lld]=[%lld]%s\n", \
 		font(philo->id), philo->id, philo->n_meal, time, \

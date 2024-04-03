@@ -30,22 +30,23 @@ static void	sleep_think(t_philo *philo, t_rules *rules)
 
 static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 {
+	(void)last;
 	if (!check_fork(philo))
 	{
 		lock_mutex(&philo->fork);
 		lock_mutex(&philo->right->fork);
-		lock_mutex(&philo->left->fork);
 		print_msg(philo, P_FORK, 0);
 		debug_thread_check(philo, "LOCKING", font(14));
 		philo->n_meals++;
-		usleep(10);
 		philo->t_meal = t_mu_s(rules->t_start);
+		philo->n_meal = ((philo->t_meal / 1000) * 1000) + (2 * rules->t_eat);
+		if (rules->odd)
+			philo->n_meal = (philo->t_meal / 1000) * 1000 + (3 * rules->t_eat);
+		usleep(10);
 		print_msg(philo, P_EAT, 0);
 		if (!meal_done(rules, philo, true))
-			ft_usleep(rules, philo, -1, rules->t_eat);
-		if (philo->right->id == last->id)
-			debug_thread_check(philo, "UNLOCKING", font(13));
-		unlock_mutex(&philo->left->fork);
+			ft_usleep(rules, philo, -1, rules->t_eat - 10);
+		debug_thread_check(philo->right, "UNLOCKING", font(13));
 		unlock_mutex(&philo->right->fork);
 		unlock_mutex(&philo->fork);
 		philo->action += 1;

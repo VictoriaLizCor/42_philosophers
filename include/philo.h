@@ -35,22 +35,34 @@ typedef struct s_rules	t_rules;
 typedef struct s_philo	t_philo;
 // typedef t_ll			(*t_get_time)(t_rules *);
 
+/*! \file	include/philo.h
+  ** @brief	Enum array with mutexes
+*/
 typedef enum e_mutexes
 {
 	DEAD,
-	TIME,
 	PRINT,
 	START,
 	MEAL,
 	N_MUTEX
 }	t_mutexes;
 
+/*! @file	include/philo.h
+  ** \brief	Struct with mutex and boolean status variable
+  ** \param stat Boolean lock status
+  ** \param lock Lock mutex
+*/
 typedef struct s_mutex
 {
 	bool			stat;
 	pthread_mutex_t	lock;
 }	t_mutex;
 
+/*! @file	include/philo.h
+  ** \brief	Struct with mutex and boolean status variable
+  ** \param stat Boolean lock status
+  ** \param lock Lock mutex
+*/
 struct s_rules
 {
 	t_ll			t_start;
@@ -67,6 +79,7 @@ struct s_rules
 	int				sum2;
 	struct s_philo	*last;
 };
+
 
 struct	s_philo
 {
