@@ -17,10 +17,10 @@ run()
 	echo "  >>> died <<<"
 	sleep 1
 
-	# arg="5 800 200 200 7"
-	# echo " > philo " $arg
-	# sleep 1
-	# $MAKE arg="$arg";
+	arg="5 800 200 200 2"
+	echo " > philo " $arg
+	sleep 1
+	$MAKE arg="$arg";
 
 	# arg="4 410 200 200 7"
 	# echo " > philo " $arg
@@ -46,12 +46,15 @@ run()
 	# sleep 2
 }
 
-run "re leaks";
-# run "re val";
-#
-run "re start";
+# run "re start";
 # with no debug and allocation sanitizers
-run "D=0 S=0 re start";
-# with no debug and thread sanitizers
-run "D=0 S=1 re start";
-# run "re hel";
+# run "D=0 S=0 re start";
+# # with no debug and thread sanitizers
+# run "D=0 S=1 re start";
+unamestr=$(uname)
+if [[ "$unamestr" == 'Darwin' ]]; then
+   run "re leaks";
+elif [[ "$unamestr" == 'Linux' ]]; then
+	run "re val";
+	run "re hel";
+fi
