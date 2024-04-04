@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/04/04 12:56:24 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/04/04 12:59:08 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,9 @@ bool	check_value(t_philo *philo, int *val1, char op, int val2)
 void	adjust(t_philo *tmp, t_ll t_aux, t_ll *dead_meal)
 {
 	t_philo	left;
-	t_ll	left_unlock;
-
-	left_unlock = 0;
 	if (!tmp->left)
 		return ;
 	left = *(tmp->left);
-	left_unlock = left.t_meal + left.rules->t_eat - 10;
 	if (tmp->n_meal < t_aux)
 		*dead_meal -= t_aux - tmp->n_meal;
 }
