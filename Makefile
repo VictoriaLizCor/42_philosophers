@@ -41,10 +41,11 @@ DEPS		:= $(OBJS:.o=.d)
 endif
 #------ Include flags for Sanitizer ------#
 ifeq ($(S), 1)
-D_FLAGS		+= -O0 -g3 -pthread -fsanitize=thread,undefined,integer -fno-optimize-sibling-calls
+#D_FLAGS		+= -O0 -g3 -pthread -fsanitize=thread,undefined,integer -fno-optimize-sibling-calls
+D_FLAGS		+= -O0 -g3 -pthread -fsanitize=thread,undefined -fno-optimize-sibling-calls
 endif
 ifeq ($(S), 0)
-D_FLAGS		+= -O0 -g3 -pthread -fsanitize=address,undefined,integer -fno-optimize-sibling-calls
+D_FLAGS		+= -O0 -g3 -pthread -fsanitize=address,undefined -fno-optimize-sibling-calls
 endif
 
 #------ RULES ------#
