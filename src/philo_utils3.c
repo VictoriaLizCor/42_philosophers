@@ -65,7 +65,7 @@ bool	dead(t_rules *rules, t_philo *philo)
 	{
 		time = t_mu_s(rules->t_start);
 		t_aux = (time / 1000) * 1000;
-		dead_meal = time - philo->t_meal;
+		dead_meal = ((time - philo->t_meal) / 1000) * 1000;
 		if (philo->left && philo->n_meal < time)
 			dead_meal -= time - philo->n_meal;
 		if (dead_meal > rules->t_die)

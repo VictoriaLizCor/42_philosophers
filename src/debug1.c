@@ -85,9 +85,8 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll t_aux, t_ll rtime)
 	printf("\n\t\t\tACTION =\t\t[%d]\n", philo->action);
 	printf("\t\t\tREAL TIME =\t\t[%lld]\n", rtime);
 	printf("\t\t\tP_MEAL =\t\t[%lld]\t\tP_SLEEP[%lld]\n", philo->t_meal, philo->sleep);
-	printf("\t\t\tNEXT MEAL =\t\t[%lld] \t WAKEUP [%lld]\n", \
+	printf("\t\t\tNEXT MEAL =\t\t[%lld] \t WAKEUP [%lld]\n\n", \
 	philo->n_meal, philo->sleep + rules->t_sleep);
-	printf("\n");
 	if (philo->left)
 	{
 		left = *philo->left;
@@ -96,8 +95,9 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll t_aux, t_ll rtime)
 		left.id, left.t_meal + left.rules->t_eat - 10);
 	}
 	printf("\t\t\tT_AUX TIME =\t\t[%lld]\n", t_aux);
-	printf("\n");
-	dead_meal = ((t_aux - philo->t_meal) / 1000) * 1000;
+	dead_meal = (rtime - philo->t_meal);
+	printf("\t\t\tDEAD MEAL =\t\t[%lld]\n", dead_meal);
+	dead_meal = ((rtime - philo->t_meal) / 1000) * 1000;
 	printf("\t\t\tDEAD MEAL =\t\t[%lld]\n", dead_meal);
 	printf("\n\t\t\t EXTRA = %lld \n", rules->extra);
 }
