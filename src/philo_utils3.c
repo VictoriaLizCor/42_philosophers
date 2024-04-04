@@ -65,7 +65,8 @@ bool	dead(t_rules *rules, t_philo *philo)
 		time = t_mu_s(rules->t_start);
 		t_aux = (time / 1000) * 1000;
 		dead_meal = ((t_aux - philo->t_meal) / 1000) * 1000;
-		adjust(philo, t_aux, &dead_meal);
+		if (philo->left)
+			adjust(philo, t_aux, &dead_meal);
 		if (dead_meal > rules->t_die)
 		{
 			if (!check_mutex(rules->lock[PRINT]))
