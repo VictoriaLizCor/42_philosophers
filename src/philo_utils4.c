@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/04/04 12:19:48 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/04/04 12:50:29 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,5 @@ void	adjust(t_philo *tmp, t_ll t_aux, t_ll *dead_meal)
 	left = *(tmp->left);
 	left_unlock = left.t_meal + left.rules->t_eat - 10;
 	if (tmp->n_meal < t_aux)
-	{
 		*dead_meal -= t_aux - tmp->n_meal;
-	}
 }
