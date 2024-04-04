@@ -54,10 +54,6 @@ static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 }
 
 /*
-	if(fork-lock)
-		sleep and wake
-*/
-/*
   ** @brief
 */
 static void	exe(t_philo *philo)

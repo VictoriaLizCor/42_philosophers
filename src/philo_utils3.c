@@ -41,7 +41,8 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 	rules = philo->rules;
 	i = philo->id;
 	pthread_mutex_lock(&rules->lock[PRINT]->lock);
-	time = t_mu_s(rules->t_start);
+	if (time == 0)
+		time = t_mu_s(rules->t_start);
 	ms = time / 1000;
 	if (D_PHI == 1 && !rules->lock[PRINT]->stat)
 		print_action(philo, time);
@@ -64,9 +65,9 @@ bool	dead(t_rules *rules, t_philo *philo)
 	{
 		time = t_mu_s(rules->t_start);
 		t_aux = (time / 1000) * 1000;
-		dead_meal = ((t_aux - philo->t_meal) / 1000) * 1000;
-		if (philo->left && philo->n_meal < t_aux)
-			dead_meal -= t_aux - philo->n_meal;
+		dead_meal = time - philo->t_meal;
+		if (philo->left && philo->n_meal < time)
+			dead_meal -= time - philo->n_meal;
 		if (dead_meal > rules->t_die)
 		{
 			if (!check_mutex(rules->lock[PRINT]))
@@ -75,10 +76,11 @@ bool	dead(t_rules *rules, t_philo *philo)
 				lock_mutex(rules->lock[PRINT], true);
 				debug_death(philo, rules, t_aux, time);
 			}
-			return ((void)lock_mutex(rules->lock[DEAD], true), 1);
+			lock_mutex(rules->lock[DEAD], true);
+			return (1);
 		}
 	}
-	return (0);
+	return (check_mutex(rules->lock[DEAD]));
 }
 
 bool	meal_done(t_rules *rules, t_philo *philo, bool check)

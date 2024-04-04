@@ -54,9 +54,9 @@ void	print_usleep(t_rules *rules, t_philo *philo, t_ll time, t_ll tmp)
 	if (D_PHI != 1)
 		return ;
 	philo_tmp = *philo;
-	current = t_mu_s(rules->t_start);
 	if (!check_mutex(rules->lock[DEAD]))
 	{
+		current = t_mu_s(rules->t_start);
 		ms = current / (t_ll)1000;
 		if (time == -1 && rules->t_eat < current - philo_tmp.t_meal)
 			printf(\
@@ -78,11 +78,9 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll t_aux, t_ll rtime)
 {
 	t_ll	dead_meal;
 	t_philo	left;
-	t_ll	m_aux;
 
 	if (D_PHI == 0 || check_mutex(rules->lock[DEAD]))
 		return ;
-	left = *philo->left;
 	printf("\n\t\t\tTURN =\t\t[%lld]\n", (rtime / rules->t_eat) * rules->t_eat);
 	printf("\n\t\t\tACTION =\t\t[%d]\n", philo->action);
 	printf("\t\t\tREAL TIME =\t\t[%lld]\n", rtime);
@@ -90,15 +88,17 @@ void	debug_death(t_philo *philo, t_rules *rules, t_ll t_aux, t_ll rtime)
 	printf("\t\t\tNEXT MEAL =\t\t[%lld] \t WAKEUP [%lld]\n", \
 	philo->n_meal, philo->sleep + rules->t_sleep);
 	printf("\n");
-	printf("\t\t\t[%d]LEFT P_MEAL= \t[%lld]\n", left.id, left.t_meal);
-	printf("\t\t\t[%d]LEFT UNLOCKL=\t[%lld]\n", \
-	left.id, left.t_meal + left.rules->t_eat - 10);
+	if (philo->left)
+	{
+		left = *philo->left;
+		printf("\t\t\t[%d]LEFT P_MEAL= \t[%lld]\n", left.id, left.t_meal);
+		printf("\t\t\t[%d]LEFT UNLOCKL=\t[%lld]\n", \
+		left.id, left.t_meal + left.rules->t_eat - 10);
+	}
 	printf("\t\t\tT_AUX TIME =\t\t[%lld]\n", t_aux);
 	printf("\n");
 	dead_meal = ((t_aux - philo->t_meal) / 1000) * 1000;
 	printf("\t\t\tDEAD MEAL =\t\t[%lld]\n", dead_meal);
-	m_aux = rtime - philo->n_meal;
-	printf("\t\t\tADJUST =\t\t[%lld]\n", m_aux);
 	printf("\n\t\t\t EXTRA = %lld \n", rules->extra);
 }
 
