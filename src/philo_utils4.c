@@ -6,7 +6,7 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/04/04 12:50:29 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/04/04 12:52:34 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	adjust(t_philo *tmp, t_ll t_aux, t_ll *dead_meal)
 	t_philo	left;
 	t_ll	left_unlock;
 
+	left_unlock = 0;
 	if (!tmp->left)
 		return ;
 	left = *(tmp->left);

@@ -152,6 +152,9 @@ git:	fclean
 		@echo $(CYAN) && git add ./
 		@echo $(GREEN) && git commit -e
 		@echo $(YELLOW) && git push
+com:	fclean
+		@echo $(CYAN) && git commit -am $(m)
+		@echo $(YELLOW) && git push
 
 norm:
 	@printf "$(P_GREEN)norminette ./src ./include $(NC)\n"
