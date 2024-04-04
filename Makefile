@@ -1,7 +1,7 @@
 #------ TARGET ------#
 NAME		:= philo
 #------ WFLAGS ------#
-D_FLAGS		= -Wall -Wextra #-Werror
+D_FLAGS		= -Wall -Wextra -Werror
 INCLUDES	+= -I include/
 #------ SRC FILES & DIRECTORIES ------#
 SRCS_DIR	:= src/
