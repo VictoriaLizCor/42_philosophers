@@ -145,7 +145,6 @@ bool		check_fork(t_philo *philo);
   ** @return boolen	result if operation is true or false
 */
 bool		check_value(t_philo *philo, int *val1, char op, int val2);
-void		adjust(t_philo *tmp, t_ll t_aux, t_ll *dead_meal);
 /* check_error.c*/
 void		ft_error(int id, char *str1, char *str2, int exit_error);
 void		error_thread(void *data, int type);
