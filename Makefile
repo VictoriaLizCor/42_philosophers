@@ -207,6 +207,7 @@ debug:
 	@make re -C . D=$d S=$s
 eval_test: $(NAME)
 	-bash test/eval_cases.sh
+# USE: make own_test p=2 m=1 c="D=0 S=1 start"
 own_test: $(NAME)
 	-bash test/own_cases.sh p=$p c=$c
 #------------- TEST CASES -----------------------------------#
