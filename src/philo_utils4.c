@@ -6,23 +6,16 @@
 /*   By: lilizarr <lilizarr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 10:48:37 by lilizarr          #+#    #+#             */
-/*   Updated: 2024/04/02 11:07:56 by lilizarr         ###   ########.fr       */
+/*   Updated: 2024/04/04 12:19:48 by lilizarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void	lock_mutex(t_mutex *mutex)
+void	lock_mutex(t_mutex *mutex, bool stat)
 {
 	pthread_mutex_lock(&mutex->lock); 
-	mutex->stat = 1;
-	pthread_mutex_unlock(&mutex->lock);
-}
-
-void	unlock_mutex(t_mutex *mutex)
-{
-	pthread_mutex_lock(&mutex->lock);
-	mutex->stat = false;
+	mutex->stat = stat;
 	pthread_mutex_unlock(&mutex->lock);
 }
 
@@ -56,4 +49,19 @@ bool	check_value(t_philo *philo, int *val1, char op, int val2)
 		result = *val1 == val2;
 	pthread_mutex_unlock(&philo->fork.lock);
 	return (result);
+}
+
+void	adjust(t_philo *tmp, t_ll t_aux, t_ll *dead_meal)
+{
+	t_philo	left;
+	t_ll	left_unlock;
+
+	if (!tmp->left)
+		return ;
+	left = *(tmp->left);
+	left_unlock = left.t_meal + left.rules->t_eat - 10;
+	if (tmp->n_meal < t_aux)
+	{
+		*dead_meal -= t_aux - tmp->n_meal;
+	}
 }

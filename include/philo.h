@@ -76,10 +76,8 @@ struct s_rules
 	bool			odd;
 	int				*error;
 	int				sum1;
-	int				sum2;
 	struct s_philo	*last;
 };
-
 
 struct	s_philo
 {
@@ -131,8 +129,7 @@ bool		meal_done(t_rules *rules, t_philo *philo, bool check);
 void		print_msg(t_philo *philo, char *msg, t_ll time);
 /* philo_utils4.c */
 /*!<>*/
-void		lock_mutex(t_mutex *mutex);
-void		unlock_mutex(t_mutex *mutex);
+void		lock_mutex(t_mutex *mutex, bool stat);
 bool		check_mutex(t_mutex *mutex);
 /*! \file	philo_utils4.c
   ** @brief	Checks if fork is available
@@ -148,6 +145,7 @@ bool		check_fork(t_philo *philo);
   ** @return boolen	result if operation is true or false
 */
 bool		check_value(t_philo *philo, int *val1, char op, int val2);
+void		adjust(t_philo *tmp, t_ll t_aux, t_ll *dead_meal);
 /* check_error.c*/
 void		ft_error(int id, char *str1, char *str2, int exit_error);
 void		error_thread(void *data, int type);

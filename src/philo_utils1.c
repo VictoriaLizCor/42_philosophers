@@ -33,8 +33,8 @@ static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 	(void)last;
 	if (!check_fork(philo))
 	{
-		lock_mutex(&philo->fork);
-		lock_mutex(&philo->right->fork);
+		lock_mutex(&philo->fork, 1);
+		lock_mutex(&philo->right->fork, 1);
 		print_msg(philo, P_FORK, 0);
 		debug_thread_check(philo, "LOCKING", font(14));
 		philo->n_meals++;
@@ -47,8 +47,8 @@ static void	lock_eat(t_philo *philo, t_rules *rules, t_philo *last)
 		if (!meal_done(rules, philo, true))
 			ft_usleep(rules, philo, -1, rules->t_eat - 10);
 		debug_thread_check(philo->right, "UNLOCKING", font(13));
-		unlock_mutex(&philo->right->fork);
-		unlock_mutex(&philo->fork);
+		lock_mutex(&philo->right->fork, 0);
+		lock_mutex(&philo->fork, 0);
 		philo->action += 1;
 	}
 }

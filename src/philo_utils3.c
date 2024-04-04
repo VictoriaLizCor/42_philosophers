@@ -57,30 +57,27 @@ void	print_msg(t_philo *philo, char *msg, t_ll time)
 bool	dead(t_rules *rules, t_philo *philo)
 {
 	t_ll	time;
-	t_ll	last_meal;
+	t_ll	dead_meal;
 	t_ll	t_aux;
-	t_ll	m_aux;
 
 	if (!check_mutex(rules->lock[DEAD]))
 	{
 		time = t_mu_s(rules->t_start);
 		t_aux = (time / 1000) * 1000;
-		last_meal = t_aux - philo->t_meal;
-		m_aux = ((last_meal / 1000) * 1000) - rules->extra;
-		if (m_aux > rules->t_die)
+		dead_meal = ((t_aux - philo->t_meal) / 1000) * 1000;
+		adjust(philo, t_aux, &dead_meal);
+		if (dead_meal > rules->t_die)
 		{
-			lock_mutex(rules->lock[DEAD]);
-			printf("\t\t\tREAL TIME - last_meal = [%lld] > [%lld] = {%d}\n", \
-			m_aux, rules->t_die, m_aux > rules->t_die);
 			if (!check_mutex(rules->lock[PRINT]))
 			{
 				print_msg(philo, P_DEAD, time);
-				lock_mutex(rules->lock[PRINT]);
+				lock_mutex(rules->lock[PRINT], true);
 				debug_death(philo, rules, t_aux, time);
 			}
+			return ((void)lock_mutex(rules->lock[DEAD], true), 1);
 		}
 	}
-	return (check_mutex(rules->lock[DEAD]));
+	return (0);
 }
 
 bool	meal_done(t_rules *rules, t_philo *philo, bool check)
@@ -92,16 +89,16 @@ bool	meal_done(t_rules *rules, t_philo *philo, bool check)
 	if (check && (philo->n_meals == rules->n_meals))
 	{
 		done++;
-		if (D_PHI == 1)
+		if (D_PHI == 2)
 			printf("%s\t RULES[%d] PhILO_MEALS[%d] [%d]%s\n", \
 			warn(0), rules->n_meals, philo->n_meals, philo->id, font(0));
 	}
 	if (!check && !rules->lock[MEAL]->stat && done == rules->n_philos)
 	{
 		rules->lock[MEAL]->stat = 1;
-		if (D_PHI == 1)
-			printf("%s [%d]PhILO_MEALS[%d]%s\n", \
-			warn(1), philo->id, philo->n_meals, font(0));
+		if (D_PHI == 2)
+			printf("%s [%d]PhILO_MEALS[%d] | total[%d]%s\n", \
+			warn(1), philo->id, philo->n_meals, done, font(0));
 	}
 	status = rules->lock[MEAL]->stat;
 	return ((void)pthread_mutex_unlock(&rules->lock[MEAL]->lock), status);

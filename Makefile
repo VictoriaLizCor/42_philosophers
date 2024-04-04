@@ -202,8 +202,10 @@ leaks: $(NAME)
 
 debug:
 	@make re -C . D=$d S=$s
-test_eval: $(NAME)
-	-bash test/test_cases.sh
+eval_test: $(NAME)
+	-bash test/eval_cases.sh
+own_test: $(NAME)
+	-bash test/own_cases.sh p=$p c=$c
 #------------- TEST CASES -----------------------------------#
 r1:$(NAME)
 	$(eval PHILO=$(shell seq 1 10 | sort -R | tail -n 1 | tr '\n' ' '))
@@ -280,39 +282,6 @@ ran_err:$(NAME)
 	@echo ./philo n die eat sleep
 	./philo $(NUM)
 	@echo ./philo $(NUM)
-exn1: $(NAME)
-	$(eval EXN=$(shell echo $n 800 200 200 $m))
-	@echo ./philo n die eat sleep
-	./philo $(EXN)
-	@echo ./philo $(EXN)
-exn2: $(NAME)
-	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 200 100 $m))
-	./philo $(EXN)
-	@echo ./philo $(EXN)
-exn3: $(NAME)
-	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 200 150 $m))
-	./philo $(EXN)
-	@echo ./philo $(EXN)
-exn4: $(NAME)
-	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 100 200 $m))
-	./philo $(EXN)
-	@echo ./philo $(EXN)
-exn5: $(NAME)
-	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 100 150 $m))
-	./philo $(EXN)
-	@echo ./philo $(EXN)
-exn6: $(NAME)
-	@echo ./philo n die eat sleep
-	$(eval EXN=$(shell echo $n 800 150 200 $m))
-	./philo $(EXN)
-	@echo ./philo $(EXN)
-exin: $(NAME)
-	@echo ./philo n die eat sleep
-	./philo $n $d $e $s $m
 top:$(NAME)
 	top -opid -stats command,pid,threads,cpu,state,mem,kshrd
 # 	while $(shell ps | awk '/philo/ && !/awk/ {print $$1}') ; do \
