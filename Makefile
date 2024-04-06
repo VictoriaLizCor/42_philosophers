@@ -49,7 +49,7 @@ D_FLAGS		+= -O0 -g3 -pthread -fsanitize=address,undefined -fno-optimize-sibling-
 endif
 
 #------ RULES ------#
-all: $(NAME)
+all: $(NAME)   
 
 $(NAME): $(OBJS)
 ifneq ($(S), -1)
