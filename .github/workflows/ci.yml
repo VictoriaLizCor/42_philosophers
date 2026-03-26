@@ -28,4 +28,7 @@ jobs:
 
       - name: Run – invalid input returns error
         run: |
-          ./philo && exit 1 || true
+          ! ./philo
+          ! ./philo 0 800 200 200
+          ! ./philo -1 800 200 200
+          ! ./philo abc 800 200 200
