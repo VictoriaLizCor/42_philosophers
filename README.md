@@ -213,8 +213,3 @@ make leaks arg="5 800 200 200"
 ```
 
 ---
-
-## Troubleshooting
-- **Interleaved output:** ensure printing is protected by a mutex.
-- **High CPU usage:** frequent polling sleeps can burn CPU; increase sleep granularity or reduce debug output.
-- **Different behavior across runs:** thread scheduling varies by OS; test multiple times and include edge cases.
