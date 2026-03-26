@@ -1,109 +1,220 @@
-# 42_philosophers
-Summary: In this project, you will learn the basics of threading a process. You will see how to create threads and you will discover mutexes
-Philosophers with threads and mutexes
-https://docs.google.com/spreadsheets/d/1vMqbPiwxofL9Sml8P4xzVZGiHuUEPMZShsZQjZ5Xx4I/edit#gid=2085454190
-/*
-The functions used:
+# Philosophers (42)
 
-	pthread_mutex_init (&mutex, NULL) – initialization of mutex variable
-	pthread_mutex_lock (&mutex) – attempt to lock a mutex
-	pthread_mutex_unlock (&mutex) – unlock a mutex
-	pthread_create (ptr to thread, NULL, (void*) func, (void*) )
-	pthread_join (ptr to thread, &msg)-This function will make the main 
-	program wait until the called thread is finished executing it’s task.
-	pthread_mutex_destroy (ptr to thread)-
-	pthread_exit(NULL)
+Implementation of the classic **Dining Philosophers** concurrency problem (42 school project style).  
+Multiple philosophers alternate between **thinking**, **eating**, and **sleeping** while competing for shared forks (mutex-protected resources). The program prints timestamped state changes and stops when a philosopher dies or when all philosophers have eaten enough times (optional).
 
+---
 
-create a function that waits for all threads to be created with simple C and using following functios: pthread_mutex_init, pthread_mutex_lock, pthread_mutex_unlock, pthread_create, pthread_join, pthread_mutex_destroy, pthread_exit without semaphores or pthread_cond_t
+## Table of contents
+- [Project overview](#project-overview)
+- [Rules / constraints (42)](#rules--constraints-42)
+- [Build](#build)
+- [Makefile targets (repo-specific)](#makefile-targets-repo-specific)
+- [Run](#run)
+- [Arguments](#arguments)
+- [Output](#output)
+- [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
 
-Note: while compiling this program use the following:
-[root@Linux philo]# gcc –o dining dining.c -lpthread
+---
 
-Algorithm for process:
-1. Start.
-2. Declare and initialize the thread variables (philosophers) as required.
-3. Declare and initialize the mutex variables (chopsticks) as required.
-4. Create the threads representing philosophers.
-5. Wait until the threads finish execution.
-6. Stop.
+## Project overview
+This program simulates `N` philosophers sitting at a round table with `N` forks:
 
-Algorithm for thread (philosopher i) function:
+- Each philosopher needs **two forks** to eat.
+- Philosophers repeat a loop: **take forks → eat → sleep → think**.
+- The simulation ends when:
+  - one philosopher **dies** (doesn’t eat within `time_to_die`), or
+  - (optional) all philosophers have eaten `must_eat` times.
 
-	Start.
-	Philosopher i is thinking.
-	Lock the left fork spoon.
-	Lock the right fork spoon.
-	Philosopher i is eating.
-	sleep
-	Release the left fork spoon.
-	Release the right fork spoon.
-	Philosopher i Finished eating.
-	Stop.
+---
 
-should be <= 10000 and >= 60 ms.
+## Rules / constraints (42)
+- **Language:** C
+- **Threading model:** POSIX threads (`pthread`)
+- **Synchronization:** mutexes (forks + shared state like printing/death/completion)
+- **Time unit (input):** milliseconds (ms)
+- **Compilation flags (project style):** `-Wall -Wextra -Werror`
 
-[1] number_of_philosophers = forks
-[2] time_to_die (in milliseconds)>  time_to_eat + time_to_sleep.
-[3] time_to_eat (in milliseconds):
-[4] time_to_sleep (in milliseconds):
-[5] number_of_times_each_philosopher_must_eat
-** the simulation stops when a philosopher dies.
+---
 
-◦ timestamp_in_ms X has taken a fork 
-◦ timestamp_in_ms X is eating
-◦ timestamp_in_ms X is sleeping
-◦ timestamp_in_ms X is thinking
-◦ timestamp_in_ms X died
+## Build
+From the repository root:
 
-** Each philosopher has a number ranging from 1 to number_of_philosophers.
-** To prevent philosophers from duplicating forks, \
-	you should protect the forks state with a mutex for each of them.
+```sh
+make
+```
 
---- MANDATORY:
-memset
-printf
-malloc
-free
-write,
-usleep(useconds_t microseconds) = usleep(25 ms * 1000) = usleep(25000)
-	-- suspend thread execution for an interval measured in microseconds
-gettimeofday
-pthread_create
-pthread_detach
-pthread_join
-pthread_mutex_init
-pthread_mutex_destroy
-pthread_mutex_lock
-pthread_mutex_unlock
+Common targets:
 
+```sh
+make        # build
+make clean  # remove object files / build directory
+make fclean # remove objects + binary
+make re     # rebuild from scratch
+```
 
---- BONUS:
-fork
-kill
-exitma
-waitpid
-sem_open
-sem_close
-sem_post
-sem_wait
-sem_unlink
+The default output binary is:
 
-*/
+- `./philo`
 
-<!-- <ul>
-<li>Do not test with more than 200 philosophers.</li>
-<li>Do not test with time_to_die or time_to_eat or time_to_sleep set
-	to values lower than 60 ms.</li>
-<li>Test 1 800 200 200. The philosopher should not eat and should die.</li>
-<li>Test 5 800 200 200. No philosopher should die.</li>
-<li>Test 5 800 200 200 7. No philosopher should die and the simulation
-	should stop when every philosopher has eaten at least 7 times.</li>
-<li>Test 4 410 200 200. No philosopher should die.</li>
-<li>Test 4 310 200 100. One philosopher should die.</li>
-<li>Test with 2 philosophers and check the different times: a death
-	delayed by more than 10 ms is unacceptable.</li>
-<li>Test with any values of your choice to verify all the requirements.
-	Ensure philosophers die at the right time, that they don't steal
-	forks, and so forth.</li>
-</ul> -->
+---
+
+## Makefile targets (repo-specific)
+
+### Core
+- `make` / `make all`  
+  Builds `NAME := philo`.
+
+- `make clean`  
+  Removes build artifacts (and `.dSYM` on macOS if present).
+
+- `make fclean`  
+  `clean` + removes the executable.
+
+- `make re`  
+  Full rebuild.
+
+### Debug / sanitizers (variables)
+Your Makefile supports these switches:
+
+- `D=<level>`  
+  Adds debug flags and defines `D_PHI=<level>` (used by debug output in the code).
+  Example:
+  ```sh
+  make re D=1
+  ```
+
+- `S=<mode>`  
+  Sanitizer mode:
+  - `S=-1` (default): normal build
+  - `S=0`: AddressSanitizer + UndefinedBehaviorSanitizer
+  - `S=1`: ThreadSanitizer + UndefinedBehaviorSanitizer
+  Examples:
+  ```sh
+  make re S=0
+  make re S=1
+  make re D=2 S=1
+  ```
+
+### Run / analysis helpers
+These rules take `arg="..."` (the program arguments):
+
+- Run:
+  ```sh
+  make start arg="5 800 200 200"
+  ```
+
+- Valgrind leak check:
+  ```sh
+  make val arg="5 800 200 200"
+  ```
+
+- Helgrind (thread/race tool):
+  ```sh
+  make hel arg="5 800 200 200"
+  ```
+
+- macOS leaks:
+  ```sh
+  make leaks arg="5 800 200 200"
+  ```
+
+### Test scripts
+- `make eval_test` runs:
+  - `test/eval_cases.sh`
+
+- `make own_test` runs:
+  - `test/own_cases.sh`
+
+Example:
+```sh
+make own_test p=2 c="D=0 S=1 start"
+```
+
+### Extra
+- `make norm` runs norminette on `./src` and `./include`.
+
+---
+
+## Run
+```sh
+./philo number_of_philosophers time_to_die time_to_eat time_to_sleep [must_eat]
+```
+
+---
+
+## Arguments
+All values must be positive integers.
+
+1. `number_of_philosophers`  
+   Number of philosopher threads to create.
+
+2. `time_to_die` (ms)  
+   If a philosopher does not start eating within this time since their last meal, they die.
+
+3. `time_to_eat` (ms)  
+   Duration of the eating action.
+
+4. `time_to_sleep` (ms)  
+   Duration of the sleeping action.
+
+5. `must_eat` *(optional)*  
+   If provided, the simulation stops once every philosopher has eaten at least this many times.
+
+### Examples
+```sh
+./philo 5 400 200 100
+./philo 5 400 200 100 4
+```
+
+---
+
+## Output
+The program prints state transitions in a format similar to:
+
+- `<timestamp_ms> <philosopher_id> has taken a fork`
+- `<timestamp_ms> <philosopher_id> is eating`
+- `<timestamp_ms> <philosopher_id> is sleeping`
+- `<timestamp_ms> <philosopher_id> is thinking`
+- `<timestamp_ms> <philosopher_id> died`
+
+Timestamps are relative to the simulation start.
+
+> Depending on debug configuration (`D`), output may include colors or extra diagnostic lines.
+
+---
+
+## Testing
+
+### Quick sanity
+```sh
+./philo 1 800 200 200
+./philo 2 800 200 200
+```
+
+### Typical runs
+```sh
+./philo 5 800 200 200
+./philo 5 800 200 200 7
+```
+
+### Stress / stability
+```sh
+./philo 100 310 200 100
+```
+
+### Useful Makefile shortcuts
+```sh
+make start arg="5 800 200 200"
+make val   arg="5 800 200 200"
+make hel   arg="5 800 200 200"
+make leaks arg="5 800 200 200"
+```
+
+---
+
+## Troubleshooting
+- **Interleaved output:** ensure printing is protected by a mutex.
+- **High CPU usage:** frequent polling sleeps can burn CPU; increase sleep granularity or reduce debug output.
+- **Different behavior across runs:** thread scheduling varies by OS; test multiple times and include edge cases.
